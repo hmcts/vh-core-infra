@@ -1,0 +1,35 @@
+{
+  "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentParameters.json#",
+  "contentVersion": "1.0.0.0",
+  "parameters": {
+    "appServicePlanName": {
+      "value": "vh-core-infra-dev"
+    },
+    "webAppName": {
+      "value": "vh-core-infra-dev"
+    },
+    "MSSQLServerAdminLogin": {
+      "value": "$(VHCoreInfraHearingsAPIDBAdminUsername)"
+    },
+    "MSSQLServerAdminLoginPassword": {
+      "value": "$(VHCoreInfraHearingsAPIDBPassword)"
+    },
+    "HearingsDatabaseName": {
+      "value": "Hearing"
+    },
+    "MSSQLServerDBServerName": {
+      "value": "vh-hearings-api-dev"
+    },
+    "keyVaultName": {
+      "value": "vh-core-infra-dev"
+    },
+    "tenantId": {
+      "value": "$(VHCoreInfraTenantId)"
+    },
+    "accessPolicies": {
+      "value": [
+
+      ]
+    }
+  }
+}
