@@ -180,7 +180,7 @@
           },
           "properties": {
             "HearingDatabase": {
-              "value": "[concat('Server=tcp:',reference(concat('Microsoft.Sql/servers', parameters('MSSQLServerDBServerName'))).fullyQualifiedDomainName,',1433;Initial Catalog=',parameters('HearingsDatabaseName'),';Persist Security Info=False;User ID=',reference(concat('Microsoft.Sql/servers', parameters('MSSQLServerDBServerName'))).administratorLogin,';Password=',parameters('MSSQLServerAdminLoginPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
+              "value": "[concat('Server=tcp:',reference(concat('Microsoft.Sql/servers/', parameters('MSSQLServerDBServerName'))).fullyQualifiedDomainName,',1433;Initial Catalog=',parameters('HearingsDatabaseName'),';Persist Security Info=False;User ID=',reference(concat('Microsoft.Sql/servers/', parameters('MSSQLServerDBServerName'))).administratorLogin,';Password=',parameters('MSSQLServerAdminLoginPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
               "type": "SQLAzure"
             }
           }
