@@ -152,40 +152,20 @@
       }
     },
     {
-      "apiVersion": "2016-03-01",
-      "name": "[parameters('webAppNameHearingsAPI')]",
-      "type": "Microsoft.Web/sites",
+      "apiVersion": "2015-05-01",
+      "name": "[variables('appInsightsName')]",
+      "type": "Microsoft.Insights/components",
       "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
+        "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
       ],
       "tags": {
-        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName')))]": "empty",
-        "displayName": "Website"
+        "displayName": "AppInsightsComponent"
       },
+      "kind": "web",
       "properties": {
-        "name": "[parameters('webAppNameHearingsAPI')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-      },
-      "resources": [
-        {
-          "apiVersion": "2016-03-01",
-          "type": "config",
-          "name": "connectionstrings",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
-          ],
-          "tags": {
-            "displayName": "ConnectionStrings"
-          },
-          "properties": {
-            "HearingDatabase": {
-              "value": "[concat('Server=tcp:',reference(parameters('MSSQLServerDBServerName')).fullyQualifiedDomainName,',1433;Initial Catalog=',parameters('HearingsDatabaseName'),';Persist Security Info=False;User ID=',reference(parameters('MSSQLServerDBServerName')).administratorLogin,';Password=',parameters('MSSQLServerAdminLoginPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
-              "type": "SQLAzure"
-            }
-          }
-        }
-      ]
+        "Application_Type": "web"
+      }
     },
     {
       "name": "[parameters('MSSQLServerDBServerName')]",
