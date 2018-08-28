@@ -207,9 +207,9 @@
       "type": "Microsoft.Insights/components",
       "location": "[parameters('location')]",
       "dependsOn": [
+        "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
       ],
       "tags": {
-        "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('appInsightsName')))]": "Resource",
         "displayName": "AppInsightsComponent"
       },
       "kind": "web",
