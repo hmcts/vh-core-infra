@@ -9,7 +9,7 @@
       },
       "minLength": 2
     },
-    "webAppName": {
+    "webAppNameHearingsAPI": {
       "type": "string",
       "metadata": {
         "description": "Base name of the resource such as web app name and app service plan "
@@ -132,7 +132,7 @@
     }
   },
   "variables": {
-    "appInsightsName": "[parameters('webAppName')]"
+    "appInsightsName": "[parameters('webAppNameHearingsAPI')]"
   },
   "resources": [
     {
@@ -153,7 +153,7 @@
     },
     {
       "apiVersion": "2016-03-01",
-      "name": "[parameters('webAppName')]",
+      "name": "[parameters('webAppNameHearingsAPI')]",
       "type": "Microsoft.Web/sites",
       "location": "[parameters('location')]",
       "dependsOn": [
@@ -164,7 +164,7 @@
         "displayName": "Website"
       },
       "properties": {
-        "name": "[parameters('webAppName')]",
+        "name": "[parameters('webAppNameHearingsAPI')]",
         "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
       },
       "resources": [
@@ -173,7 +173,7 @@
           "type": "config",
           "name": "connectionstrings",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+            "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
           ],
           "tags": {
             "displayName": "ConnectionStrings"
@@ -190,7 +190,7 @@
           "type": "config",
           "apiVersion": "2015-08-01",
           "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('webAppName'))]"
+            "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
           ],
           "tags": {
             "displayName": "AppInsightsInstrumentationKey"
@@ -207,14 +207,15 @@
       "type": "Microsoft.Insights/components",
       "location": "southcentralus",
       "dependsOn": [
-        "[parameters('webAppName')]"
+        "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
       ],
       "tags": {
         "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('appInsightsName')))]": "Resource",
         "displayName": "AppInsightsComponent"
       },
+      "kind": "web",
       "properties": {
-        "ApplicationId": "[variables('appInsightsName')]"
+        "Application_Type": "web"
       }
     },
     {
