@@ -205,9 +205,8 @@
       "apiVersion": "2015-05-01",
       "name": "[variables('appInsightsName')]",
       "type": "Microsoft.Insights/components",
-      "location": "southcentralus",
+      "location": "[parameters('location')]",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
       ],
       "tags": {
         "[concat('hidden-link:', resourceId('Microsoft.Web/sites', variables('appInsightsName')))]": "Resource",
