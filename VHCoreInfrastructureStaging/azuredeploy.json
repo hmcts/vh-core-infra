@@ -184,38 +184,8 @@
               "type": "SQLAzure"
             }
           }
-        },
-        {
-          "name": "appsettings",
-          "type": "config",
-          "apiVersion": "2015-08-01",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
-          ],
-          "tags": {
-            "displayName": "AppInsightsInstrumentationKey"
-          },
-          "properties": {
-            "ApplicationInsights:InstrumentationKey": "[reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]"
-          }
         }
       ]
-    },
-    {
-      "apiVersion": "2015-05-01",
-      "name": "[variables('appInsightsName')]",
-      "type": "Microsoft.Insights/components",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
-      ],
-      "tags": {
-        "displayName": "AppInsightsComponent"
-      },
-      "kind": "web",
-      "properties": {
-        "Application_Type": "web"
-      }
     },
     {
       "name": "[parameters('MSSQLServerDBServerName')]",
