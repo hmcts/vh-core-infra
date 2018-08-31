@@ -23,21 +23,8 @@
     "keyVaultName": {
       "value": "vh-core-infra-dev"
     },
-    "tenantId": {
-      "value": "$(VHCoreInfraTenantId)"
-    },
-    "accessPolicies": {
-      "value": [
-        {
-          "tenantId": "$(VHCoreInfraTenantId)",
-          "objectId": "$(VHTeamID)",
-          "permissions": {
-            "keys": [ "all" ],
-            "secrets": [ "all" ]
-          }
-        }
-
-      ]
+    "aadGroupObjectId": {
+      "value": "$(VHSecurityGroup)"
     }
   }
 }
