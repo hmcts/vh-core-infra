@@ -282,7 +282,7 @@
         "tenantId": "[parameters('tenantId')]",
         "accessPolicies": [
           {
-            "tenantId": "[parameters('tenantId')]",
+            "tenantId": "[subscription().tenantId]",
             "objectId": "[parameters('aadGroupObjectId')]",
             "permissions": {
               "keys": [
