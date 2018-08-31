@@ -292,8 +292,12 @@
             "tenantId": "[parameters('tenantId')]",
             "objectId": "[parameters('aadGroupObjectId')]",
             "permissions": {
-              "keys": "all",
-              "secrets": "all"
+              "keys": [
+                "all"
+              ],
+              "secrets": [
+                "all"
+              ]
             }
           }
         ]
