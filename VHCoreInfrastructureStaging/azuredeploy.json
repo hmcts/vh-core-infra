@@ -91,8 +91,9 @@
     },
     "tenantId": {
       "type": "string",
+      "defaultValue": "[subscription().tenantId]",
       "metadata": {
-        "description": "Tenant Id for the subscription and use assigned access to the vault. Available from the Get-AzureRMSubscription PowerShell cmdlet"
+        "description": "Tenant Id of the subscription. Get using Get-AzureRmSubscription cmdlet or Get Subscription API"
       }
     },
     "accessPolicies": {

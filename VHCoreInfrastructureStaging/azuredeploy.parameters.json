@@ -28,6 +28,14 @@
     },
     "accessPolicies": {
       "value": [
+        {
+          "tenantId": "$(VHCoreInfraTenantId)",
+          "objectId": "$(VHTeamID)",
+          "permissions": {
+            "keys": [ "all" ],
+            "secrets": [ "all" ]
+          }
+        }
 
       ]
     }
