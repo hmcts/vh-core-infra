@@ -99,13 +99,6 @@
     "aadGroupObjectId": {
       "type": "string"
     },
-    "accessPolicies": {
-      "type": "array",
-      "defaultValue": "{}",
-      "metadata": {
-        "description": "Access policies object {\"tenantId\":\"\",\"objectId\":\"\",\"permissions\":{\"keys\":[\"\"],\"secrets\":[\"\"]}}"
-      }
-    },
     "enabledForDeployment": {
       "type": "bool",
       "defaultValue": false,
