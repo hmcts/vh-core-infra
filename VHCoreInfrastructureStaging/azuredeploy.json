@@ -154,7 +154,6 @@
       "type": "Microsoft.Insights/components",
       "location": "West Europe",
       "dependsOn": [
-        "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
       ],
       "tags": {
         "displayName": "AppInsightsComponent"
