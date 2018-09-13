@@ -149,56 +149,6 @@
       }
     },
     {
-      "apiVersion": "2016-03-01",
-      "name": "[parameters('webAppNameHearingsAPI')]",
-      "type": "Microsoft.Web/sites",
-      "location": "[parameters('location')]",
-      "dependsOn": [
-        "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-      ],
-      "tags": {
-        "[concat('hidden-related:', resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName')))]": "empty",
-        "displayName": "Website"
-      },
-      "properties": {
-        "name": "[parameters('webAppNameHearingsAPI')]",
-        "serverFarmId": "[resourceId('Microsoft.Web/serverfarms', parameters('appServicePlanName'))]"
-      },
-      "resources": [
-        {
-          "apiVersion": "2016-03-01",
-          "type": "config",
-          "name": "connectionstrings",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
-          ],
-          "tags": {
-            "displayName": "ConnectionStrings"
-          },
-          "properties": {
-            "HearingDatabase": {
-              "value": "[concat('Server=tcp:',reference(concat('Microsoft.Sql/servers/', parameters('MSSQLServerDBServerName'))).fullyQualifiedDomainName,',1433;Initial Catalog=',parameters('HearingsDatabaseName'),';Persist Security Info=False;User ID=',reference(concat('Microsoft.Sql/servers/', parameters('MSSQLServerDBServerName'))).administratorLogin,';Password=',parameters('MSSQLServerAdminLoginPassword'),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
-              "type": "SQLAzure"
-            }
-          }
-        },
-        {
-          "name": "appsettings",
-          "type": "config",
-          "apiVersion": "2015-08-01",
-          "dependsOn": [
-            "[resourceId('Microsoft.Web/sites', parameters('webAppNameHearingsAPI'))]"
-          ],
-          "tags": {
-            "displayName": "AppInsightsInstrumentationKey"
-          },
-          "properties": {
-            "ApplicationInsights:InstrumentationKey": "[reference(concat('microsoft.insights/components/', variables('appInsightsName'))).InstrumentationKey]"
-          }
-        }
-      ]
-    },
-    {
       "apiVersion": "2015-05-01",
       "name": "[variables('appInsightsName')]",
       "type": "Microsoft.Insights/components",
@@ -213,55 +163,6 @@
       "properties": {
         "Application_Type": "web"
       }
-    },
-    {
-      "name": "[parameters('MSSQLServerDBServerName')]",
-      "type": "Microsoft.Sql/servers",
-      "location": "[resourceGroup().location]",
-      "apiVersion": "2014-04-01-preview",
-      "dependsOn": [
-      ],
-      "tags": {
-        "displayName": "Virtual Courtroom SQL Server"
-      },
-      "properties": {
-        "administratorLogin": "[parameters('MSSQLServerAdminLogin')]",
-        "administratorLoginPassword": "[parameters('MSSQLServerAdminLoginPassword')]"
-      },
-      "resources": [
-        {
-          "name": "AllowAllWindowsAzureIps",
-          "type": "firewallrules",
-          "location": "[resourceGroup().location]",
-          "apiVersion": "2014-04-01-preview",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', parameters('MSSQLServerDBServerName'))]"
-          ],
-          "properties": {
-            "startIpAddress": "0.0.0.0",
-            "endIpAddress": "0.0.0.0"
-          }
-        },
-        {
-          "name": "[parameters('HearingsDatabaseName')]",
-          "type": "databases",
-          "location": "[resourceGroup().location]",
-          "apiVersion": "2014-04-01-preview",
-          "dependsOn": [
-            "[resourceId('Microsoft.Sql/servers', parameters('MSSQLServerDBServerName'))]"
-          ],
-          "tags": {
-            "displayName": "Virtual Courtroom Database"
-          },
-          "properties": {
-            "collation": "SQL_Latin1_General_CP1_CI_AS",
-            "edition": "[parameters('MSSQLServerEdition')]",
-            "maxSizeBytes": "1073741824",
-            "requestedServiceObjectiveName": "[parameters('MSSQLServerRequestedServiceObjectiveName')]"
-          }
-        }
-
-      ]
     },
     {
       "type": "Microsoft.KeyVault/vaults",
@@ -286,10 +187,10 @@
             "objectId": "[parameters('aadGroupObjectId')]",
             "permissions": {
               "keys": [
-                "all"
+                "list"
               ],
               "secrets": [
-                "all"
+                "list"
               ]
             }
           }
