@@ -9,13 +9,13 @@
       "value": "vh-core-infra-dev"
     },
     "MSSQLServerAdminLogin": {
-      "value": "$(VHCoreInfraHearingsAPIDBAdminUsername)"
+      "value": "MSSQLServerAdminLogin"
     },
     "MSSQLServerAdminLoginPassword": {
-      "value": "$(VHCoreInfraHearingsAPIDBPassword)"
+      "value": "MSSQLServerAdminLoginPassword"
     },
     "HearingsDatabaseName": {
-      "value": "Hearing"
+      "value": "HearingsDatabaseName"
     },
     "MSSQLServerDBServerName": {
       "value": "vh-hearings-api-dev"
@@ -24,7 +24,7 @@
       "value": "vh-core-infra-dev"
     },
     "aadGroupObjectId": {
-      "value": "$(VHSecurityGroup)"
+      "value": "aadGroupObjectId"
     }
   }
 }
