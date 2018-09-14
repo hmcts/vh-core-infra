@@ -78,7 +78,7 @@
     },
     "tier": {
       "type": "string",
-      "defaultValue": "Standard"
+      "defaultValue": "standard"
     },
     "keyVaultName": {
       "type": "string"
