@@ -72,6 +72,14 @@
     "appServicePlanName": {
       "type": "string"
     },
+    "sku": {
+      "type": "string",
+      "defaultValue": "S1"
+    },
+    "tier": {
+      "type": "string",
+      "defaultValue": "Standard"
+    },
     "keyVaultName": {
       "type": "string"
     },
@@ -116,7 +124,8 @@
         },
         "parameters": {
           "appServicePlanName": { "value": "[parameters('appServicePlanName')]" },
-          "objectId": { "value": "[parameters('objectId')]" }
+          "sku": { "value": "[parameters('sku')]" },
+          "tier": { "value": "[parameters('tier')]" }
         }
       }
     },
