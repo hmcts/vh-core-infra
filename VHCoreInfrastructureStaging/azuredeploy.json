@@ -115,7 +115,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "keyVaultName": { "value": "[parameters('appServicePlanName')]" },
+          "appServicePlanName": { "value": "[parameters('appServicePlanName')]" },
           "objectId": { "value": "[parameters('objectId')]" }
         }
       }
@@ -149,7 +149,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "keyVaultName": { "value": "[parameters('keyVaultName')]" },
+          "appInsightsName": { "value": "[parameters('appInsightsName')]" },
           "location": { "value": "[parameters('appInsightsLocation')]" }
         }
       }
