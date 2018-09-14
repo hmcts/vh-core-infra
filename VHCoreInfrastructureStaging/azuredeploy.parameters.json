@@ -23,8 +23,8 @@
     "keyVaultName": {
       "value": "vh-core-infra-dev"
     },
-    "aadGroupObjectId": {
-      "value": "aadGroupObjectId"
+    "objectId": {
+      "value": "objectId"
     }
   }
 }
