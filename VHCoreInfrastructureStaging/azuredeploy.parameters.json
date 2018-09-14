@@ -5,9 +5,6 @@
     "appServicePlanName": {
       "value": "vh-core-infra-dev"
     },
-    "webAppNameHearingsAPI": {
-      "value": "vh-core-infra-dev"
-    },
     "MSSQLServerAdminLogin": {
       "value": "MSSQLServerAdminLogin"
     },
