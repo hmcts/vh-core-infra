@@ -2,27 +2,6 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "appServicePlanName": {
-      "type": "string",
-      "metadata": {
-        "description": "Base name of the resource such as web app name and app service plan "
-      },
-      "minLength": 2
-    },
-    "webAppNameHearingsAPI": {
-      "type": "string",
-      "metadata": {
-        "description": "Base name of the resource such as web app name and app service plan "
-      },
-      "minLength": 2
-    },
-    "sku": {
-      "type": "string",
-      "defaultValue": "S1",
-      "metadata": {
-        "description": "The SKU of App Service Plan "
-      }
-    },
     "MSSQLServerDBServerName": {
       "type": "string",
       "minLength": 1
@@ -90,12 +69,21 @@
         "description": "Location for all resources."
       }
     },
-
+    "appServicePlanName": {
+      "type": "string"
+    },
     "keyVaultName": {
       "type": "string"
     },
     "objectId": {
       "type": "string"
+    },
+    "appInsightsName": {
+      "type": "string"
+    },
+    "appInsightsLocation": {
+      "type": "string",
+      "defaultValue": "West Europe"
     },
     "_artifactsLocation": {
       "type": "string",
@@ -104,41 +92,32 @@
     }
   },
   "variables": {
-    "appInsightsName": "[concat(parameters('webAppNameHearingsAPI'),'-appinsights')]",
     "AzureKeyVaultTemplateFolder": "AzureKeyVault",
     "AzureKeyVaultTemplateFileName": "AzureKeyVault.json",
-    "AzureKeyVaultTemplateParametersFileName": "AzureKeyVault.parameters.json"
+    "AzureKeyVaultTemplateParametersFileName": "AzureKeyVault.parameters.json",
+    "AzureAppServicePlanTemplateFolder": "AzureAppServicePlan",
+    "AzureAppServicePlanTemplateFileName": "AzureAppServicePlan.json",
+    "AzureAppServicePlanTemplateParametersFileName": "AzureAppServicePlan.parameters.json",
+    "AzureApplicationInsightsTemplateFolder": "AzureApplicationInsights",
+    "AzureApplicationInsightsTemplateFileName": "AzureApplicationInsights.json",
+    "AzureApplicationInsightsTemplateParametersFileName": "AzureApplicationInsights.parameters.json"
   },
   "resources": [
     {
-      "apiVersion": "2017-08-01",
-      "type": "Microsoft.Web/serverfarms",
-      "kind": "app",
-      "name": "[parameters('appServicePlanName')]",
-      "location": "[parameters('location')]",
-      "comments": "This app service plan is used for the web app and slots.",
-      "properties": {},
+      "name": "AzureAppServicePlan",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
       "dependsOn": [],
-      "tags": {
-        "displayName": "App Service Plan"
-      },
-      "sku": {
-        "name": "[parameters('sku')]"
-      }
-    },
-    {
-      "apiVersion": "2015-05-01",
-      "name": "[variables('appInsightsName')]",
-      "type": "Microsoft.Insights/components",
-      "location": "West Europe",
-      "dependsOn": [
-      ],
-      "tags": {
-        "displayName": "AppInsightsComponent"
-      },
-      "kind": "web",
       "properties": {
-        "Application_Type": "web"
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureAppServicePlanTemplateFolder'), '/', variables('AzureAppServicePlanTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": { "value": "[parameters('appServicePlanName')]" },
+          "objectId": { "value": "[parameters('objectId')]" }
+        }
       }
     },
     {
@@ -155,6 +134,23 @@
         "parameters": {
           "keyVaultName": { "value": "[parameters('keyVaultName')]" },
           "objectId": { "value": "[parameters('objectId')]" }
+        }
+      }
+    },
+    {
+      "name": "AzureApplicationInsights",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureApplicationInsightsTemplateFolder'), '/', variables('AzureApplicationInsightsTemplateFileName'), parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": { "value": "[parameters('keyVaultName')]" },
+          "location": { "value": "[parameters('appInsightsLocation')]" }
         }
       }
     }
