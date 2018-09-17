@@ -2,19 +2,15 @@
   "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
   "contentVersion": "1.0.0.0",
   "parameters": {
-    "MSSQLServerDBServerName": {
+    "MSSQLDBName": {
       "type": "string",
       "minLength": 1
     },
-    "HearingsDatabaseName": {
+    "MSSQLAdminLogin": {
       "type": "string",
       "minLength": 1
     },
-    "MSSQLServerAdminLogin": {
-      "type": "string",
-      "minLength": 1
-    },
-    "MSSQLServerAdminLoginPassword": {
+    "MSSQLAdminLoginPassword": {
       "type": "securestring"
     },
     "MSSQLServerEdition": {
@@ -26,7 +22,7 @@
         "Premium"
       ]
     },
-    "MSSQLServerRequestedServiceObjectiveName": {
+    "MSSQLRequestedServiceObjectiveName": {
       "type": "string",
       "defaultValue": "S0",
       "allowedValues": [
@@ -43,6 +39,9 @@
       "metadata": {
         "description": "Describes the performance level for Edition"
       }
+    },
+    "MSSQLEmailAddresses": {
+      "type": "securestring"
     },
     "vaultSku": {
       "type": "string",
@@ -108,7 +107,10 @@
     "AzureAppServicePlanTemplateParametersFileName": "AzureAppServicePlan.parameters.json",
     "AzureApplicationInsightsTemplateFolder": "AzureApplicationInsights",
     "AzureApplicationInsightsTemplateFileName": "AzureApplicationInsights.json",
-    "AzureApplicationInsightsTemplateParametersFileName": "AzureApplicationInsights.parameters.json"
+    "AzureApplicationInsightsTemplateParametersFileName": "AzureApplicationInsights.parameters.json",
+    "AzureMSSQLTemplateFolder": "AzureMSSQL",
+    "AzureMSSQLTemplateFileName": "AzureMSSQL.json",
+    "AzureMSSQLTemplateParametersFileName": "AzureMSSQL.parameters.json"
   },
   "resources": [
     {
@@ -150,7 +152,7 @@
       "name": "AzureApplicationInsights",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ ],
+      "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -160,6 +162,27 @@
         "parameters": {
           "appInsightsName": { "value": "[parameters('appInsightsName')]" },
           "location": { "value": "[parameters('appInsightsLocation')]" }
+        }
+      }
+    },
+    {
+      "name": "AzureMSSQL",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureMSSQLTemplateFolder'), '/', variables('AzureMSSQLTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
+          "MSSQLAdminLoginPassword": { "value": "[parameters('MSSQLAdminLoginPassword')]" },
+          "MSSQLDBName": { "value": "[parameters('MSSQLDBName')]" },
+          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
+          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" },
+          "EmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
         }
       }
     }
