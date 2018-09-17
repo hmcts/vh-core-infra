@@ -3,7 +3,7 @@
   "contentVersion": "1.0.0.0",
   "parameters": {
     "appServicePlanName": {
-      "value": "vh-core-infra-dev"
+      "value": "core-infra-dev"
     },
     "MSSQLAdminLogin": {
       "value": "sqladmin"
@@ -15,13 +15,16 @@
       "value": "mydatabase"
     },
     "MSSQLDBServerName": {
-      "value": "vh-hearings-api"
+      "value": "core-infra-dev"
+    },
+    "MSSQLEmailAddresses": {
+      "value": "my.email@someemail.com"
     },
     "keyVaultName": {
       "value": "vh-core-infra-dev"
     },
     "objectId": {
-      "value": "ObjectId"
+      "value": "ffabdc7d-1ed6-451f-b777-483ac9f5db26"
     },
     "appInsightsName": {
       "value": "appInsightsName"
