@@ -5,17 +5,17 @@
     "appServicePlanName": {
       "value": "vh-core-infra-dev"
     },
-    "MSSQLServerAdminLogin": {
-      "value": "MSSQLServerAdminLogin"
+    "MSSQLAdminLogin": {
+      "value": "sqladmin"
     },
-    "MSSQLServerAdminLoginPassword": {
-      "value": "MSSQLServerAdminLoginPassword"
+    "MSSQLAdminLoginPassword": {
+      "value": "SomeSecretPassword"
     },
-    "HearingsDatabaseName": {
-      "value": "HearingsDatabaseName"
+    "MSSQLDBName": {
+      "value": "mydatabase"
     },
-    "MSSQLServerDBServerName": {
-      "value": "vh-hearings-api-dev"
+    "MSSQLDBServerName": {
+      "value": "vh-hearings-api"
     },
     "keyVaultName": {
       "value": "vh-core-infra-dev"
