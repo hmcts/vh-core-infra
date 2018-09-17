@@ -14,9 +14,6 @@
       "type": "string",
       "minLength": 1
     },
-    "MSSQLAdminLoginPassword": {
-      "type": "securestring"
-    },
     "MSSQLServerEdition": {
       "type": "string",
       "defaultValue": "Standard",
@@ -182,7 +179,6 @@
         },
         "parameters": {
           "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
-          "MSSQLAdminLoginPassword": { "value": "[parameters('MSSQLAdminLoginPassword')]" },
           "MSSQLDBName": { "value": "[parameters('MSSQLDBName')]" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" },
