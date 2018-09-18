@@ -165,7 +165,7 @@
       "name": "AzureKeyVaultAccessPolicy",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ ],
+      "dependsOn": [ "KeyVault" ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
