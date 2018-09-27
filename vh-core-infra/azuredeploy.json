@@ -222,6 +222,7 @@
       "type": "string",
       "value": "[reference('AzureMSSQL').outputs.DatabaseConnectionString.value]"
     },
+
     "InstrumentationKey": {
       "type": "string",
       "value": "[reference('AzureApplicationInsights').outputs.ApplicationInsightsInstrumentationKey.value]"
