@@ -28,6 +28,9 @@
     },
     "appInsightsName": {
       "value": "appInsightsName"
+    },
+    "redisCacheName": {
+      "value": "redisCacheName"
     }
   }
 }
