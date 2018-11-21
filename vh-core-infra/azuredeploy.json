@@ -130,10 +130,7 @@
     "AzureMSSQLTemplateParametersFileName": "AzureMSSQL.parameters.json",
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
-    "AzureRedisCacheTemplateParametersFileName": "AzureRedisCache.parameters.json",
-    "AzureCertificateTemplateFolder": "AzureCertificate",
-    "AzureCertificateTemplateFileName": "AzureCertificate.json",
-    "AzureCertificateTemplateParametersFileName": "AzureCertificate.parameters.json"
+    "AzureRedisCacheTemplateParametersFileName": "AzureRedisCache.parameters.json"
   },
   "resources": [
     {
@@ -239,19 +236,6 @@
         },
         "parameters": {
           "RedisCacheName": { "value": "[parameters('RedisCacheName')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureCertificate",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureCertificateTemplateFolder'), '/', variables('AzureCertificateTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
         }
       }
     }
