@@ -151,7 +151,7 @@
           "appServicePlanName": { "value": "[parameters('appServicePlanName')]" },
           "sku": { "value": "[parameters('sku')]" },
           "tier": { "value": "[parameters('tier')]" },
-          "KeyVaultSecretName": { "value": "[parameters('tier')]" },
+          "KeyVaultSecretName": { "value": "[parameters('KeyVaultSecretName')]" },
           "KeyVaultId": { "value": "reference('KeyVault').outputs.resourceID.value" }
         }
       }
@@ -252,10 +252,6 @@
     "InstrumentationKey": {
       "type": "string",
       "value": "[reference('AzureApplicationInsights').outputs.ApplicationInsightsInstrumentationKey.value]"
-    },
-    "RedisCacheConnectionString": {
-      "type": "string",
-      "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
     },
     "RedisCacheConnectionString": {
       "type": "string",
