@@ -106,6 +106,9 @@
     "RedisCacheName": {
       "type": "string"
     },
+    "KeyVaultCertificateSecretName": {
+      "type": "string"
+    },
     "_artifactsLocation": {
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
@@ -147,7 +150,9 @@
         "parameters": {
           "appServicePlanName": { "value": "[parameters('appServicePlanName')]" },
           "sku": { "value": "[parameters('sku')]" },
-          "tier": { "value": "[parameters('tier')]" }
+          "tier": { "value": "[parameters('tier')]" },
+          "KeyVaultCertificateSecretName": { "value": "[parameters('KeyVaultCertificateSecretName')]" }
+
         }
       }
     },
