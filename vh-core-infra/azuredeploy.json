@@ -155,7 +155,7 @@
           "sku": { "value": "[parameters('sku')]" },
           "tier": { "value": "[parameters('tier')]" },
           "KeyVaultSecretName": { "value": "[parameters('KeyVaultCertificateSecretName')]" },
-          "KeyVaultId": { "value": "reference('KeyVault').outputs.resourceID.value" }
+          "KeyVaultId": { "value": "reference('KeyVault').outputs.AzureKeyVaultResourceId.value" }
 
         }
       }
