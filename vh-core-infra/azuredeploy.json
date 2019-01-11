@@ -154,7 +154,7 @@
           "appServicePlanName": { "value": "[parameters('appServicePlanName')]" },
           "sku": { "value": "[parameters('sku')]" },
           "tier": { "value": "[parameters('tier')]" },
-          "KeyVaultSecretName": { "value": "[parameters('KeyVaultSecretName')]" },
+          "KeyVaultSecretName": { "value": "[parameters('KeyVaultCertificateSecretName')]" },
           "KeyVaultId": { "value": "reference('KeyVault').outputs.resourceID.value" }
 
         }
