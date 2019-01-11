@@ -140,7 +140,10 @@
       "name": "AzureAppServicePlan",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ "KeyVault" ],
+      "dependsOn": [
+        "KeyVault",
+        "AzureKeyVaultAccessPolicy"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
