@@ -83,6 +83,9 @@
     "keyVaultName": {
       "type": "string"
     },
+    "keyVaultNameHearingsTenant": {
+      "type": "string"
+    },
     "objectId": {
       "type": "string"
     },
@@ -195,6 +198,40 @@
       }
     },
     {
+      "name": "keyVaultNameHearingsTenant",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2017-05-10",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureKeyVaultTemplateFolder'), '/', variables('AzureKeyVaultTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": { "value": "[parameters('keyVaultNameHearingsTenant')]" }
+        }
+      }
+    },
+    {
+      "name": "AzureKeyVaultAccessPolicykeyVaultNameHearingsTenant",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "KeyVault" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureKeyVaultAccessPolicyTemplateFolder'), '/', variables('AzureKeyVaultAccessPolicyTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "keyVaultName": { "value": "[parameters('keyVaultNameHearingsTenant')]" },
+          "objectId": { "value": "[parameters('objectId')]" },
+          "SecretsPermissions": { "value": "[parameters('secretsPermissions')]" }
+        }
+      }
+    },
+    {
       "name": "AzureApplicationInsights",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
@@ -235,7 +272,7 @@
       "name": "AzureRedisCache",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ ],
+      "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
