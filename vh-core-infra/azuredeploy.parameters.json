@@ -18,7 +18,10 @@
       "value": "my.email@someemail.com"
     },
     "keyVaultName": {
-      "value": "vh-core-infra-dev"
+      "value": "keyVaultName"
+    },
+    "keyVaultNameHearingsTenant": {
+      "value": "HearingsTenant"
     },
     "objectId": {
       "value": "ffabdc7d-1ed6-451f-b777-483ac9f5db26"
