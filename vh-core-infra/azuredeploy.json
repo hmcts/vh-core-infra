@@ -136,7 +136,9 @@
     "AzureMSSQLTemplateParametersFileName": "AzureMSSQL.parameters.json",
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
-    "AzureRedisCacheTemplateParametersFileName": "AzureRedisCache.parameters.json"
+    "AzureRedisCacheTemplateParametersFileName": "AzureRedisCache.parameters.json",
+    "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
+    "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json"
   },
   "resources": [
     {
@@ -281,6 +283,25 @@
         },
         "parameters": {
           "RedisCacheName": { "value": "[parameters('RedisCacheName')]" }
+        }
+      }
+    },
+    {
+      "name": "AzureMSSQLDatabase",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureMSSQLDatabaseTemplateFolder'), '/', variables('AzureMSSQLDatabaseTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
+          "MSSQLDBName": { "value": "[parameters('MSSQLDBName')]" },
+          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
+          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" },
         }
       }
     }
