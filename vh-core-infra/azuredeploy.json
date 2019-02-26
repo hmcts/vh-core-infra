@@ -118,7 +118,7 @@
     },
     "_artifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
+      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/new-db-template-vih-3948/vh-arm-templates"
 
     }
   },
@@ -135,8 +135,8 @@
     "AzureMSSQLTemplateFileName": "AzureMSSQL.json",
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
-    "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabaseBookings",
-    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabaseBookings.json"
+    "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
+    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json"
   },
   "resources": [
     {
