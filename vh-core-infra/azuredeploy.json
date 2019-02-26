@@ -10,6 +10,10 @@
       "type": "string",
       "minLength": 1
     },
+    "MSSQLDBNameBookings": {
+      "type": "string",
+      "minLength": 1
+    },
     "MSSQLAdminLogin": {
       "type": "string",
       "minLength": 1
@@ -116,27 +120,26 @@
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
 
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
     }
   },
   "variables": {
     "AzureKeyVaultTemplateFolder": "AzureKeyVault",
     "AzureKeyVaultTemplateFileName": "AzureKeyVault.json",
-    "AzureKeyVaultTemplateParametersFileName": "AzureKeyVault.parameters.json",
     "AzureKeyVaultAccessPolicyTemplateFolder": "AzureKeyVaultAccessPolicy",
     "AzureKeyVaultAccessPolicyTemplateFileName": "AzureKeyVaultAccessPolicy.json",
-    "AzureKeyVaultAccessPolicyTemplateParametersFileName": "AzureKeyVaultAccessPolicy.parameters.json",
     "AzureAppServicePlanTemplateFolder": "AzureAppServicePlan",
     "AzureAppServicePlanTemplateFileName": "AzureAppServicePlan.json",
-    "AzureAppServicePlanTemplateParametersFileName": "AzureAppServicePlan.parameters.json",
     "AzureApplicationInsightsTemplateFolder": "AzureApplicationInsights",
     "AzureApplicationInsightsTemplateFileName": "AzureApplicationInsights.json",
-    "AzureApplicationInsightsTemplateParametersFileName": "AzureApplicationInsights.parameters.json",
     "AzureMSSQLTemplateFolder": "AzureMSSQL",
     "AzureMSSQLTemplateFileName": "AzureMSSQL.json",
-    "AzureMSSQLTemplateParametersFileName": "AzureMSSQL.parameters.json",
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
-    "AzureRedisCacheTemplateParametersFileName": "AzureRedisCache.parameters.json"
+    "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabaseBookings",
+    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabaseBookings.json"
   },
   "resources": [
     {
@@ -283,10 +286,33 @@
           "RedisCacheName": { "value": "[parameters('RedisCacheName')]" }
         }
       }
+    },
+    {
+      "name": "AzureMSSQLDatabaseBookings",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureMSSQLDatabaseBookingsTemplateFolder'), '/', variables('AzureMSSQLDatabaseBookingsTemplateFileName'), parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
+          "MSSQLDBName": { "value": "[parameters('MSSQLDBName')]" },
+          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
+          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
+        }
+      }
     }
   ],
   "outputs": {
     "DatabaseConnectionString": {
+      "type": "string",
+      "value": "[reference('AzureMSSQL').outputs.DatabaseConnectionString.value]"
+    },
+    "VhBookingsDatabaseConnectionString": {
       "type": "string",
       "value": "[reference('AzureMSSQL').outputs.DatabaseConnectionString.value]"
     },

@@ -11,6 +11,9 @@
     "MSSQLDBName": {
       "value": "mydatabase"
     },
+    "MSSQLDBNameBookings": {
+      "value": "MSSQLDBNameBookings"
+    },
     "MSSQLDBServerName": {
       "value": "core-infra-dev"
     },
