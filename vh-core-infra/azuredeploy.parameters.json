@@ -15,7 +15,7 @@
       "value": "MSSQLDBNameBookings"
     },
     "MSSQLDBServerName": {
-      "value": "AzureMSSQL"
+      "value": "MSSQLDBServerName"
     },
     "MSSQLEmailAddresses": {
       "value": "my.email@someemail.com"
