@@ -264,7 +264,7 @@
           "MSSQLDBName": { "value": "[parameters('MSSQLDBName')]" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" },
-          "EmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
+          "MSSQLEmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
         }
       }
     },
