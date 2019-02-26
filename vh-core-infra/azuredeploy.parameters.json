@@ -15,7 +15,7 @@
       "value": "MSSQLDBNameBookings"
     },
     "MSSQLDBServerName": {
-      "value": "MSSQLDBServerName"
+      "value": "core-infra-dev"
     },
     "MSSQLEmailAddresses": {
       "value": "my.email@someemail.com"
