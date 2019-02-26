@@ -297,7 +297,7 @@
         },
         "parameters": {
           "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
-          "MSSQLDBName": { "value": "[parameters('MSSQLDBName')]" },
+          "MSSQLDBName": { "value": "[parameters('MSSQLDBNameBookings')]" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
         }
