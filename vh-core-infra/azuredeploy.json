@@ -10,6 +10,10 @@
       "type": "string",
       "minLength": 1
     },
+    "MSSQLDBBookings": {
+      "type": "string",
+      "minLength": 1
+    },
     "MSSQLAdminLogin": {
       "type": "string",
       "minLength": 1
@@ -121,22 +125,18 @@
   "variables": {
     "AzureKeyVaultTemplateFolder": "AzureKeyVault",
     "AzureKeyVaultTemplateFileName": "AzureKeyVault.json",
-    "AzureKeyVaultTemplateParametersFileName": "AzureKeyVault.parameters.json",
     "AzureKeyVaultAccessPolicyTemplateFolder": "AzureKeyVaultAccessPolicy",
     "AzureKeyVaultAccessPolicyTemplateFileName": "AzureKeyVaultAccessPolicy.json",
-    "AzureKeyVaultAccessPolicyTemplateParametersFileName": "AzureKeyVaultAccessPolicy.parameters.json",
     "AzureAppServicePlanTemplateFolder": "AzureAppServicePlan",
     "AzureAppServicePlanTemplateFileName": "AzureAppServicePlan.json",
-    "AzureAppServicePlanTemplateParametersFileName": "AzureAppServicePlan.parameters.json",
     "AzureApplicationInsightsTemplateFolder": "AzureApplicationInsights",
     "AzureApplicationInsightsTemplateFileName": "AzureApplicationInsights.json",
-    "AzureApplicationInsightsTemplateParametersFileName": "AzureApplicationInsights.parameters.json",
     "AzureMSSQLTemplateFolder": "AzureMSSQL",
     "AzureMSSQLTemplateFileName": "AzureMSSQL.json",
-    "AzureMSSQLTemplateParametersFileName": "AzureMSSQL.parameters.json",
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
-    "AzureRedisCacheTemplateParametersFileName": "AzureRedisCache.parameters.json"
+    "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
+    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json"
   },
   "resources": [
     {
@@ -262,9 +262,10 @@
         "parameters": {
           "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
           "MSSQLDBName": { "value": "[parameters('MSSQLDBName')]" },
+          "MSSQLDBBookings": { "value": "[parameters('MSSQLDBBookings')]" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" },
-          "EmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
+          "MSSQLEmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
         }
       }
     },
@@ -289,6 +290,10 @@
     "DatabaseConnectionString": {
       "type": "string",
       "value": "[reference('AzureMSSQL').outputs.DatabaseConnectionString.value]"
+    },
+    "VhBookingsDatabaseConnectionString": {
+      "type": "string",
+      "value": "[reference('AzureMSSQL').outputs.VhBookingsDatabaseConnectionString.value]"
     },
     "InstrumentationKey": {
       "type": "string",
