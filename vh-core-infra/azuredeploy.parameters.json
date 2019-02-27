@@ -11,7 +11,7 @@
     "MSSQLDBName": {
       "value": "mydatabase"
     },
-    "MSSQLDBNameBookings": {
+    "MSSQLDBBookings": {
       "value": "MSSQLDBNameBookings"
     },
     "MSSQLDBServerName": {

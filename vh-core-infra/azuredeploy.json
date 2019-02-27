@@ -10,7 +10,7 @@
       "type": "string",
       "minLength": 1
     },
-    "MSSQLDBNameBookings": {
+    "MSSQLDBBookings": {
       "type": "string",
       "minLength": 1
     },
@@ -262,6 +262,7 @@
         "parameters": {
           "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
           "MSSQLDBName": { "value": "[parameters('MSSQLDBName')]" },
+          "MSSQLDBBookings": { "value": "[parameters('MSSQLDBBookings')]" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" },
           "MSSQLEmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
@@ -281,27 +282,6 @@
         },
         "parameters": {
           "RedisCacheName": { "value": "[parameters('RedisCacheName')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureMSSQLDatabaseBookings",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [
-        "AzureMSSQL"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureMSSQLDatabaseBookingsTemplateFolder'), '/', variables('AzureMSSQLDatabaseBookingsTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
-          "MSSQLDBName": { "value": "[parameters('MSSQLDBNameBookings')]" },
-          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
-          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
         }
       }
     }
