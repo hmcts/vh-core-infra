@@ -293,7 +293,7 @@
     },
     "VhBookingsDatabaseConnectionString": {
       "type": "string",
-      "value": "[reference('AzureMSSQL').outputs.DatabaseConnectionString.value]"
+      "value": "[reference('AzureMSSQL').outputs.VhBookingsDatabaseConnectionString.value]"
     },
     "InstrumentationKey": {
       "type": "string",
