@@ -120,6 +120,18 @@
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
 
+    },
+    "ServiceBusNamespaceName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "BookingsQueueName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "VideoQueueName": {
+      "type": "string",
+      "minLength": 1
     }
   },
   "variables": {
@@ -136,7 +148,9 @@
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
     "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
-    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json"
+    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json",
+    "AzureServiceBusTemplateFolder": "AzureServiceBus",
+    "AzureServiceBusTemplateFileName": "AzureServiceBus.json"
   },
   "resources": [
     {
@@ -284,6 +298,24 @@
           "RedisCacheName": { "value": "[parameters('RedisCacheName')]" }
         }
       }
+    },
+    {
+      "name": "AzureServiceBus",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusTemplateFolder'), '/', variables('AzureServiceBusTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
+          "BookingsQueueName": { "value": "[parameters('BookingsQueueName')]" },
+          "VideoQueueName": { "value": "[parameters('VideoQueueName')]" }
+        }
+      }
     }
   ],
   "outputs": {
@@ -302,6 +334,10 @@
     "RedisCacheConnectionString": {
       "type": "string",
       "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
+    },
+    "ServiceBusNamespaceConnectionString": {
+      "type": "string",
+      "value": "[reference('AzureServiceBus').outputs.ServiceBusNamespaceConnectionString.value]"
     }
   }
 }
