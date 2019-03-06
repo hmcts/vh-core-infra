@@ -118,7 +118,7 @@
     },
     "_artifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
+      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/new-db-template-vih-3948/vh-arm-templates"
 
     }
   },
@@ -136,7 +136,8 @@
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
     "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
-    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json"
+    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json",
+    "VhVideoDatbaseTemplateFileName": "VhVideoDatbase.json"
   },
   "resources": [
     {
@@ -282,6 +283,25 @@
         },
         "parameters": {
           "RedisCacheName": { "value": "[parameters('RedisCacheName')]" }
+        }
+      }
+    },
+    {
+      "name": "VhVideoDatbase",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "AzureMSSQL" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('VhVideoDatbaseTemplateFolder'), '/', variables('VhVideoDatbaseTemplateFileName'), parameters('_artifactsLocationSasToken'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
+          "MSSQLDBName": { "value": "VhVideo" },
+          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
+          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
         }
       }
     }
