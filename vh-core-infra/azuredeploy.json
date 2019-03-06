@@ -137,6 +137,7 @@
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
     "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
     "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json",
+    "VhVideoDatbaseTemplateFolder": "VhVideoDatbase",
     "VhVideoDatbaseTemplateFileName": "VhVideoDatbase.json"
   },
   "resources": [
@@ -294,7 +295,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('VhVideoDatbaseTemplateFolder'), '/', variables('VhVideoDatbaseTemplateFileName'), parameters('_artifactsLocationSasToken'))]",
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('VhVideoDatbaseTemplateFolder'), '/', variables('VhVideoDatbaseTemplateFileName'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
