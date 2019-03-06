@@ -328,6 +328,10 @@
     "ServiceBusNamespaceConnectionString": {
       "type": "string",
       "value": "[reference('AzureServiceBus').outputs.ServiceBusNamespaceConnectionString.value]"
+    },
+    "ServiceBusNamespaceSendOnlyConnectionString": {
+      "type": "string",
+      "value": "[reference('AzureServiceBus').outputs.SendOnlyConnectionString.value]"
     }
   }
 }
