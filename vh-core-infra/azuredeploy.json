@@ -124,14 +124,6 @@
     "ServiceBusNamespaceName": {
       "type": "string",
       "minLength": 1
-    },
-    "BookingsQueueName": {
-      "type": "string",
-      "minLength": 1
-    },
-    "VideoQueueName": {
-      "type": "string",
-      "minLength": 1
     }
   },
   "variables": {
@@ -311,9 +303,7 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
-          "BookingsQueueName": { "value": "[parameters('BookingsQueueName')]" },
-          "VideoQueueName": { "value": "[parameters('VideoQueueName')]" }
+          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" }
         }
       }
     }

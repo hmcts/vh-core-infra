@@ -43,12 +43,6 @@
     },
     "ServiceBusNamespaceName": {
       "value": "ServiceBusNamespaceName"
-    },
-    "BookingsQueueName": {
-      "value": "BookingsQueueName"
-    },
-    "VideoQueueName": {
-      "value": "VideoQueueName"
     }
   }
 }
