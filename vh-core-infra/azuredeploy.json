@@ -347,14 +347,14 @@
   "outputs": {
     "DatabaseConnectionString": {
       "type": "string",
-      "value": "[concat('Server=tcp:',reference('AzureMSSQLServer').outputs.MSSQLDBServerFQDN.value,',1433;Initial Catalog=',parameters('MSSQLDBHearing'),';Persist Security Info=False;User ID=',parameters('MSSQLAdminLogin'),';Password=',reference('AzureMSSQL').outputs.MSSQLAdminLoginPassword.value,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+      "value": "[concat('Server=tcp:',reference('AzureMSSQLServer').outputs.MSSQLDBServerFQDN.value,',1433;Initial Catalog=',parameters('MSSQLDBHearing'),';Persist Security Info=False;User ID=',parameters('MSSQLAdminLogin'),';Password=',reference('AzureMSSQLServer').outputs.MSSQLAdminLoginPassword.value,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
     },
     "VhBookingsDatabaseConnectionString": {
       "type": "string",
-      "value": "[concat('Server=tcp:',reference('AzureMSSQLServer').outputs.MSSQLDBServerFQDN.value,',1433;Initial Catalog=',parameters('MSSQLDBBookings'),';Persist Security Info=False;User ID=',parameters('MSSQLAdminLogin'),';Password=',reference('AzureMSSQL').outputs.MSSQLAdminLoginPassword.value,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
+      "value": "[concat('Server=tcp:',reference('AzureMSSQLServer').outputs.MSSQLDBServerFQDN.value,',1433;Initial Catalog=',parameters('MSSQLDBBookings'),';Persist Security Info=False;User ID=',parameters('MSSQLAdminLogin'),';Password=',reference('AzureMSSQLServer').outputs.MSSQLAdminLoginPassword.value,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]"
     },
     "VhVideoDatabaseConnectionString": {
-      "value": "[concat('Server=tcp:',reference('AzureMSSQLServer').outputs.MSSQLDBServerFQDN.value,',1433;Initial Catalog=',parameters('MSSQLDBVideo'),';Persist Security Info=False;User ID=',parameters('MSSQLAdminLogin'),';Password=',reference('AzureMSSQL').outputs.MSSQLAdminLoginPassword.value,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
+      "value": "[concat('Server=tcp:',reference('AzureMSSQLServer').outputs.MSSQLDBServerFQDN.value,',1433;Initial Catalog=',parameters('MSSQLDBVideo'),';Persist Security Info=False;User ID=',parameters('MSSQLAdminLogin'),';Password=',reference('AzureMSSQLServer').outputs.MSSQLAdminLoginPassword.value,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
       "type": "string"
     },
     "InstrumentationKey": {
