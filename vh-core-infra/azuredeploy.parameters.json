@@ -14,6 +14,9 @@
     "MSSQLDBBookings": {
       "value": "MSSQLDBBookings"
     },
+    "MSSQLDBVideo": {
+      "value": "VhVideo"
+    },
     "MSSQLDBServerName": {
       "value": "core-infra-dev"
     },
