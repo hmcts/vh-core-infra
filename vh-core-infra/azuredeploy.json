@@ -303,7 +303,6 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
           "MSSQLDBName": { "value": "VhVideo" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
