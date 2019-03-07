@@ -329,8 +329,8 @@
       "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
     },
     "VhVideoDatabaseConnectionString": {
-      "value": "[concat('Server=tcp:',reference(parameters('MSSQLDBServerName')).fullyQualifiedDomainName,',1433;Initial Catalog=',parameters('MSSQLDBBookings'),';Persist Security Info=False;User ID=',reference(parameters('MSSQLDBServerName')).administratorLogin,';Password=',reference('AzureMSSQL').outputs.MSSQLAdminLoginPassword.value),';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
-      "type": "string"
+      "value": "[concat('Server=tcp:',reference(parameters('MSSQLDBServerName')).fullyQualifiedDomainName,',1433;Initial Catalog=',parameters('MSSQLDBBookings'),';Persist Security Info=False;User ID=',reference(parameters('MSSQLDBServerName')).administratorLogin,';Password=',reference('AzureMSSQL').outputs.MSSQLAdminLoginPassword.value,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
+      "type": "securestring"
     }
   }
 }
