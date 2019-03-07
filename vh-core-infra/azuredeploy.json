@@ -255,7 +255,7 @@
       }
     },
     {
-      "name": "AzureMSSQL",
+      "name": "AzureMSSQLServer",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [],
@@ -267,8 +267,6 @@
         },
         "parameters": {
           "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
-          "MSSQLDBName": { "value": "[parameters('MSSQLDBHearing')]" },
-          "MSSQLDBBookings": { "value": "[parameters('MSSQLDBBookings')]" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" },
           "MSSQLEmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
@@ -295,7 +293,7 @@
       "name": "HearingsDatabase",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureMSSQL" ],
+      "dependsOn": [ "AzureMSSQLServer" ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -313,7 +311,7 @@
       "name": "VhVideoDatabase",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureMSSQL" ],
+      "dependsOn": [ "AzureMSSQLServer" ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -331,7 +329,7 @@
       "name": "VhBookingsDatabase",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureMSSQL" ],
+      "dependsOn": [ "AzureMSSQLServer" ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
