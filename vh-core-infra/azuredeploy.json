@@ -139,8 +139,6 @@
     "AzureMSSQLTemplateFileName": "AzureMSSQL.json",
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
-    "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
-    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json",
     "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
     "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json"
   },
