@@ -8,7 +8,7 @@
     "MSSQLAdminLogin": {
       "value": "sqladmin"
     },
-    "MSSQLDBHearings": {
+    "MSSQLDBHearing": {
       "value": "hearing"
     },
     "MSSQLDBBookings": {
