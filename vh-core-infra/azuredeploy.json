@@ -122,7 +122,7 @@
     },
     "_artifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/new-db-template-vih-3948/vh-arm-templates"
+      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
 
     }
   },
