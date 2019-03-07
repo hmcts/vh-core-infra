@@ -266,7 +266,6 @@
         "parameters": {
           "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
-          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" },
           "MSSQLEmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
         }
       }
