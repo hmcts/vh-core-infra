@@ -146,7 +146,7 @@
     "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
     "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json",
     "AzureServiceBusTemplateFolder": "AzureServiceBus",
-    "AzureServiceBusTemplateFileName": "AzureServiceBus.json"
+    "AzureServiceBusTemplateFileName": "AzureServiceBus.json",
     "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
     "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json"
   },
