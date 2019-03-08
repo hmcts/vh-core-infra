@@ -393,7 +393,7 @@
       "name": "AzureServiceBusAuthorizationRules",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ ],
+      "dependsOn": [ "AzureServiceBus" ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
