@@ -409,14 +409,6 @@
     "RedisCacheConnectionString": {
       "type": "string",
       "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
-    },
-    "ServiceBusNamespaceConnectionString": {
-      "type": "string",
-      "value": "[reference('AzureServiceBus').outputs.ServiceBusNamespaceConnectionString.value]"
-    },
-    "ServiceBusNamespaceSendOnlyConnectionString": {
-      "type": "string",
-      "value": "[reference('AzureServiceBus').outputs.SendOnlyConnectionString.value]"
     }
   }
 }
