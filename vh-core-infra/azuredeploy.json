@@ -132,6 +132,9 @@
     "ServiceBusNamespaceName": {
       "type": "string",
       "minLength": 1
+    },
+    "_artifactsLocationSasToken": {
+      "type": "securestring"
     }
   },
   "variables": {
@@ -154,7 +157,9 @@
     "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
     "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json",
     "AzureServiceBusNamespacesTemplateFolder": "AzureServiceBusNamespaces",
-    "AzureServiceBusNamespacesTemplateFileName": "AzureServiceBusNamespaces.json"
+    "AzureServiceBusNamespacesTemplateFileName": "AzureServiceBusNamespaces.json",
+    "AzureServiceBusAuthorizationRulesTemplateFolder": "AzureServiceBusNamespacesAuthorizationRules",
+    "AzureServiceBusAuthorizationRulesTemplateFileName": "AzureServiceBusNamespacesAuthorizationRules.json"
   },
   "resources": [
     {
@@ -384,7 +389,22 @@
         "parameters": {
           "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
           "queueName": { "value": "[parameters('bookingQueueName')]" }
-
+        }
+      }
+    },
+    {
+      "name": "AzureServiceBusAuthorizationRules",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFolder'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFileName') )]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" }
         }
       }
     }
