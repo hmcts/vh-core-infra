@@ -347,7 +347,6 @@
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
         }
       }
-    }
     },
     {
       "name": "AzureServiceBus",
