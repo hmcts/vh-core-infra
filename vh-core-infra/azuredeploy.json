@@ -153,8 +153,8 @@
     "AzureServiceBusTemplateFileName": "AzureServiceBus.json",
     "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
     "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json",
-    "BookingQueueTemplateFileName": "BookingQueue.json",
-    "BookingQueueTemplateParametersFileName": "BookingQueue.parameters.json"
+    "AzureServiceBusNamespacesTemplateFileName": "AzureServiceBusNamespaces.json",
+    "AzureServiceBusNamespacesTemplateParametersFileName": "AzureServiceBusNamespaces.parameters.json"
   },
   "resources": [
     {
@@ -378,7 +378,7 @@
       "properties": {
         "mode": "Incremental",
         "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('BookingQueueTemplateFolder'), '/', variables('BookingQueueTemplateFileName'))]",
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusNamespacesTemplateFolder'), '/', variables('AzureServiceBusNamespacesTemplateFileName'))]",
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
