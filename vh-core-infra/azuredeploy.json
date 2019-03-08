@@ -18,6 +18,10 @@
       "type": "string",
       "minLength": 1
     },
+    "bookingQueueName": {
+      "type": "string",
+      "minLength": 1
+    },
     "MSSQLAdminLogin": {
       "type": "string",
       "minLength": 1
@@ -148,7 +152,9 @@
     "AzureServiceBusTemplateFolder": "AzureServiceBus",
     "AzureServiceBusTemplateFileName": "AzureServiceBus.json",
     "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
-    "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json"
+    "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json",
+    "BookingQueueTemplateFileName": "BookingQueue.json",
+    "BookingQueueTemplateParametersFileName": "BookingQueue.parameters.json"
   },
   "resources": [
     {
@@ -361,6 +367,24 @@
         },
         "parameters": {
           "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" }
+        }
+      }
+    },
+    {
+      "name": "BookingQueue",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('BookingQueueTemplateFolder'), '/', variables('BookingQueueTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
+          "queueName": { "value": "[parameters('bookingQueueName')]" }
+
         }
       }
     }

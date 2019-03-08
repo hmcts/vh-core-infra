@@ -46,6 +46,9 @@
     },
     "ServiceBusNamespaceName": {
       "value": "ServiceBusNamespaceName"
+    },
+    "bookingQueueName": {
+      "value": "booking"
     }
   }
 }
