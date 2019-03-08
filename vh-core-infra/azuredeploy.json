@@ -153,7 +153,7 @@
     "AzureServiceBusTemplateFileName": "AzureServiceBus.json",
     "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
     "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json",
-    "AzureServiceBusNamespacesTemplateFolder": "AzureMSSQLDatabase",
+    "AzureServiceBusNamespacesTemplateFolder": "AzureServiceBusNamespaces",
     "AzureServiceBusNamespacesTemplateFileName": "AzureServiceBusNamespaces.json"
   },
   "resources": [
