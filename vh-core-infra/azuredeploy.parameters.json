@@ -8,11 +8,14 @@
     "MSSQLAdminLogin": {
       "value": "sqladmin"
     },
-    "MSSQLDBName": {
-      "value": "mydatabase"
+    "MSSQLDBHearing": {
+      "value": "hearing"
     },
     "MSSQLDBBookings": {
-      "value": "MSSQLDBBookings"
+      "value": "vhbookings"
+    },
+    "MSSQLDBVideo": {
+      "value": "vhvideo"
     },
     "MSSQLDBServerName": {
       "value": "core-infra-dev"
