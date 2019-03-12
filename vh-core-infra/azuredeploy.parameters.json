@@ -50,11 +50,14 @@
     "bookingQueueName": {
       "value": "booking"
     },
+    "videoQueueName": {
+      "value": "video"
+    },
     "authorizationRulesNameListen": {
       "value": "RootManageSharedAccessKeyListen"
     },
     "authorizationRulesListen": {
-      "value": ["Listen"]
+      "value": [ "Listen" ]
     },
     "authorizationRulesNameSend": {
       "value": "RootManageSharedAccessKeySend"
