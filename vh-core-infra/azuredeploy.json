@@ -419,7 +419,6 @@
           "serviceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
           "authorizationRulesName": { "value": "[parameters('authorizationRulesNameListen')]" },
           "authorizationRules": { "value": "[parameters('authorizationRulesListen')]" }
-
         }
       }
     }
@@ -445,9 +444,9 @@
       "type": "string",
       "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
     },
-    "RedisCacheConnectionString": {
+    "AzureServiceBusConnectionStringListen": {
       "type": "string",
-      "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
+      "value": "[reference('AzureServiceBus').outputs.NamespaceConnectionString.value]"
     }
   }
 }
