@@ -18,6 +18,14 @@
       "type": "string",
       "minLength": 1
     },
+    "bookingQueueName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "videoQueueName": {
+      "type": "string",
+      "minLength": 1
+    },
     "MSSQLAdminLogin": {
       "type": "string",
       "minLength": 1
@@ -120,6 +128,25 @@
     "KeyVaultCertificateSecretName": {
       "type": "string"
     },
+    "serviceBusNamespaceName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorizationRulesNameListen": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorizationRulesListen": {
+      "type": "array"
+    },
+    "authorizationRulesNameSend": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorizationRulesSend": {
+      "type": "array",
+      "minLength": 1
+    },
     "_artifactsLocation": {
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
@@ -139,8 +166,16 @@
     "AzureMSSQLTemplateFileName": "AzureMSSQL.json",
     "AzureRedisCacheTemplateFolder": "AzureRedisCache",
     "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
+    "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
+    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json",
+    "AzureServiceBusTemplateFolder": "AzureServiceBus",
+    "AzureServiceBusTemplateFileName": "AzureServiceBus.json",
     "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
-    "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json"
+    "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json",
+    "AzureServiceBusNamespacesTemplateFolder": "AzureServiceBusNamespaces",
+    "AzureServiceBusNamespacesTemplateFileName": "AzureServiceBusNamespaces.json",
+    "AzureServiceBusAuthorizationRulesTemplateFolder": "AzureServiceBusNamespacesAuthorizationRules",
+    "AzureServiceBusAuthorizationRulesTemplateFileName": "AzureServiceBusNamespacesAuthorizationRules.json"
   },
   "resources": [
     {
@@ -339,6 +374,92 @@
           "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
         }
       }
+    },
+    {
+      "name": "AzureServiceBus",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusTemplateFolder'), '/', variables('AzureServiceBusTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" }
+        }
+      }
+    },
+    {
+      "name": "BookingQueue",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "AzureServiceBus" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusNamespacesTemplateFolder'), '/', variables('AzureServiceBusNamespacesTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
+          "queueName": { "value": "[parameters('bookingQueueName')]" }
+        }
+      }
+    },
+    {
+      "name": "VideoQueue",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "AzureServiceBus" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusNamespacesTemplateFolder'), '/', variables('AzureServiceBusNamespacesTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
+          "queueName": { "value": "[parameters('videoQueueName')]" }
+        }
+      }
+    },
+    {
+      "name": "AzureServiceBusAuthorizationRulesListen",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "AzureServiceBus" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFolder'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFileName') )]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "serviceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
+          "authorizationRulesName": { "value": "[parameters('authorizationRulesNameListen')]" },
+          "authorizationRules": { "value": "[parameters('authorizationRulesListen')]" }
+        }
+      }
+    },
+    {
+      "name": "AzureServiceBusAuthorizationRulesSend",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ "AzureServiceBus" ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFolder'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFileName') )]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "serviceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
+          "authorizationRulesName": { "value": "[parameters('authorizationRulesNameSend')]" },
+          "authorizationRules": { "value": "[parameters('authorizationRulesSend')]" }
+        }
+      }
     }
   ],
   "outputs": {
@@ -361,6 +482,14 @@
     "RedisCacheConnectionString": {
       "type": "string",
       "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
+    },
+    "AzureServiceBusConnectionStringListen": {
+      "type": "string",
+      "value": "[reference('AzureServiceBusAuthorizationRulesListen').outputs.namespaceConnectionString.value]"
+    },
+    "AzureServiceBusConnectionStringSend": {
+      "type": "string",
+      "value": "[reference('AzureServiceBusAuthorizationRulesSend').outputs.namespaceConnectionString.value]"
     }
   }
 }

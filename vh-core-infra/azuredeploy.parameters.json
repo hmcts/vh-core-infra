@@ -43,6 +43,27 @@
     },
     "KeyVaultCertificateSecretName": {
       "value": "KeyVaultCertificateSecretName"
+    },
+    "ServiceBusNamespaceName": {
+      "value": "ServiceBusNamespaceName"
+    },
+    "bookingQueueName": {
+      "value": "booking"
+    },
+    "videoQueueName": {
+      "value": "video"
+    },
+    "authorizationRulesNameListen": {
+      "value": "RootManageSharedAccessKeyListen"
+    },
+    "authorizationRulesListen": {
+      "value": [ "Listen" ]
+    },
+    "authorizationRulesNameSend": {
+      "value": "RootManageSharedAccessKeySend"
+    },
+    "authorizationRulesSend": {
+      "value": [ "Send" ]
     }
   }
 }
