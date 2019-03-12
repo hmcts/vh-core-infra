@@ -60,7 +60,7 @@
       "value": "RootManageSharedAccessKeySend"
     },
     "authorizationRulesSend": {
-      "value": "booking"
+      "value": [ "Send" ]
     }
   }
 }
