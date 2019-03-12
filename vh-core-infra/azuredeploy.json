@@ -124,14 +124,29 @@
     "KeyVaultCertificateSecretName": {
       "type": "string"
     },
+    "serviceBusNamespaceName": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorizationRulesNameListen": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorizationRulesListen": {
+      "type": "array"
+    },
+    "authorizationRulesNameSend": {
+      "type": "string",
+      "minLength": 1
+    },
+    "authorizationRulesSend": {
+      "type": "array",
+      "minLength": 1
+    },
     "_artifactsLocation": {
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/add-servicebus-vih-4087/vh-arm-templates"
 
-    },
-    "ServiceBusNamespaceName": {
-      "type": "string",
-      "minLength": 1
     }
   },
   "variables": {
@@ -390,7 +405,7 @@
       }
     },
     {
-      "name": "AzureServiceBusAuthorizationRules",
+      "name": "AzureServiceBusAuthorizationRulesListen",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
       "dependsOn": [ "AzureServiceBus" ],
@@ -401,7 +416,10 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" }
+          "serviceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
+          "authorizationRulesName": { "value": "[parameters('authorizationRulesNameListen')]" },
+          "authorizationRules": { "value": "[parameters('authorizationRulesListen')]" }
+
         }
       }
     }
@@ -422,6 +440,10 @@
     "InstrumentationKey": {
       "type": "string",
       "value": "[reference('AzureApplicationInsights').outputs.ApplicationInsightsInstrumentationKey.value]"
+    },
+    "RedisCacheConnectionString": {
+      "type": "string",
+      "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
     },
     "RedisCacheConnectionString": {
       "type": "string",

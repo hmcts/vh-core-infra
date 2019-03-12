@@ -49,6 +49,18 @@
     },
     "bookingQueueName": {
       "value": "booking"
+    },
+    "authorizationRulesNameListen": {
+      "value": "RootManageSharedAccessKeyListen"
+    },
+    "authorizationRulesListen": {
+      "value": "booking"
+    },
+    "authorizationRulesNameSend": {
+      "value": "RootManageSharedAccessKeySend"
+    },
+    "authorizationRulesSend": {
+      "value": "booking"
     }
   }
 }
