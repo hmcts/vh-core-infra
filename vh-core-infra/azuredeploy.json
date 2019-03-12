@@ -446,7 +446,7 @@
     },
     "AzureServiceBusConnectionStringListen": {
       "type": "string",
-      "value": "[reference('AzureServiceBus').outputs.NamespaceConnectionString.value]"
+      "value": "[reference('AzureServiceBusAuthorizationRulesListen').outputs.namespaceConnectionString.value]"
     }
   }
 }
