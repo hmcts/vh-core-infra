@@ -54,7 +54,7 @@
       "value": "RootManageSharedAccessKeyListen"
     },
     "authorizationRulesListen": {
-      "value": "booking"
+      "value": ["Listen"]
     },
     "authorizationRulesNameSend": {
       "value": "RootManageSharedAccessKeySend"
