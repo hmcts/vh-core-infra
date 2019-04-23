@@ -64,6 +64,12 @@
     },
     "authorizationRulesSend": {
       "value": [ "Send" ]
+    },
+    "storageAccountContainerNames": {
+      "value": [ "video" ]
+    },
+    "storageAccountName": {
+      "value": "vhstorageaccountname"
     }
   }
 }
