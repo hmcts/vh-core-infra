@@ -482,8 +482,8 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "serviceBusNamespaceName": { "value": "[parameters('storageAccountName')]" },
-          "authorizationRulesName": { "value": "[parameters('containerNames')]" }
+          "storageAccountName": { "value": "[parameters('storageAccountName')]" },
+          "containerNames": { "value": "[parameters('storageAccountContainerNames')]" }
         }
       }
     }
