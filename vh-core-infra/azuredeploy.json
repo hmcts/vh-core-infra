@@ -147,6 +147,12 @@
       "type": "array",
       "minLength": 1
     },
+    "storageAccountName": {
+      "type": "string"
+    },
+    "storageAccountContainerNames": {
+      "type": "array"
+    },
     "_artifactsLocation": {
       "type": "string",
       "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
@@ -175,7 +181,10 @@
     "AzureServiceBusNamespacesTemplateFolder": "AzureServiceBusNamespaces",
     "AzureServiceBusNamespacesTemplateFileName": "AzureServiceBusNamespaces.json",
     "AzureServiceBusAuthorizationRulesTemplateFolder": "AzureServiceBusNamespacesAuthorizationRules",
-    "AzureServiceBusAuthorizationRulesTemplateFileName": "AzureServiceBusNamespacesAuthorizationRules.json"
+    "AzureServiceBusAuthorizationRulesTemplateFileName": "AzureServiceBusNamespacesAuthorizationRules.json",
+    "vhStorageAccountTemplateFolder": "AzureStorageAccount",
+    "vhStorageAccountTemplateFileName": "AzureStorageAccount.json",
+    "vhStorageAccountTemplateParametersFileName": "AzureStorageAccount.parameters.json"
   },
   "resources": [
     {
@@ -458,6 +467,23 @@
           "serviceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
           "authorizationRulesName": { "value": "[parameters('authorizationRulesNameSend')]" },
           "authorizationRules": { "value": "[parameters('authorizationRulesSend')]" }
+        }
+      }
+    },
+    {
+      "name": "vhStorageAccount",
+      "type": "Microsoft.Resources/deployments",
+      "apiVersion": "2016-09-01",
+      "dependsOn": [ ],
+      "properties": {
+        "mode": "Incremental",
+        "templateLink": {
+          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('vhStorageAccountTemplateFolder'), '/', variables('vhStorageAccountTemplateFileName'))]",
+          "contentVersion": "1.0.0.0"
+        },
+        "parameters": {
+          "serviceBusNamespaceName": { "value": "[parameters('storageAccountName')]" },
+          "authorizationRulesName": { "value": "[parameters('containerNames')]" }
         }
       }
     }
