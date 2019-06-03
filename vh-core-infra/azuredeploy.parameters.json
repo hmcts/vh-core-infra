@@ -11,6 +11,9 @@
     "MSSQLDBHearing": {
       "value": "hearing"
     },
+    "hearingsDatabaseTier": {
+      "value": "S1"
+    },
     "MSSQLDBBookings": {
       "value": "vhbookings"
     },
