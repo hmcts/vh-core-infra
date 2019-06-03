@@ -61,15 +61,11 @@
       "type": "string",
       "defaultValue": "S1",
       "allowedValues": [
-        "Basic",
         "S0",
         "S1",
         "S2",
         "S3",
-        "S4",
-        "P1",
-        "P2",
-        "P3"
+        "S4"
       ],
       "metadata": {
         "description": "Describes the performance level for Edition"
