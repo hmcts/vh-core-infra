@@ -57,6 +57,24 @@
         "description": "Describes the performance level for Edition"
       }
     },
+    "hearingsDatabaseTier": {
+      "type": "string",
+      "defaultValue": "S1",
+      "allowedValues": [
+        "Basic",
+        "S0",
+        "S1",
+        "S2",
+        "S3",
+        "S4",
+        "P1",
+        "P2",
+        "P3"
+      ],
+      "metadata": {
+        "description": "Describes the performance level for Edition"
+      }
+    },
     "MSSQLEmailAddresses": {
       "type": "securestring"
     },
@@ -344,7 +362,7 @@
         "parameters": {
           "MSSQLDBName": { "value": "[parameters('MSSQLDBHearing')]" },
           "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
-          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
+          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('hearingsDatabaseTier')]" }
         }
       }
     },
