@@ -169,7 +169,7 @@
     },
     "_artifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
+      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/add-database-locks-rdo-3690/vh-arm-templates"
 
     }
   },
