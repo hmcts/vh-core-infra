@@ -6,6 +6,10 @@
       "type": "string",
       "minLength": 1
     },
+    "MSSQLAdminLogin": {
+      "type": "string",
+      "defaultValue": "sqladminjb"
+    },
     "MSSQLDBHearing": {
       "type": "string",
       "minLength": 1
@@ -17,27 +21,6 @@
     "MSSQLDBVideo": {
       "type": "string",
       "minLength": 1
-    },
-    "bookingQueueName": {
-      "type": "string",
-      "minLength": 1
-    },
-    "videoQueueName": {
-      "type": "string",
-      "minLength": 1
-    },
-    "MSSQLAdminLogin": {
-      "type": "string",
-      "minLength": 1
-    },
-    "MSSQLServerEdition": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Basic",
-        "Standard",
-        "Premium"
-      ]
     },
     "MSSQLRequestedServiceObjectiveName": {
       "type": "string",
@@ -74,247 +57,34 @@
     "MSSQLEmailAddresses": {
       "type": "securestring"
     },
-    "vaultSku": {
-      "type": "string",
-      "defaultValue": "Standard",
-      "allowedValues": [
-        "Standard",
-        "Premium"
-      ],
-      "metadata": {
-        "description": "SKU for the vault"
-      }
-    },
-    "tenantId": {
-      "type": "string",
-      "defaultValue": "[subscription().tenantId]",
-      "metadata": {
-        "description": "Tenant Id of the subscription. Get using Get-AzureRmSubscription cmdlet or Get Subscription API"
-      }
-    },
-    "location": {
-      "type": "string",
-      "defaultValue": "[resourceGroup().location]",
-      "metadata": {
-        "description": "Location for all resources."
-      }
-    },
-    "appServicePlanName": {
-      "type": "string"
-    },
-    "sku": {
-      "type": "string",
-      "defaultValue": "S1"
-    },
-    "tier": {
-      "type": "string",
-      "defaultValue": "standard"
-    },
-    "keyVaultName": {
-      "type": "string"
-    },
-    "keyVaultNameHearingsTenant": {
-      "type": "string"
-    },
-    "objectId": {
-      "type": "string"
-    },
-    "secretsPermissions": {
-      "type": "array",
-      "defaultValue": [
-        "list",
-        "get"
-      ],
-      "metadata": {
-        "description": "Permissions to secrets in the vault. Valid values are: all, get, set, list, and delete."
-      }
-    },
-    "appInsightsName": {
-      "type": "string"
-    },
-    "appInsightsLocation": {
-      "type": "string",
-      "defaultValue": "West Europe"
-    },
-    "RedisCacheName": {
-      "type": "string"
-    },
-    "KeyVaultCertificateSecretName": {
-      "type": "string"
-    },
-    "serviceBusNamespaceName": {
-      "type": "string",
-      "minLength": 1
-    },
-    "authorizationRulesNameListen": {
-      "type": "string",
-      "minLength": 1
-    },
-    "authorizationRulesListen": {
-      "type": "array"
-    },
-    "authorizationRulesNameSend": {
-      "type": "string",
-      "minLength": 1
-    },
-    "authorizationRulesSend": {
-      "type": "array",
-      "minLength": 1
-    },
     "storageAccountName": {
-      "type": "string"
+      "type": "string",
+      "defaultValue": "somestoreagevhjb"
     },
     "storageAccountContainerNames": {
       "type": "array"
     },
     "_artifactsLocation": {
       "type": "string",
-      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/master/vh-arm-templates"
-
+      "defaultValue": "https://raw.githubusercontent.com/hmcts/vh-arm-templates/no-db-locks/vh-arm-templates"
     }
   },
   "variables": {
-    "AzureKeyVaultTemplateFolder": "AzureKeyVault",
-    "AzureKeyVaultTemplateFileName": "AzureKeyVault.json",
-    "AzureKeyVaultAccessPolicyTemplateFolder": "AzureKeyVaultAccessPolicy",
-    "AzureKeyVaultAccessPolicyTemplateFileName": "AzureKeyVaultAccessPolicy.json",
-    "AzureAppServicePlanTemplateFolder": "AzureAppServicePlan",
-    "AzureAppServicePlanTemplateFileName": "AzureAppServicePlan.json",
-    "AzureApplicationInsightsTemplateFolder": "AzureApplicationInsights",
-    "AzureApplicationInsightsTemplateFileName": "AzureApplicationInsights.json",
     "AzureMSSQLTemplateFolder": "AzureMSSQL",
     "AzureMSSQLTemplateFileName": "AzureMSSQL.json",
-    "AzureRedisCacheTemplateFolder": "AzureRedisCache",
-    "AzureRedisCacheTemplateFileName": "AzureRedisCache.json",
-    "AzureMSSQLDatabaseBookingsTemplateFolder": "AzureMSSQLDatabase",
-    "AzureMSSQLDatabaseBookingsTemplateFileName": "AzureMSSQLDatabase.json",
-    "AzureServiceBusTemplateFolder": "AzureServiceBus",
-    "AzureServiceBusTemplateFileName": "AzureServiceBus.json",
     "AzureMSSQLDatabaseTemplateFolder": "AzureMSSQLDatabase",
     "AzureMSSQLDatabaseTemplateFileName": "AzureMSSQLDatabase.json",
-    "AzureServiceBusNamespacesTemplateFolder": "AzureServiceBusNamespaces",
-    "AzureServiceBusNamespacesTemplateFileName": "AzureServiceBusNamespaces.json",
-    "AzureServiceBusAuthorizationRulesTemplateFolder": "AzureServiceBusNamespacesAuthorizationRules",
-    "AzureServiceBusAuthorizationRulesTemplateFileName": "AzureServiceBusNamespacesAuthorizationRules.json",
     "vhStorageAccountTemplateFolder": "AzureStorageAccount",
-    "vhStorageAccountTemplateFileName": "AzureStorageAccount.json",
-    "vhStorageAccountTemplateParametersFileName": "AzureStorageAccount.parameters.json"
+    "vhStorageAccountTemplateFileName": "AzureStorageAccount.json"
   },
   "resources": [
-    {
-      "name": "AzureAppServicePlan",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [
-        "KeyVault",
-        "AzureKeyVaultAccessPolicy"
-      ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureAppServicePlanTemplateFolder'), '/', variables('AzureAppServicePlanTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "appServicePlanName": { "value": "[parameters('appServicePlanName')]" },
-          "sku": { "value": "[parameters('sku')]" },
-          "tier": { "value": "[parameters('tier')]" },
-          "KeyVaultSecretName": { "value": "[parameters('KeyVaultCertificateSecretName')]" },
-          "KeyVaultId": { "value": "[reference('KeyVault').outputs.AzureKeyVaultResourceId.value]" }
-
-        }
-      }
-    },
-    {
-      "name": "KeyVault",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2017-05-10",
-      "dependsOn": [],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureKeyVaultTemplateFolder'), '/', variables('AzureKeyVaultTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "keyVaultName": { "value": "[parameters('keyVaultName')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureKeyVaultAccessPolicy",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [ "KeyVault" ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureKeyVaultAccessPolicyTemplateFolder'), '/', variables('AzureKeyVaultAccessPolicyTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "keyVaultName": { "value": "[parameters('keyVaultName')]" },
-          "objectId": { "value": "[parameters('objectId')]" },
-          "SecretsPermissions": { "value": "[parameters('secretsPermissions')]" }
-        }
-      }
-    },
-    {
-      "name": "keyVaultNameHearingsTenant",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2017-05-10",
-      "dependsOn": [],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureKeyVaultTemplateFolder'), '/', variables('AzureKeyVaultTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "keyVaultName": { "value": "[parameters('keyVaultNameHearingsTenant')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureKeyVaultAccessPolicykeyVaultNameHearingsTenant",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [ "KeyVault" ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureKeyVaultAccessPolicyTemplateFolder'), '/', variables('AzureKeyVaultAccessPolicyTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "keyVaultName": { "value": "[parameters('keyVaultNameHearingsTenant')]" },
-          "objectId": { "value": "[parameters('objectId')]" },
-          "SecretsPermissions": { "value": "[parameters('secretsPermissions')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureApplicationInsights",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureApplicationInsightsTemplateFolder'), '/', variables('AzureApplicationInsightsTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "appInsightsName": { "value": "[parameters('appInsightsName')]" },
-          "location": { "value": "[parameters('appInsightsLocation')]" }
-        }
-      }
-    },
     {
       "name": "AzureMSSQLServer",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ "vhStorageAccount" ],
+      "dependsOn": [
+        "vhStorageAccount"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -322,25 +92,15 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "MSSQLAdminLogin": { "value": "[parameters('MSSQLAdminLogin')]" },
-          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
-          "MSSQLEmailAddresses": { "value": "[parameters('MSSQLEmailAddresses')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureRedisCache",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureRedisCacheTemplateFolder'), '/', variables('AzureRedisCacheTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "RedisCacheName": { "value": "[parameters('RedisCacheName')]" }
+          "MSSQLAdminLogin": {
+            "value": "[parameters('MSSQLAdminLogin')]"
+          },
+          "MSSQLDBServerName": {
+            "value": "[parameters('MSSQLDBServerName')]"
+          },
+          "MSSQLEmailAddresses": {
+            "value": "[parameters('MSSQLEmailAddresses')]"
+          }
         }
       }
     },
@@ -348,7 +108,9 @@
       "name": "HearingsDatabase",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureMSSQLServer" ],
+      "dependsOn": [
+        "AzureMSSQLServer"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -356,9 +118,15 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "MSSQLDBName": { "value": "[parameters('MSSQLDBHearing')]" },
-          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
-          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('hearingsDatabaseTier')]" }
+          "MSSQLDBName": {
+            "value": "[parameters('MSSQLDBHearing')]"
+          },
+          "MSSQLDBServerName": {
+            "value": "[parameters('MSSQLDBServerName')]"
+          },
+          "MSSQLRequestedServiceObjectiveName": {
+            "value": "[parameters('hearingsDatabaseTier')]"
+          }
         }
       }
     },
@@ -366,7 +134,9 @@
       "name": "VhVideoDatabase",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureMSSQLServer" ],
+      "dependsOn": [
+        "AzureMSSQLServer"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -374,9 +144,15 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "MSSQLDBName": { "value": "[parameters('MSSQLDBVideo')]" },
-          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
-          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
+          "MSSQLDBName": {
+            "value": "[parameters('MSSQLDBVideo')]"
+          },
+          "MSSQLDBServerName": {
+            "value": "[parameters('MSSQLDBServerName')]"
+          },
+          "MSSQLRequestedServiceObjectiveName": {
+            "value": "[parameters('MSSQLRequestedServiceObjectiveName')]"
+          }
         }
       }
     },
@@ -384,7 +160,9 @@
       "name": "VhBookingsDatabase",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureMSSQLServer" ],
+      "dependsOn": [
+        "AzureMSSQLServer"
+      ],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -392,95 +170,15 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "MSSQLDBName": { "value": "[parameters('MSSQLDBBookings')]" },
-          "MSSQLDBServerName": { "value": "[parameters('MSSQLDBServerName')]" },
-          "MSSQLRequestedServiceObjectiveName": { "value": "[parameters('MSSQLRequestedServiceObjectiveName')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureServiceBus",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusTemplateFolder'), '/', variables('AzureServiceBusTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" }
-        }
-      }
-    },
-    {
-      "name": "BookingQueue",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureServiceBus" ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusNamespacesTemplateFolder'), '/', variables('AzureServiceBusNamespacesTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
-          "queueName": { "value": "[parameters('bookingQueueName')]" }
-        }
-      }
-    },
-    {
-      "name": "VideoQueue",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureServiceBus" ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusNamespacesTemplateFolder'), '/', variables('AzureServiceBusNamespacesTemplateFileName'))]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "ServiceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
-          "queueName": { "value": "[parameters('videoQueueName')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureServiceBusAuthorizationRulesListen",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureServiceBus" ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFolder'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFileName') )]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "serviceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
-          "authorizationRulesName": { "value": "[parameters('authorizationRulesNameListen')]" },
-          "authorizationRules": { "value": "[parameters('authorizationRulesListen')]" }
-        }
-      }
-    },
-    {
-      "name": "AzureServiceBusAuthorizationRulesSend",
-      "type": "Microsoft.Resources/deployments",
-      "apiVersion": "2016-09-01",
-      "dependsOn": [ "AzureServiceBus" ],
-      "properties": {
-        "mode": "Incremental",
-        "templateLink": {
-          "uri": "[concat(parameters('_artifactsLocation'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFolder'), '/', variables('AzureServiceBusAuthorizationRulesTemplateFileName') )]",
-          "contentVersion": "1.0.0.0"
-        },
-        "parameters": {
-          "serviceBusNamespaceName": { "value": "[parameters('ServiceBusNamespaceName')]" },
-          "authorizationRulesName": { "value": "[parameters('authorizationRulesNameSend')]" },
-          "authorizationRules": { "value": "[parameters('authorizationRulesSend')]" }
+          "MSSQLDBName": {
+            "value": "[parameters('MSSQLDBBookings')]"
+          },
+          "MSSQLDBServerName": {
+            "value": "[parameters('MSSQLDBServerName')]"
+          },
+          "MSSQLRequestedServiceObjectiveName": {
+            "value": "[parameters('MSSQLRequestedServiceObjectiveName')]"
+          }
         }
       }
     },
@@ -488,7 +186,7 @@
       "name": "vhStorageAccount",
       "type": "Microsoft.Resources/deployments",
       "apiVersion": "2016-09-01",
-      "dependsOn": [ ],
+      "dependsOn": [],
       "properties": {
         "mode": "Incremental",
         "templateLink": {
@@ -496,8 +194,12 @@
           "contentVersion": "1.0.0.0"
         },
         "parameters": {
-          "storageAccountName": { "value": "[parameters('storageAccountName')]" },
-          "containerNames": { "value": "[parameters('storageAccountContainerNames')]" }
+          "storageAccountName": {
+            "value": "[parameters('storageAccountName')]"
+          },
+          "containerNames": {
+            "value": "[parameters('storageAccountContainerNames')]"
+          }
         }
       }
     }
@@ -514,22 +216,6 @@
     "VhVideoDatabaseConnectionString": {
       "value": "[concat('Server=tcp:',reference('AzureMSSQLServer').outputs.MSSQLDBServerFQDN.value,',1433;Initial Catalog=',parameters('MSSQLDBVideo'),';Persist Security Info=False;User ID=',parameters('MSSQLAdminLogin'),';Password=',reference('AzureMSSQLServer').outputs.MSSQLAdminLoginPassword.value,';MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;')]",
       "type": "string"
-    },
-    "InstrumentationKey": {
-      "type": "string",
-      "value": "[reference('AzureApplicationInsights').outputs.ApplicationInsightsInstrumentationKey.value]"
-    },
-    "RedisCacheConnectionString": {
-      "type": "string",
-      "value": "[reference('AzureRedisCache').outputs.RedisCacheConnectionString.value]"
-    },
-    "AzureServiceBusConnectionStringListen": {
-      "type": "string",
-      "value": "[reference('AzureServiceBusAuthorizationRulesListen').outputs.namespaceConnectionString.value]"
-    },
-    "AzureServiceBusConnectionStringSend": {
-      "type": "string",
-      "value": "[reference('AzureServiceBusAuthorizationRulesSend').outputs.namespaceConnectionString.value]"
     }
   }
 }
