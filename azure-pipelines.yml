@@ -1,0 +1,137 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+  tags:
+    include:
+      - v*
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - features/*
+
+variables:
+  - group: vh-idam
+  - group: vh-infra-dev
+  - group: vh-infra-pilot
+  - name: vmPool
+    value: Azure-VSTS-VS2017
+
+stages:
+  - stage: Plan
+    jobs:
+    - job: Dev_Plan
+      pool:
+          name: $(vmPool)
+
+      variables:
+        - group: vh-infra-dev
+
+      strategy:
+        maxParallel: 3
+        matrix:
+          Preview:
+            environment: Preview
+          Dev:
+            environment: Dev
+          AAT:
+            environment: AAT
+          Demo:
+            environment: Demo
+          Sandbox:
+            environment: Sandbox
+          Test1:
+            environment: Test1
+          Test2:
+            environment: Test2
+
+      steps:
+      - template: terraform-plan.yml
+        parameters:
+          storageAccount: $(infra_storage_account_dev)
+          environment: $(environment)
+
+          armServiceConnection: $(infra_arm_service_connection_dev)
+
+          idamTenantId: $(idam_tenant_id)
+          idamClientId: $(idam_client_id)
+          idamClientSecret: $(idam_client_secret)
+
+    - job: Pilot_Plan
+      pool:
+          name: $(vmPool)
+
+      variables:
+        - group: vh-infra-pilot
+        
+      strategy:
+        maxParallel: 3
+        matrix:
+          Preview:
+            environment: PreProd
+          Prod:
+            environment: Prod
+
+      steps:
+      - template: terraform-plan.yml
+        parameters:
+          storageAccount: $(infra_storage_account_pilot)
+          environment: $(environment)
+
+          armServiceConnection: $(infra_arm_service_connection_pilot)
+
+          idamTenantId: $(idam_tenant_id)
+          idamClientId: $(idam_client_id)
+          idamClientSecret: $(idam_client_secret)
+
+  - stage: Deploy
+    dependsOn: Plan
+    jobs:
+      - template: terraform-deployment.yml
+        parameters:
+          pool: $(vmPool)
+          idam:
+            TenantId: $(idam_tenant_id)
+            ClientId: $(idam_client_id)
+            ClientSecret: $(idam_client_secret)
+
+          environments:
+            - name: Preview
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              deploymentBranch: refs/heads/master
+            - name: Dev
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              deploymentBranch: refs/heads/master
+            - name: AAT
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              deploymentBranch: refs/heads/master
+            - name: Demo
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              deploymentBranch: refs/heads/master
+            - name: Sandbox
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              deploymentBranch: refs/heads/master
+            - name: Test1
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              deploymentBranch: refs/heads/master
+            - name: Test2
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              deploymentBranch: refs/heads/feature
+            - name: PreProd
+              storageAccount: $(infra_storage_account_pilot)
+              armServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+            - name: Prod
+              storageAccount: $(infra_storage_account_pilot)
+              armServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
