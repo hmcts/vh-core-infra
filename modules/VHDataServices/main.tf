@@ -42,13 +42,13 @@ resource "azurerm_sql_active_directory_administrator" "sqluser" {
 
 resource "azurerm_key_vault_secret" "VhBookingsDatabaseConnectionString" {
   name         = "VhBookingsDatabaseConnectionString"
-  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhbookings;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${azurerm_sql_server.vh-core-infra.administrator_login_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhbookings;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.password.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   key_vault_id = azurerm_key_vault.vh-core-infra.id
 }
 
 resource "azurerm_key_vault_secret" "VhVideoDatabaseConnectionString" {
   name         = "VhVideoDatabaseConnectionString"
-  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${azurerm_sql_server.vh-core-infra.administrator_login_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.password.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   key_vault_id = azurerm_key_vault.vh-core-infra.id
 }
 
@@ -283,7 +283,7 @@ output "service_bus_connstr" {
 }
 
 output "db_admin_password" {
-  value = azurerm_sql_server.vh-core-infra.administrator_login_password
+  value = random_password.password.result
 }
 
 output "db_server_name" {
