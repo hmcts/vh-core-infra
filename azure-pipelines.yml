@@ -33,18 +33,18 @@ stages:
       strategy:
         maxParallel: 3
         matrix:
-          Preview:
-            environment: Preview
-          Dev:
-            environment: Dev
-          AAT:
-            environment: AAT
-          Demo:
-            environment: Demo
-          Sandbox:
-            environment: Sandbox
-          Test1:
-            environment: Test1
+          # Preview:
+          #   environment: Preview
+          # Dev:
+          #   environment: Dev
+          # AAT:
+          #   environment: AAT
+          # Demo:
+          #   environment: Demo
+          # Sandbox:
+          #   environment: Sandbox
+          # Test1:
+          #   environment: Test1
           Test2:
             environment: Test2
 

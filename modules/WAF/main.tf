@@ -258,7 +258,6 @@ output "frontend_subnet_id" {
   value = azurerm_subnet.frontend.id
 }
 
-
 output "app_gateway_public_ip_id" {
   value = azurerm_public_ip.waf_ip.id
 }
