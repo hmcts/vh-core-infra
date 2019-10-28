@@ -1,0 +1,3 @@
+variable "apps" {
+  type = "map"
+}
