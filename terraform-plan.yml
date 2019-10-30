@@ -35,6 +35,7 @@ steps:
       scriptType: pscore
       scriptLocation: inlineScript
       AddSpnToEnvironment: true
+      failOnStandardError: true
       inlineScript: |
         echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$env:servicePrincipalId"
         echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$env:servicePrincipalKey"
@@ -50,6 +51,7 @@ steps:
       azureSubscription: ${{ parameters.armServiceConnection }}
       scriptType: pscore
       scriptLocation: inlineScript
+      failOnStandardError: true
       inlineScript: |
         $tfFolder = Join-Path "${{ parameters.workingDirectory }}" ".terraform"
         if(test-path $tfFolder) {
