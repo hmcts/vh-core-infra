@@ -197,7 +197,7 @@ module WebAppSecurity {
   source = "./modules/WAF"
 
   backend_apps        = local.web_apps
-  redirects           = local.prod_cnames
+  redirects           = local.environment == "prod" ? local.prod_cnames : []
   resource_group_name = azurerm_resource_group.vh-core-infra.name
   keyvault_id         = module.VHDataServices.keyvault_id
 }
@@ -332,26 +332,26 @@ module InfraSecrets {
   }
 }
 
-module HearingsDNS {
-  source = "./modules/DnsZone"
+# module HearingsDNS {
+#   source = "./modules/DnsZone"
 
-  resource_group_name = "vh-hearings-reform-hmcts-net-dns-zone"
-  zone_name           = "hearings.reform.hmcts.net"
+#   resource_group_name = "vh-hearings-reform-hmcts-net-dns-zone"
+#   zone_name           = "hearings.reform.hmcts.net"
 
-  a = {
-    for def in local.web_apps :
-    def.name => {
-      name  = def.name
-      type  = "a"
-      value = module.WebAppSecurity.app_gateway_public_ip
-    }
-  }
-  cnames = {
-    for def in(local.environment == "prod" ? local.prod_cnames : []) :
-    def.name => {
-      name  = def.name
-      type  = "c"
-      value = def.destination
-    }
-  }
-}
+#   a = {
+#     for def in local.web_apps :
+#     def.name => {
+#       name  = def.name
+#       type  = "a"
+#       value = module.WebAppSecurity.app_gateway_public_ip
+#     }
+#   }
+#   cnames = {
+#     for def in(local.environment == "prod" ? local.prod_cnames : []) :
+#     def.name => {
+#       name  = def.name
+#       type  = "c"
+#       value = def.destination
+#     }
+#   }
+# }
