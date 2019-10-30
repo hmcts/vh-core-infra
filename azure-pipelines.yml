@@ -153,7 +153,7 @@ stages:
               deploymentBranch: refs/heads/master
  
   - stage: Deploy_Prod_Environments
-    condition: or(startsWith(variables['Build.SourceBranch'], 'refs/tags/'))
+    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
     dependsOn:
       - Plan_Prod_Environments
       - Deploy_Test_Environments
