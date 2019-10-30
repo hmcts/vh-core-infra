@@ -22,6 +22,7 @@ jobs:
               storageAccount: ${{ deployment.storageAccount }}
               environment: ${{ deployment.name }}
               armServiceConnection: ${{ deployment.armServiceConnection }}
+              dnsServiceConnection: ${{ deployment.dnsServiceConnection }}
               idamTenantId: ${{ parameters.idam.TenantId }}
               idamClientId: ${{ parameters.idam.ClientId }}
               idamClientSecret: ${{ parameters.idam.ClientSecret }}
