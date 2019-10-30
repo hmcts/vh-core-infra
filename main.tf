@@ -9,6 +9,17 @@ provider "azurerm" {
   version = ">= 1.36.0"
 }
 
+provider "azurerm" {
+  version = ">= 1.36.0"
+  alias   = "dns"
+
+  tenant_id     = var.dns_tenant_id
+  client_id     = var.dns_client_id
+  client_secret = var.dns_client_secret
+
+  subscription_id = var.dns_subscription_id
+}
+
 provider "azuread" {
   version = "~> 0.6"
 
@@ -333,26 +344,30 @@ module InfraSecrets {
   }
 }
 
-# module HearingsDNS {
-#   source = "./modules/DnsZone"
+module HearingsDNS {
+  source = "./modules/DnsZone"
 
-#   resource_group_name = "vh-hearings-reform-hmcts-net-dns-zone"
-#   zone_name           = "hearings.reform.hmcts.net"
+  providers = {
+    azurerm = "azurerm.dns"
+  }
 
-#   a = {
-#     for def in local.web_apps :
-#     def.name => {
-#       name  = def.name
-#       type  = "a"
-#       value = module.WebAppSecurity.app_gateway_public_ip
-#     }
-#   }
-#   cnames = {
-#     for def in(local.environment == "prod" ? local.prod_cnames : []) :
-#     def.name => {
-#       name  = def.name
-#       type  = "c"
-#       value = def.destination
-#     }
-#   }
-# }
+  resource_group_name = "vh-hearings-reform-hmcts-net-dns-zone"
+  zone_name           = "hearings.reform.hmcts.net"
+
+  a = {
+    for def in local.web_apps :
+    def.name => {
+      name  = def.name
+      type  = "a"
+      value = module.WebAppSecurity.app_gateway_public_ip
+    }
+  }
+  cnames = {
+    for def in(local.environment == "prod" ? local.prod_cnames : []) :
+    def.name => {
+      name  = def.name
+      type  = "c"
+      value = def.destination
+    }
+  }
+}

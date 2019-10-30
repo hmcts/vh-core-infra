@@ -55,12 +55,14 @@ stages:
           environment: $(environment)
 
           armServiceConnection: $(infra_arm_service_connection_dev)
+          dnsServiceConnection: $(infra_arm_service_connection_pilot)
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
     
   - stage: Plan_Prod_Environments
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     jobs:
     - job: Pilot_Plan
       pool:
@@ -84,6 +86,7 @@ stages:
           environment: $(environment)
 
           armServiceConnection: $(infra_arm_service_connection_pilot)
+          dnsServiceConnection: $(infra_arm_service_connection_pilot)
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
@@ -104,26 +107,32 @@ stages:
             - name: Preview
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
             - name: Dev
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
             - name: AAT
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
             - name: Sandbox
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
             - name: Test1
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
             - name: Test2
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/feature
 
   - stage: Deploy_Demo_Environments
@@ -144,6 +153,7 @@ stages:
             - name: Demo
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
  
   - stage: Deploy_Prod_Environments
@@ -164,8 +174,10 @@ stages:
             - name: PreProd
               storageAccount: $(infra_storage_account_pilot)
               armServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
             - name: Prod
               storageAccount: $(infra_storage_account_pilot)
               armServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master

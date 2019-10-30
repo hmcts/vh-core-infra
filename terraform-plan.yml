@@ -2,6 +2,7 @@ parameters:
   workingDirectory: $(system.defaultWorkingDirectory)
   storageAccount: ""
   armServiceConnection: ""
+  dnsServiceConnection: ""
   idamTenantId: ""
   idamClientId: ""
   idamClientSecret: ""
@@ -16,35 +17,14 @@ steps:
     displayName: "Terraform validate"
     condition: succeeded()
 
-  - pwsh: |
-      @{
-        idam_tenant_id = $env:idam_Tenant_Id
-        idam_client_id = $env:idam_Client_Id
-        idam_client_secret = $env:idam_Client_Secret
-      } | ConvertTo-Json | Set-Content params.auto.tfvars.json -force
-    displayName: "Create Param File"
-    condition: succeeded()
-    env:
-      idam_Tenant_Id: ${{ parameters.idamTenantId }}
-      idam_Client_Id: ${{ parameters.idamClientId }}
-      idam_Client_Secret: ${{ parameters.idamClientSecret }}
-
-  - task: AzureCLI@2
-    inputs:
-      azureSubscription: ${{ parameters.armServiceConnection }}
-      scriptType: pscore
-      scriptLocation: inlineScript
-      AddSpnToEnvironment: true
-      failOnStandardError: true
-      inlineScript: |
-        echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$env:servicePrincipalId"
-        echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$env:servicePrincipalKey"
-        az account set -s ${{ parameters.armServiceConnection }}
-        echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$(az account show --query 'id' --output tsv)"
-        echo "##vso[task.setvariable variable=ARM_TENANT_ID]$(az account show --query 'tenantId' --output tsv)"
-        echo "##vso[task.setvariable variable=ARM_ACCESS_KEY]$(az storage account keys list -n ${{ parameters.storageAccount }} --query [0].value --output tsv)"
-    displayName: Terraform Prepare Login
-    condition: succeeded()
+  - template: terraform-loginprep.yml
+    parameters:
+      storageAccount: ${{ parameters.storageAccount }}
+      armServiceConnection: ${{ parameters.armServiceConnection }}
+      dnsServiceConnection: ${{ parameters.dnsServiceConnection }}
+      idamTenantId: ${{ parameters.idamTenantId }}
+      idamClientId: ${{ parameters.idamClientId }}
+      idamClientSecret: ${{ parameters.idamClientSecret }}
 
   - task: AzureCLI@2
     inputs:
@@ -66,8 +46,6 @@ steps:
         terraform init -backend-config="storage_account_name=${{ parameters.storageAccount }}" -reconfigure
         terraform workspace select ${{ parameters.environment }}
         terraform plan -out="plan.tfplan" -input=false
-
-        echo "##vso[task.setVariable variable=planSucceeded;isOutput=true]$(test-path $tfPlan)"
       workingDirectory: ${{ parameters.workingDirectory }}
     displayName: Terraform plan
     condition: succeeded()

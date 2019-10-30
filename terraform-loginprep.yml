@@ -1,0 +1,57 @@
+parameters:
+  storageAccount: ""
+  armServiceConnection: ""
+  dnsServiceConnection: ""
+  idamTenantId: ""
+  idamClientId: ""
+  idamClientSecret: ""
+
+steps:
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.armServiceConnection }}
+      scriptType: pscore
+      scriptLocation: inlineScript
+      AddSpnToEnvironment: true
+      failOnStandardError: true
+      inlineScript: |
+        echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$env:servicePrincipalId"
+        echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$env:servicePrincipalKey"
+        az account set -s ${{ parameters.armServiceConnection }}
+        echo "##vso[task.setvariable variable=ARM_SUBSCRIPTION_ID]$(az account show --query 'id' --output tsv)"
+        echo "##vso[task.setvariable variable=ARM_TENANT_ID]$(az account show --query 'tenantId' --output tsv)"
+        echo "##vso[task.setvariable variable=ARM_ACCESS_KEY]$(az storage account keys list -n ${{ parameters.storageAccount }} --query [0].value --output tsv)"
+    displayName: Terraform Prepare Login
+    condition: succeeded()
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.dnsServiceConnection }}
+      scriptType: pscore
+      scriptLocation: inlineScript
+      AddSpnToEnvironment: true
+      failOnStandardError: true
+      inlineScript: |
+        echo "##vso[task.setvariable variable=dns_Client_Id]$env:servicePrincipalId"
+        echo "##vso[task.setvariable variable=dns_Client_Secret]$env:servicePrincipalKey"
+        echo "##vso[task.setvariable variable=dns_Subscription_Id]$(az account show -s ${{ parameters.dnsServiceConnection }} --query 'id' --output tsv)"
+        echo "##vso[task.setvariable variable=dns_Tenant_Id]$(az account show --query 'tenantId' --output tsv)"
+    displayName: Terraform Prepare Login (DNS)
+    condition: succeeded()
+
+  - pwsh: |
+      @{
+        idam_tenant_id = $env:idam_Tenant_Id
+        idam_client_id = $env:idam_Client_Id
+        idam_client_secret = $env:idam_Client_Secret
+        dns_tenant_id = $env:dns_Tenant_Id
+        dns_client_id = $env:dns_Client_Id
+        dns_client_secret = $env:dns_Client_Secret
+        dns_subscription_id = $env:dns_Subscription_Id
+      } | ConvertTo-Json | Set-Content params.auto.tfvars.json -force
+    displayName: "Create Param File"
+    condition: succeeded()
+    env:
+      idam_Tenant_Id: ${{ parameters.idamTenantId }}
+      idam_Client_Id: ${{ parameters.idamClientId }}
+      idam_Client_Secret: ${{ parameters.idamClientSecret }}
