@@ -70,8 +70,8 @@ stages:
       strategy:
         maxParallel: 3
         matrix:
-          # PreProd:
-          #   environment: PreProd
+          PreProd:
+            environment: PreProd
           # Prod:
           #   environment: Prod
 
