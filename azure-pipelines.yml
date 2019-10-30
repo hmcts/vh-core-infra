@@ -21,7 +21,7 @@ variables:
     value: Azure-VSTS-VS2017
 
 stages:
-  - stage: Plan
+  - stage: Plan_Test_Environments
     jobs:
     - job: Dev_Plan
       pool:
@@ -59,7 +59,9 @@ stages:
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
-
+    
+  - stage: Plan_Prod_Environments
+    jobs:
     - job: Pilot_Plan
       pool:
           name: $(vmPool)
@@ -87,8 +89,8 @@ stages:
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
 
-  - stage: Deploy
-    dependsOn: Plan
+  - stage: Deploy_Test_Environments
+    dependsOn: Plan_Test_Environments
     jobs:
       - template: terraform-deployment.yml
         parameters:
@@ -111,11 +113,11 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               deploymentBranch: refs/heads/master
-            - name: Demo
+            - name: Sandbox
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               deploymentBranch: refs/heads/master
-            - name: Sandbox
+            - name: Demo
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               deploymentBranch: refs/heads/master
@@ -127,6 +129,43 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               deploymentBranch: refs/heads/feature
+      
+      - template: terraform-deployment.yml
+        parameters:
+          pool: $(vmPool)
+          idam:
+            TenantId: $(idam_tenant_id)
+            ClientId: $(idam_client_id)
+            ClientSecret: $(idam_client_secret)
+
+          environments:
+            - name: Demo
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              deploymentBranch: refs/heads/master
+            - name: PreProd
+              storageAccount: $(infra_storage_account_pilot)
+              armServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+            - name: Prod
+              storageAccount: $(infra_storage_account_pilot)
+              armServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+ 
+  - stage: Deploy_Prod_Environments
+    dependsOn:
+      - Plan_Prod_Environments
+      - Deploy_Test_Environments
+    jobs:
+      - template: terraform-deployment.yml
+        parameters:
+          pool: $(vmPool)
+          idam:
+            TenantId: $(idam_tenant_id)
+            ClientId: $(idam_client_id)
+            ClientSecret: $(idam_client_secret)
+
+          environments:
             - name: PreProd
               storageAccount: $(infra_storage_account_pilot)
               armServiceConnection: $(infra_arm_service_connection_pilot)
