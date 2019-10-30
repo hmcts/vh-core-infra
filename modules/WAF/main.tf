@@ -228,7 +228,7 @@ resource "azurerm_application_gateway" "waf" {
 
   dynamic "request_routing_rule" {
     for_each = [for b in var.redirects : {
-      name         = "${b.app}-rqrt"
+      name         = "${b.name}-rqrt"
       listener     = "${b.name}-httplstn"
       httpsettings = "${b.app}-be-htst"
       be_pool      = "${b.app}-beap"
