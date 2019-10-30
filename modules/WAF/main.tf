@@ -291,6 +291,51 @@ resource "azurerm_application_gateway" "waf" {
   }
 }
 
+resource "azurerm_monitor_diagnostic_setting" "WAF" {
+  name               = "FirewallLogs"
+  target_resource_id = azurerm_application_gateway.waf.id
+  storage_account_id = var.storage_account_id
+
+  log {
+    category = "ApplicationGatewayAccessLog"
+    enabled  = true
+
+    retention_policy {
+      days    = 5
+      enabled = true
+    }
+  }
+
+  log {
+    category = "ApplicationGatewayFirewallLog"
+    enabled  = true
+
+    retention_policy {
+      days    = 5
+      enabled = true
+    }
+  }
+
+  log {
+    category = "ApplicationGatewayPerformanceLog"
+    enabled  = true
+
+    retention_policy {
+      days    = 5
+      enabled = true
+    }
+  }
+
+  metric {
+    category = "AllMetrics"
+
+    retention_policy {
+      enabled = true
+      days    = 5
+    }
+  }
+}
+
 output "backend_subnet_id" {
   value = azurerm_subnet.backend.id
 }

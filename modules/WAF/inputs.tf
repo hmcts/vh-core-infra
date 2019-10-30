@@ -13,3 +13,7 @@ variable "resource_group_name" {
 variable "keyvault_id" {
   type = "string"
 }
+
+variable "storage_account_id" {
+  type = "string"
+}
