@@ -129,28 +129,6 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               deploymentBranch: refs/heads/feature
-      
-      - template: terraform-deployment.yml
-        parameters:
-          pool: $(vmPool)
-          idam:
-            TenantId: $(idam_tenant_id)
-            ClientId: $(idam_client_id)
-            ClientSecret: $(idam_client_secret)
-
-          environments:
-            - name: Demo
-              storageAccount: $(infra_storage_account_dev)
-              armServiceConnection: $(infra_arm_service_connection_dev)
-              deploymentBranch: refs/heads/master
-            - name: PreProd
-              storageAccount: $(infra_storage_account_pilot)
-              armServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/master
-            - name: Prod
-              storageAccount: $(infra_storage_account_pilot)
-              armServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/master
  
   - stage: Deploy_Prod_Environments
     condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
