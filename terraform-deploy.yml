@@ -46,6 +46,6 @@ steps:
       scriptType: pscore
       scriptLocation: inlineScript
       inlineScript: |
-        terraform apply -auto-approve plan
+        terraform apply -auto-approve plan.tfplan
     displayName: Terraform apply
     condition: succeeded()
