@@ -117,10 +117,6 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               deploymentBranch: refs/heads/master
-            - name: Demo
-              storageAccount: $(infra_storage_account_dev)
-              armServiceConnection: $(infra_arm_service_connection_dev)
-              deploymentBranch: refs/heads/master
             - name: Test1
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
