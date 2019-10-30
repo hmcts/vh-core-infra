@@ -1,15 +1,17 @@
 terraform {
   backend "azurerm" {
-    container_name       = "tfstate"
-    key                  = "infra/vh-core-infra.tfstate"
+    container_name = "tfstate"
+    key            = "infra/vh-core-infra.tfstate"
   }
 }
 
 provider "azurerm" {
-  version = ">= 1.35.0"
+  version = ">= 1.36.0"
 }
 
 provider "azuread" {
+  version = "~> 0.6"
+
   tenant_id     = var.idam_tenant_id
   client_id     = var.idam_client_id
   client_secret = var.idam_client_secret
@@ -35,6 +37,27 @@ locals {
       name        = "vh-video-web${local.suffix}",
       fqdn        = ["vh-video-web${local.suffix}.azurewebsites.net"],
       public_fqdn = "vh-video-web${local.suffix}.hearings.reform.hmcts.net"
+    }
+  ]
+
+  prod_cnames = [
+    {
+      name        = "video",
+      destination = "vh-video-web${local.suffix}.hearings.reform.hmcts.net"
+      app         = "vh-video-web${local.suffix}"
+      fqdn        = "video.hearings.reform.hmcts.net"
+    },
+    {
+      name        = "admin",
+      destination = "vh-admin-web${local.suffix}.hearings.reform.hmcts.net"
+      app         = "vh-admin-web${local.suffix}"
+      fqdn        = "admin.hearings.reform.hmcts.net"
+    },
+    {
+      name        = "service",
+      destination = "vh-service-web${local.suffix}.hearings.reform.hmcts.net"
+      app         = "vh-service-web${local.suffix}"
+      fqdn        = "service.hearings.reform.hmcts.net"
     }
   ]
 
@@ -70,58 +93,79 @@ locals {
 
   app_definitions = {
     admin-web = {
-      name                 = "vh-admin-web${local.suffix}"
-      websockets           = false
-      ip_restriction       = [module.WebAppSecurity.frontend_subnet_id]
-      vnet_integ_subnet_id = module.WebAppSecurity.backend_subnet_id
-      url                  = "https://vh-admin-web${local.suffix}.hearings.reform.hmcts.net"
+      name            = "vh-admin-web${local.suffix}"
+      websockets      = false
+      ip_restriction  = []
+      subnet          = "backend"
+      audience_subnet = "frontend"
+      url             = "https://vh-admin-web${local.suffix}.hearings.reform.hmcts.net"
     }
     service-web = {
-      name                 = "vh-service-web${local.suffix}"
-      websockets           = false
-      ip_restriction       = [module.WebAppSecurity.frontend_subnet_id]
-      vnet_integ_subnet_id = module.WebAppSecurity.backend_subnet_id
-      url                  = "https://vh-service-web${local.suffix}.hearings.reform.hmcts.net"
+      name            = "vh-service-web${local.suffix}"
+      websockets      = false
+      ip_restriction  = []
+      subnet          = "backend"
+      audience_subnet = "frontend"
+      url             = "https://vh-service-web${local.suffix}.hearings.reform.hmcts.net"
     }
     video-web = {
-      name                 = "vh-video-web${local.suffix}"
-      websockets           = true
-      ip_restriction       = [module.WebAppSecurity.frontend_subnet_id]
-      vnet_integ_subnet_id = module.WebAppSecurity.backend_subnet_id
-      url                  = "https://vh-video-web${local.suffix}.hearings.reform.hmcts.net"
+      name            = "vh-video-web${local.suffix}"
+      websockets      = true
+      ip_restriction  = []
+      subnet          = "backend"
+      audience_subnet = "frontend"
+      url             = "https://vh-video-web${local.suffix}.hearings.reform.hmcts.net"
     }
     bookings-api = {
-      name                 = "vh-bookings-api${local.suffix}"
-      websockets           = false
-      ip_restriction       = [module.WebAppSecurity.backend_subnet_id, var.build_agent_vnet]
-      vnet_integ_subnet_id = module.WebAppSecurity.backend_subnet_id
-      url                  = "https://vh-bookings-api${local.suffix}.azurewebsites.net"
+      name            = "vh-bookings-api${local.suffix}"
+      websockets      = false
+      ip_restriction  = []
+      subnet          = "backend"
+      audience_subnet = "backend"
+      url             = "https://vh-bookings-api${local.suffix}.azurewebsites.net"
     }
     user-api = {
-      name                 = "vh-user-api${local.suffix}"
-      websockets           = false
-      ip_restriction       = [module.WebAppSecurity.backend_subnet_id, var.build_agent_vnet]
-      vnet_integ_subnet_id = module.WebAppSecurity.backend_subnet_id
-      url                  = "https://vh-user-api${local.suffix}.azurewebsites.net"
+      name            = "vh-user-api${local.suffix}"
+      websockets      = false
+      ip_restriction  = []
+      subnet          = "backend"
+      audience_subnet = "backend"
+      url             = "https://vh-user-api${local.suffix}.azurewebsites.net"
     }
     video-api = {
-      name                 = "vh-video-api${local.suffix}"
-      websockets           = false
-      ip_restriction       = [module.WebAppSecurity.backend_subnet_id, var.build_agent_vnet]
-      vnet_integ_subnet_id = module.WebAppSecurity.backend_subnet_id
-      url                  = "https://vh-video-api${local.suffix}.azurewebsites.net"
+      name            = "vh-video-api${local.suffix}"
+      websockets      = false
+      ip_restriction  = []
+      subnet          = "backend"
+      audience_subnet = "backend"
+      url             = "https://vh-video-api${local.suffix}.azurewebsites.net"
     }
   }
 
   funcapp_definitions = {
     booking-queue-subscriber = {
-      name                 = "vh-booking-queue-subscriber${local.suffix}"
-      websockets           = false
-      ip_restriction       = []
-      vnet_integ_subnet_id = module.WebAppSecurity.backend_subnet_id
-      url                  = "https://vh-booking-queue-subscriber${local.suffix}.azurewebsites.net"
+      name   = "vh-booking-queue-subscriber${local.suffix}"
+      subnet = "backend"
+      url    = "https://vh-booking-queue-subscriber${local.suffix}.azurewebsites.net"
     }
   }
+
+  app_registrations = merge(
+    {
+      for def in keys(local.app_definitions) :
+      def => {
+        name = local.app_definitions[def].name
+        url  = local.app_definitions[def].url
+      }
+    },
+    {
+      for def in keys(local.funcapp_definitions) :
+      def => {
+        name = local.funcapp_definitions[def].name
+        url  = local.funcapp_definitions[def].url
+      }
+    }
+  )
 
   common_prefix = "core-infra"
   std_prefix    = "vh-${local.common_prefix}"
@@ -153,6 +197,7 @@ module WebAppSecurity {
   source = "./modules/WAF"
 
   backend_apps        = local.web_apps
+  redirects           = local.prod_cnames
   resource_group_name = azurerm_resource_group.vh-core-infra.name
   keyvault_id         = module.VHDataServices.keyvault_id
 }
@@ -160,7 +205,15 @@ module WebAppSecurity {
 module AppService {
   source = "./modules/AppService"
 
-  apps                = local.app_definitions
+  apps = {
+    for def in keys(local.app_definitions) :
+    def => {
+      name                 = local.app_definitions[def].name
+      websockets           = local.app_definitions[def].websockets
+      ip_restriction       = concat(local.app_definitions[def].ip_restriction, [local.app_definitions[def].audience_subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id])
+      vnet_integ_subnet_id = local.app_definitions[def].subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id
+    }
+  }
   resource_group_name = azurerm_resource_group.vh-core-infra.name
   resource_prefix     = "${local.std_prefix}${local.suffix}"
 
@@ -182,13 +235,19 @@ module AppService {
 module AppRegistrations {
   source = "./modules/AppRegistrations"
 
-  apps = merge(local.app_definitions, local.funcapp_definitions)
+  apps = local.app_registrations
 }
 
 module FuncApps {
   source = "./modules/FuncApps"
 
-  apps                = local.funcapp_definitions
+  apps = {
+    for def in keys(local.funcapp_definitions) :
+    def => {
+      name                 = local.funcapp_definitions[def].name
+      vnet_integ_subnet_id = local.funcapp_definitions[def].subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id
+    }
+  }
   resource_group_name = azurerm_resource_group.vh-core-infra.name
   resource_prefix     = "${local.std_prefix}${local.suffix}"
 
@@ -270,5 +329,29 @@ module InfraSecrets {
   }
   delegated_networks = {
     AccessFromBuildAgent = var.build_agent_vnet
+  }
+}
+
+module HearingsDNS {
+  source = "./modules/DnsZone"
+
+  resource_group_name = "vh-hearings-reform-hmcts-net-dns-zone"
+  zone_name           = "hearings.reform.hmcts.net"
+
+  a = {
+    for def in local.web_apps :
+    def.name => {
+      name  = def.name
+      type  = "a"
+      value = module.WebAppSecurity.app_gateway_public_ip
+    }
+  }
+  cnames = {
+    for def in(local.environment == "prod" ? local.prod_cnames : []) :
+    def.name => {
+      name  = def.name
+      type  = "c"
+      value = def.destination
+    }
   }
 }

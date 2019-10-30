@@ -100,12 +100,27 @@ resource "azurerm_application_gateway" "waf" {
     firewall_mode    = "Prevention"
     rule_set_type    = "OWASP"
     rule_set_version = "3.1"
+
+    disabled_rule_group {
+      rule_group_name = "REQUEST-942-APPLICATION-ATTACK-SQLI"
+      rules = [
+        942440
+      ]
+    }
+
+    disabled_rule_group {
+      rule_group_name = "REQUEST-920-PROTOCOL-ENFORCEMENT"
+      rules = [
+        920300,
+        920440
+      ]
+    }
   }
 
   ssl_policy {
     policy_type = "Predefined"
     policy_name = "AppGwSslPolicy20170401S"
-  } 
+  }
 
   gateway_ip_configuration {
     name      = "my-gateway-ip-configuration"
@@ -152,7 +167,7 @@ resource "azurerm_application_gateway" "waf" {
     content {
       name                                = backend_http_settings.value.name
       cookie_based_affinity               = "Disabled"
-      affinity_cookie_name                 = backend_http_settings.value.name
+      affinity_cookie_name                = backend_http_settings.value.name
       path                                = "/"
       port                                = 443
       protocol                            = "Https"
@@ -178,6 +193,22 @@ resource "azurerm_application_gateway" "waf" {
     }
   }
 
+  dynamic "http_listener" {
+    for_each = [for b in var.redirects : {
+      name = "${b.name}-httplstn"
+      fqdn = b.fqdn
+    }]
+
+    content {
+      name                           = http_listener.value.name
+      frontend_ip_configuration_name = local.frontend_ip_configuration_name
+      frontend_port_name             = local.frontend_port_name
+      protocol                       = "Https"
+      ssl_certificate_name           = "wildcard-hearings-reform-hmcts-net"
+      host_name                      = http_listener.value.fqdn
+    }
+  }
+
   dynamic "request_routing_rule" {
     for_each = [for b in var.backend_apps : {
       name         = "${b.name}-rqrt"
@@ -188,10 +219,27 @@ resource "azurerm_application_gateway" "waf" {
     }]
 
     content {
-      name                       = request_routing_rule.value.name
-      rule_type                  = "PathBasedRouting"
-      http_listener_name         = request_routing_rule.value.listener
-      url_path_map_name          = request_routing_rule.value.path_map
+      name               = request_routing_rule.value.name
+      rule_type          = "PathBasedRouting"
+      http_listener_name = request_routing_rule.value.listener
+      url_path_map_name  = request_routing_rule.value.path_map
+    }
+  }
+
+  dynamic "request_routing_rule" {
+    for_each = [for b in var.redirects : {
+      name         = "${b.app}-rqrt"
+      listener     = "${b.name}-httplstn"
+      httpsettings = "${b.app}-be-htst"
+      be_pool      = "${b.app}-beap"
+      path_map     = "${b.app}-pathmap"
+    }]
+
+    content {
+      name               = request_routing_rule.value.name
+      rule_type          = "PathBasedRouting"
+      http_listener_name = request_routing_rule.value.listener
+      url_path_map_name  = request_routing_rule.value.path_map
     }
   }
 
@@ -207,13 +255,6 @@ resource "azurerm_application_gateway" "waf" {
       name                               = url_path_map.value.name
       default_backend_address_pool_name  = url_path_map.value.be_pool
       default_backend_http_settings_name = url_path_map.value.httpsettings
-
-      path_rule {
-        name                       = "Swagger"
-        paths                      = ["/swagger"]
-        backend_address_pool_name  = "null"
-        backend_http_settings_name = url_path_map.value.httpsettings
-      }
 
       path_rule {
         name                       = "EverythingElse"
@@ -258,6 +299,18 @@ output "frontend_subnet_id" {
   value = azurerm_subnet.frontend.id
 }
 
+output "backend_subnet_name" {
+  value = azurerm_subnet.backend.name
+}
+
+output "frontend_subnet_name" {
+  value = azurerm_subnet.frontend.name
+}
+
 output "app_gateway_public_ip_id" {
   value = azurerm_public_ip.waf_ip.id
+}
+
+output "app_gateway_public_ip" {
+  value = azurerm_public_ip.waf_ip.ip_address
 }

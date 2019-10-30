@@ -70,10 +70,10 @@ stages:
       strategy:
         maxParallel: 3
         matrix:
-          Preview:
-            environment: PreProd
-          Prod:
-            environment: Prod
+          # PreProd:
+          #   environment: PreProd
+          # Prod:
+          #   environment: Prod
 
       steps:
       - template: terraform-plan.yml
