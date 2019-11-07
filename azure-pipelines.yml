@@ -17,6 +17,8 @@ variables:
   - group: vh-idam
   - group: vh-infra-dev
   - group: vh-infra-pilot
+  - group: vh-build-infra-prod
+  - group: vh-build-infra-dev
   - name: vmPool
     value: vh-vsts-agent-dev
   - name: buildContainer
@@ -33,6 +35,7 @@ stages:
 
       variables:
         - group: vh-infra-dev
+        - group: vh-build-infra-dev
 
       strategy:
         maxParallel: 3
@@ -60,6 +63,7 @@ stages:
 
           armServiceConnection: $(infra_arm_service_connection_dev)
           dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          buildAgentvNet: $(build_agent_vnet_dev)
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
@@ -75,6 +79,7 @@ stages:
 
       variables:
         - group: vh-infra-pilot
+        - group: vh-build-infra-prod
         - name: vmPool
           value: vh-vsts-agent-pilot
         
@@ -94,6 +99,7 @@ stages:
 
           armServiceConnection: $(infra_arm_service_connection_pilot)
           dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          buildAgentvNet: $(build_agent_vnet_prod)
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
@@ -105,6 +111,7 @@ stages:
       - template: pipeline/terraform-deployment.yml
         parameters:
           pool: $(vmPool)
+          buildAgentvNet: $(build_agent_vnet_dev)
           idam:
             TenantId: $(idam_tenant_id)
             ClientId: $(idam_client_id)
@@ -151,6 +158,7 @@ stages:
       - template: pipeline/terraform-deployment.yml
         parameters:
           pool: $(vmPool)
+          buildAgentvNet: $(build_agent_vnet_dev)
           idam:
             TenantId: $(idam_tenant_id)
             ClientId: $(idam_client_id)
@@ -172,6 +180,7 @@ stages:
       - template: pipeline/terraform-deployment.yml
         parameters:
           pool: vh-vsts-agent-pilot
+          buildAgentvNet: $(build_agent_vnet_prod)
           idam:
             TenantId: $(idam_tenant_id)
             ClientId: $(idam_client_id)

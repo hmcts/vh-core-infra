@@ -6,6 +6,7 @@ parameters:
   idamTenantId: ""
   idamClientId: ""
   idamClientSecret: ""
+  buildAgentvNet: ""
   environment: ""
 
 steps:
@@ -26,6 +27,7 @@ steps:
       idamTenantId: ${{ parameters.idamTenantId }}
       idamClientId: ${{ parameters.idamClientId }}
       idamClientSecret: ${{ parameters.idamClientSecret }}
+      buildAgentvNet: ${{ parameters.buildAgentvNet }}
 
   - task: AzureCLI@2
     inputs:

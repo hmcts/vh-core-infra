@@ -6,6 +6,7 @@ parameters:
   idamTenantId: ""
   idamClientId: ""
   idamClientSecret: ""
+  buildAgentvNet: ""
 
 steps:
   - task: AzureCLI@2
@@ -49,6 +50,7 @@ steps:
         dns_client_id = $env:dns_Client_Id
         dns_client_secret = $env:dns_Client_Secret
         dns_subscription_id = $env:dns_Subscription_Id
+        build_agent_vnet = $env:buildAgentvNet
       } | ConvertTo-Json | Set-Content params.auto.tfvars.json -force
     workingDirectory: ${{ parameters.workingDirectory }}
     displayName: "Create Param File"
@@ -57,6 +59,7 @@ steps:
       idam_Tenant_Id: ${{ parameters.idamTenantId }}
       idam_Client_Id: ${{ parameters.idamClientId }}
       idam_Client_Secret: ${{ parameters.idamClientSecret }}
+      buildAgentvNet: ${{ parameters.buildAgentvNet }}
 
   - task: AzureCLI@2
     inputs:
