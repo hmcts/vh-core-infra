@@ -1,4 +1,5 @@
 parameters:
+  workingDirectory: $(system.defaultWorkingDirectory)
   pool:
   idam:
   environments: []
@@ -19,6 +20,7 @@ jobs:
           steps:
           - template: terraform-deploy.yml
             parameters:
+              workingDirectory: ${{ parameters.workingDirectory }}
               storageAccount: ${{ deployment.storageAccount }}
               environment: ${{ deployment.name }}
               armServiceConnection: ${{ deployment.armServiceConnection }}

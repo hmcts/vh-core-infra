@@ -1,4 +1,5 @@
 parameters:
+  workingDirectory: $(system.defaultWorkingDirectory)
   storageAccount: ""
   armServiceConnection: ""
   dnsServiceConnection: ""
@@ -13,7 +14,7 @@ steps:
       scriptType: pscore
       scriptLocation: inlineScript
       AddSpnToEnvironment: true
-      failOnStandardError: true
+      workingDirectory: ${{ parameters.workingDirectory }}
       inlineScript: |
         echo "##vso[task.setvariable variable=ARM_CLIENT_ID]$env:servicePrincipalId"
         echo "##vso[task.setvariable variable=ARM_CLIENT_SECRET]$env:servicePrincipalKey"
@@ -49,9 +50,38 @@ steps:
         dns_client_secret = $env:dns_Client_Secret
         dns_subscription_id = $env:dns_Subscription_Id
       } | ConvertTo-Json | Set-Content params.auto.tfvars.json -force
+    workingDirectory: ${{ parameters.workingDirectory }}
     displayName: "Create Param File"
     condition: succeeded()
     env:
       idam_Tenant_Id: ${{ parameters.idamTenantId }}
       idam_Client_Id: ${{ parameters.idamClientId }}
       idam_Client_Secret: ${{ parameters.idamClientSecret }}
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.armServiceConnection }}
+      scriptType: pscore
+      scriptLocation: inlineScript
+      failOnStandardError: false
+      inlineScript: |
+        $tfFolder = Join-Path "${{ parameters.workingDirectory }}" ".terraform"
+        if(test-path $tfFolder) {
+          Remove-Item $tfFolder -Force -Recurse
+        }
+
+        $tfPlan = Join-Path "${{ parameters.workingDirectory }}" "plan.tfplan"
+        if(test-path $tfPlan) {
+          Remove-Item $tfPlan -Force
+        }
+
+        terraform init -backend-config="storage_account_name=${{ parameters.storageAccount }}" -reconfigure
+
+        if($null -eq (terraform workspace list | Select-String '${{ parameters.environment }}$')) {
+          terraform workspace new ${{ parameters.environment }}
+        } else {
+          terraform workspace select ${{ parameters.environment }}
+        }
+      workingDirectory: ${{ parameters.workingDirectory }}
+    displayName: Terraform Backend Initialisation
+    condition: succeeded()
