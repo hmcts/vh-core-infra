@@ -57,7 +57,7 @@ resource "azurerm_subnet" "frontend" {
   virtual_network_name = azurerm_virtual_network.WAF.name
   address_prefix       = "${cidrsubnet(local.waf_address_space[0], 3, 1)}"
 
-  service_endpoints = [
+   = [
     "Microsoft.Web"
   ]
 }

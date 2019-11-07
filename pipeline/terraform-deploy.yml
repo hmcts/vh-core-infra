@@ -21,6 +21,7 @@ steps:
     displayName: Download Terraform Plan
     inputs:
       artifactName: tfplan-${{ parameters.environment }}
+      targetPath: '$(Pipeline.Workspace)\sdf'
 
   - task: AzureCLI@2
     inputs:

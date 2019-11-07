@@ -18,7 +18,9 @@ variables:
   - group: vh-infra-dev
   - group: vh-infra-pilot
   - name: vmPool
-    value: Azure-VSTS-VS2017
+    value: vh-vsts-agent-dev
+  - name: buildContainer
+    value: dftai/ps-terraform-agent:latest
 
 stages:
   - stage: Plan_Test_Environments
@@ -26,6 +28,8 @@ stages:
     - job: Dev_Plan
       pool:
           name: $(vmPool)
+
+      container: $(buildContainer)
 
       variables:
         - group: vh-infra-dev
@@ -49,7 +53,7 @@ stages:
             environment: Test2
 
       steps:
-      - template: terraform-plan.yml
+      - template: pipeline/terraform-plan.yml
         parameters:
           storageAccount: $(infra_storage_account_dev)
           environment: $(environment)
@@ -62,14 +66,17 @@ stages:
           idamClientSecret: $(idam_client_secret)
     
   - stage: Plan_Prod_Environments
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     jobs:
     - job: Pilot_Plan
       pool:
           name: $(vmPool)
 
+      container: $(buildContainer)
+
       variables:
         - group: vh-infra-pilot
+        - name: vmPool
+          value: vh-vsts-agent-pilot
         
       strategy:
         maxParallel: 3
@@ -80,7 +87,7 @@ stages:
           #   environment: Prod
 
       steps:
-      - template: terraform-plan.yml
+      - template: pipeline/terraform-plan.yml
         parameters:
           storageAccount: $(infra_storage_account_pilot)
           environment: $(environment)
@@ -95,7 +102,7 @@ stages:
   - stage: Deploy_Test_Environments
     dependsOn: Plan_Test_Environments
     jobs:
-      - template: terraform-deployment.yml
+      - template: pipeline/terraform-deployment.yml
         parameters:
           pool: $(vmPool)
           idam:
@@ -141,7 +148,7 @@ stages:
       - Plan_Test_Environments
       - Deploy_Test_Environments
     jobs:
-      - template: terraform-deployment.yml
+      - template: pipeline/terraform-deployment.yml
         parameters:
           pool: $(vmPool)
           idam:
@@ -157,14 +164,14 @@ stages:
               deploymentBranch: refs/heads/master
  
   - stage: Deploy_Prod_Environments
-    condition: startsWith(variables['Build.SourceBranch'], 'refs/tags/')
+    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
     dependsOn:
       - Plan_Prod_Environments
       - Deploy_Test_Environments
     jobs:
-      - template: terraform-deployment.yml
+      - template: pipeline/terraform-deployment.yml
         parameters:
-          pool: $(vmPool)
+          pool: vh-vsts-agent-pilot
           idam:
             TenantId: $(idam_tenant_id)
             ClientId: $(idam_client_id)
