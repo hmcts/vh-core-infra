@@ -41,8 +41,8 @@ stages:
       strategy:
         maxParallel: 3
         matrix:
-          Test2:
-            environment: Test2
+          Preview:
+            environment: Preview
 
       steps:
       - checkout: self
@@ -78,8 +78,6 @@ stages:
       strategy:
         maxParallel: 3
         matrix:
-          Preview:
-            environment: Preview
           Dev:
             environment: Dev
           AAT:
@@ -90,8 +88,8 @@ stages:
             environment: Sandbox
           Test1:
             environment: Test1
-          # Test2:
-          #   environment: Test2
+          Test2:
+            environment: Test2
 
       steps:
       - checkout: self
@@ -131,8 +129,8 @@ stages:
         matrix:
           PreProd:
             environment: PreProd
-          # Prod:
-          #   environment: Prod
+          Prod:
+            environment: Prod
 
       steps:
       - checkout: self
@@ -168,7 +166,7 @@ stages:
             ClientSecret: $(idam_client_secret)
 
           environments:
-            - name: Test2
+            - name: Preview
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
@@ -190,11 +188,6 @@ stages:
             ClientSecret: $(idam_client_secret)
 
           environments:
-            - name: Preview
-              storageAccount: $(infra_storage_account_dev)
-              armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/master
             - name: Dev
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
@@ -215,11 +208,11 @@ stages:
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
-            # - name: Test2
-            #   storageAccount: $(infra_storage_account_dev)
-            #   armServiceConnection: $(infra_arm_service_connection_dev)
-            #   dnsServiceConnection: $(infra_arm_service_connection_pilot)
-            #   deploymentBranch: refs/heads/feature
+            - name: Test2
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/feature
 
   - stage: Deploy_Demo_Environments
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
