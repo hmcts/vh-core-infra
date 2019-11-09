@@ -10,8 +10,8 @@ resource "azurerm_app_service_plan" "appplan" {
   kind = "app"
 
   sku {
-    tier = "PremiumV2"
-    size = "P1v2"
+    tier = local.sku.tier
+    size = local.sku.size
   }
 
   per_site_scaling = false
