@@ -21,17 +21,18 @@ variables:
   - group: vh-build-infra-dev
   - name: vmPool
     value: vh-vsts-agent-dev
-  - name: buildContainer
-    value: dftai/ps-terraform-agent:latest
+
+resources:
+  containers:
+  - container: terraform
+    image: dftai/ps-terraform-agent:latest
 
 stages:
-  - stage: Plan_Test_Environments
+  - stage: Plan_Preview_Environments
     jobs:
-    - job: Dev_Plan
+    - job: Preview_Plan
       pool:
           name: $(vmPool)
-
-      container: $(buildContainer)
 
       variables:
         - group: vh-infra-dev
@@ -40,24 +41,16 @@ stages:
       strategy:
         maxParallel: 3
         matrix:
-          # Preview:
-          #   environment: Preview
-          # Dev:
-          #   environment: Dev
-          # AAT:
-          #   environment: AAT
-          # Demo:
-          #   environment: Demo
-          # Sandbox:
-          #   environment: Sandbox
-          # Test1:
-          #   environment: Test1
           Test2:
             environment: Test2
 
       steps:
+      - checkout: self
+        clean: true
+
       - template: pipeline/terraform-plan.yml
         parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
           storageAccount: $(infra_storage_account_dev)
           environment: $(environment)
 
@@ -68,21 +61,71 @@ stages:
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
-    
+  
+  - stage: Plan_Test_Environments
+    condition: succeeded()
+    dependsOn:
+      - Deploy_Preview_Environments 
+    jobs:
+    - job: Dev_Plan
+      pool:
+          name: $(vmPool)
+
+      variables:
+        - group: vh-infra-dev
+        - group: vh-build-infra-dev
+
+      strategy:
+        maxParallel: 3
+        matrix:
+          Preview:
+            environment: Preview
+          Dev:
+            environment: Dev
+          AAT:
+            environment: AAT
+          Demo:
+            environment: Demo
+          Sandbox:
+            environment: Sandbox
+          Test1:
+            environment: Test1
+          # Test2:
+          #   environment: Test2
+
+      steps:
+      - checkout: self
+        clean: true
+
+      - template: pipeline/terraform-plan.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          storageAccount: $(infra_storage_account_dev)
+          environment: $(environment)
+
+          armServiceConnection: $(infra_arm_service_connection_dev)
+          dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          buildAgentvNet: $(build_agent_vnet_dev)
+
+          idamTenantId: $(idam_tenant_id)
+          idamClientId: $(idam_client_id)
+          idamClientSecret: $(idam_client_secret)
+
   - stage: Plan_Prod_Environments
+    condition: succeeded()
+    dependsOn:
+      - Deploy_Preview_Environments
     jobs:
     - job: Pilot_Plan
       pool:
           name: $(vmPool)
-
-      container: $(buildContainer)
 
       variables:
         - group: vh-infra-pilot
         - group: vh-build-infra-prod
         - name: vmPool
           value: vh-vsts-agent-pilot
-        
+
       strategy:
         maxParallel: 3
         matrix:
@@ -92,8 +135,12 @@ stages:
           #   environment: Prod
 
       steps:
+      - checkout: self
+        clean: true
+
       - template: pipeline/terraform-plan.yml
         parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
           storageAccount: $(infra_storage_account_pilot)
           environment: $(environment)
 
@@ -105,11 +152,36 @@ stages:
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
 
-  - stage: Deploy_Test_Environments
-    dependsOn: Plan_Test_Environments
+  - stage: Deploy_Preview_Environments
+    condition: and(succeeded(), startswith(variables['Build.SourceBranch'], 'refs/heads/'))
+    dependsOn:
+      - Plan_Preview_Environments
     jobs:
       - template: pipeline/terraform-deployment.yml
         parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          pool: $(vmPool)
+          buildAgentvNet: $(build_agent_vnet_dev)
+          idam:
+            TenantId: $(idam_tenant_id)
+            ClientId: $(idam_client_id)
+            ClientSecret: $(idam_client_secret)
+
+          environments:
+            - name: Test2
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/
+
+  - stage: Deploy_Test_Environments
+    condition: succeeded()
+    dependsOn:
+      - Plan_Test_Environments
+    jobs:
+      - template: pipeline/terraform-deployment.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
           pool: $(vmPool)
           buildAgentvNet: $(build_agent_vnet_dev)
           idam:
@@ -137,26 +209,27 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/master
+              deploymentBranch: refs/heads/feature
             - name: Test1
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
-            - name: Test2
-              storageAccount: $(infra_storage_account_dev)
-              armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/feature
+            # - name: Test2
+            #   storageAccount: $(infra_storage_account_dev)
+            #   armServiceConnection: $(infra_arm_service_connection_dev)
+            #   dnsServiceConnection: $(infra_arm_service_connection_pilot)
+            #   deploymentBranch: refs/heads/feature
 
   - stage: Deploy_Demo_Environments
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     dependsOn:
       - Plan_Test_Environments
       - Deploy_Test_Environments
     jobs:
       - template: pipeline/terraform-deployment.yml
         parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
           pool: $(vmPool)
           buildAgentvNet: $(build_agent_vnet_dev)
           idam:
@@ -170,15 +243,16 @@ stages:
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
               deploymentBranch: refs/heads/master
- 
+
   - stage: Deploy_Prod_Environments
-    condition: eq(variables['Build.SourceBranch'], 'refs/heads/master')
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     dependsOn:
       - Plan_Prod_Environments
       - Deploy_Test_Environments
     jobs:
       - template: pipeline/terraform-deployment.yml
         parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
           pool: vh-vsts-agent-pilot
           buildAgentvNet: $(build_agent_vnet_prod)
           idam:

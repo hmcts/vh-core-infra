@@ -28,6 +28,7 @@ steps:
       idamClientId: ${{ parameters.idamClientId }}
       idamClientSecret: ${{ parameters.idamClientSecret }}
       buildAgentvNet: ${{ parameters.buildAgentvNet }}
+      environment: ${{ parameters.environment }}
 
   - task: AzureCLI@2
     inputs:

@@ -18,6 +18,7 @@ steps:
       idamTenantId: ${{ parameters.idamTenantId }}
       idamClientId: ${{ parameters.idamClientId }}
       idamClientSecret: ${{ parameters.idamClientSecret }}
+      environment: ${{ parameters.environment }}
 
   - task: DownloadPipelineArtifact@2
     displayName: Download Terraform Plan

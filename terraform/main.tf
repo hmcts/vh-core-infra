@@ -38,7 +38,7 @@ module AppService {
     def => {
       name                 = local.app_definitions[def].name
       websockets           = local.app_definitions[def].websockets
-      ip_restriction       = concat(local.app_definitions[def].ip_restriction, [local.app_definitions[def].audience_subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id])
+      ip_restriction       = tolist(concat(local.app_definitions[def].ip_restriction, [local.app_definitions[def].audience_subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id]))
       vnet_integ_subnet_id = local.app_definitions[def].subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id
     }
   }
@@ -104,10 +104,14 @@ module Monitoring {
 module VHDataServices {
   source = "./modules/VHDataServices"
 
-  delegated_networks = {
-    AccessFromBackendServices = module.WebAppSecurity.backend_subnet_id
-    AccessFromBuildAgent      = var.build_agent_vnet
-  }
+  delegated_networks = merge({
+    for subnet in var.build_agent_vnet :
+    "AccessFromBuildAgent${index(var.build_agent_vnet, subnet)}" => subnet
+    },
+    {
+      AccessFromBackendServices = module.WebAppSecurity.backend_subnet_id
+  })
+
   databases = {
     hearing = {
       collation         = "SQL_Latin1_General_CP1_CI_AS"
@@ -156,7 +160,8 @@ module InfraSecrets {
     }
   }
   delegated_networks = {
-    AccessFromBuildAgent = var.build_agent_vnet
+    for subnet in var.build_agent_vnet :
+    "AccessFromBuildAgent${index(var.build_agent_vnet, subnet)}" => subnet
   }
 }
 
