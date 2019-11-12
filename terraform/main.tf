@@ -38,7 +38,7 @@ module AppService {
     def => {
       name                 = local.app_definitions[def].name
       websockets           = local.app_definitions[def].websockets
-      ip_restriction       = tolist(concat(local.app_definitions[def].ip_restriction, [local.app_definitions[def].audience_subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id]))
+      ip_restriction       = tolist(concat(length(local.app_definitions[def].ip_restriction) == 0 ? [] : local.app_definitions[def].ip_restriction, [local.app_definitions[def].audience_subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id]))
       vnet_integ_subnet_id = local.app_definitions[def].subnet == "backend" ? module.WebAppSecurity.backend_subnet_id : module.WebAppSecurity.frontend_subnet_id
     }
   }

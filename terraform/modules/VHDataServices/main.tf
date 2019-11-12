@@ -53,12 +53,12 @@ resource "azurerm_key_vault_secret" "VhVideoDatabaseConnectionString" {
 }
 
 resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
-  for_each = var.delegated_networks
+  count = 3
 
-  name                = each.key
+  name                = keys(var.delegated_networks)[count.index]
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
   server_name         = azurerm_sql_server.vh-core-infra.name
-  subnet_id           = each.value
+  subnet_id           = var.delegated_networks[keys(var.delegated_networks)[count.index]]
 }
 
 resource "azurerm_sql_database" "vh-core-infra" {
