@@ -8,7 +8,7 @@ resource "azurerm_signalr_service" "vh" {
   location            = data.azurerm_resource_group.vh-core-infra.location
 
   sku {
-    name     = local.sku.tier
-    capacity = local.sku.size
+    name     = local.sku.name
+    capacity = local.sku.capacity
   }
 }

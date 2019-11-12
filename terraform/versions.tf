@@ -8,5 +8,7 @@ terraform {
   required_providers {
     azurerm = ">= 1.36"
     azuread = "~> 0.6"
+    null    = ">= 0"
+    random  = ">= 2"
   }
 }
