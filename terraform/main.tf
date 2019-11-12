@@ -171,7 +171,7 @@ module InfraSecrets {
 module "SignalR" {
   source = "./modules/SignalR"
 
-  resource_prefix     = local.std_prefix
+  resource_prefix     = "${local.std_prefix}${local.suffix}"
   resource_group_name = azurerm_resource_group.vh-core-infra.name
 }
 
