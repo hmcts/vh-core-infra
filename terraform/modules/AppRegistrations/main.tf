@@ -1,10 +1,14 @@
+locals {
+  localhostreply = ["https://localhost", "https://localhost/login", "https://localhost/home"]
+}
+
 resource "azuread_application" "vh" {
   for_each = var.apps
 
   name                       = each.value.name
   homepage                   = each.value.url
   identifier_uris            = [each.value.url]
-  reply_urls                 = [each.value.url, "${each.value.url}/login", "${each.value.url}/home"]
+  reply_urls                 = terraform.workspace == "Dev" ? concat(local.localhostreply, [each.value.url, "${each.value.url}/login", "${each.value.url}/home"]) : [each.value.url, "${each.value.url}/login", "${each.value.url}/home"]
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = false
   type                       = "webapp/api"
