@@ -18,11 +18,11 @@ variable "environment_to_sku_map" {
   type = "map"
   default = {
     AAT = {
-      name     = "Free_F1"
+      name     = "Standard_S1"
       capacity = 1
     }
     Demo = {
-      name     = "Free_F1"
+      name     = "Standard_S1"
       capacity = 1
     }
     Dev = {
@@ -34,7 +34,7 @@ variable "environment_to_sku_map" {
       capacity = 1
     }
     Sandbox = {
-      name     = "Free_F1"
+      name     = "Standard_S1"
       capacity = 1
     }
     Test1 = {
@@ -46,11 +46,11 @@ variable "environment_to_sku_map" {
       capacity = 1
     }
     PreProd = {
-      name     = "Free_F1"
+      name     = "Standard_S1"
       capacity = 1
     }
     Prod = {
-      name     = "Free_F1"
+      name     = "Standard_S1"
       capacity = 1
     }
   }
@@ -59,7 +59,7 @@ variable "environment_to_sku_map" {
 locals {
   environment = lookup(var.workspace_to_environment_map, terraform.workspace, "preview")
   sku = lookup(var.environment_to_sku_map, terraform.workspace, {
-    name     = "Free_F1"
+    name     = "Standard_S1"
     capacity = 1
   })
 }
