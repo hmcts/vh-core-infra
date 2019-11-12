@@ -3,15 +3,12 @@ trigger:
   branches:
     include:
       - master
-  tags:
-    include:
-      - v*
 
 pr:
   autoCancel: true
   branches:
     include:
-      - features/*
+      - master
 
 variables:
   - group: vh-idam
@@ -151,7 +148,7 @@ stages:
           idamClientSecret: $(idam_client_secret)
 
   - stage: Deploy_Preview_Environments
-    condition: and(succeeded(), startswith(variables['Build.SourceBranch'], 'refs/heads/'))
+    condition: succeeded()
     dependsOn:
       - Plan_Preview_Environments
     jobs:
@@ -170,10 +167,10 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/
+              deploymentBranch: refs/
 
   - stage: Deploy_Test_Environments
-    condition: succeeded()
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
     dependsOn:
       - Plan_Test_Environments
     jobs:
@@ -202,7 +199,7 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/feature
+              deploymentBranch: refs/heads/master
             - name: Test1
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
@@ -212,7 +209,7 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/feature
+              deploymentBranch: refs/heads/master
 
   - stage: Deploy_Demo_Environments
     condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
