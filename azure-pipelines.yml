@@ -1,0 +1,263 @@
+trigger:
+  batch: true
+  branches:
+    include:
+      - master
+
+pr:
+  autoCancel: true
+  branches:
+    include:
+      - master
+
+variables:
+  - group: vh-idam
+  - group: vh-infra-dev
+  - group: vh-infra-pilot
+  - group: vh-build-infra-prod
+  - group: vh-build-infra-dev
+  - name: vmPool
+    value: vh-vsts-agent-dev
+
+resources:
+  containers:
+  - container: terraform
+    image: dftai/ps-terraform-agent:latest
+
+stages:
+  - stage: Plan_Preview_Environments
+    jobs:
+    - job: Preview_Plan
+      pool:
+          name: $(vmPool)
+
+      variables:
+        - group: vh-infra-dev
+        - group: vh-build-infra-dev
+
+      strategy:
+        maxParallel: 3
+        matrix:
+          Preview:
+            environment: Preview
+
+      steps:
+      - checkout: self
+        clean: true
+
+      - template: pipeline/terraform-plan.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          storageAccount: $(infra_storage_account_dev)
+          environment: $(environment)
+
+          armServiceConnection: $(infra_arm_service_connection_dev)
+          dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          buildAgentvNet: $(build_agent_vnet_dev)
+
+          idamTenantId: $(idam_tenant_id)
+          idamClientId: $(idam_client_id)
+          idamClientSecret: $(idam_client_secret)
+  
+  - stage: Plan_Test_Environments
+    condition: succeeded()
+    dependsOn:
+      - Deploy_Preview_Environments 
+    jobs:
+    - job: Dev_Plan
+      pool:
+          name: $(vmPool)
+
+      variables:
+        - group: vh-infra-dev
+        - group: vh-build-infra-dev
+
+      strategy:
+        maxParallel: 3
+        matrix:
+          Dev:
+            environment: Dev
+          AAT:
+            environment: AAT
+          Demo:
+            environment: Demo
+          Sandbox:
+            environment: Sandbox
+          Test1:
+            environment: Test1
+          Test2:
+            environment: Test2
+
+      steps:
+      - checkout: self
+        clean: true
+
+      - template: pipeline/terraform-plan.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          storageAccount: $(infra_storage_account_dev)
+          environment: $(environment)
+
+          armServiceConnection: $(infra_arm_service_connection_dev)
+          dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          buildAgentvNet: $(build_agent_vnet_dev)
+
+          idamTenantId: $(idam_tenant_id)
+          idamClientId: $(idam_client_id)
+          idamClientSecret: $(idam_client_secret)
+
+  - stage: Plan_Prod_Environments
+    condition: succeeded()
+    dependsOn:
+      - Deploy_Preview_Environments
+    jobs:
+    - job: Pilot_Plan
+      pool:
+          name: $(vmPool)
+
+      variables:
+        - group: vh-infra-pilot
+        - group: vh-build-infra-prod
+        - name: vmPool
+          value: vh-vsts-agent-pilot
+
+      strategy:
+        maxParallel: 3
+        matrix:
+          PreProd:
+            environment: PreProd
+          Prod:
+            environment: Prod
+
+      steps:
+      - checkout: self
+        clean: true
+
+      - template: pipeline/terraform-plan.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          storageAccount: $(infra_storage_account_pilot)
+          environment: $(environment)
+
+          armServiceConnection: $(infra_arm_service_connection_pilot)
+          dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          buildAgentvNet: $(build_agent_vnet_prod)
+
+          idamTenantId: $(idam_tenant_id)
+          idamClientId: $(idam_client_id)
+          idamClientSecret: $(idam_client_secret)
+
+  - stage: Deploy_Preview_Environments
+    condition: succeeded()
+    dependsOn:
+      - Plan_Preview_Environments
+    jobs:
+      - template: pipeline/terraform-deployment.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          pool: $(vmPool)
+          buildAgentvNet: $(build_agent_vnet_dev)
+          idam:
+            TenantId: $(idam_tenant_id)
+            ClientId: $(idam_client_id)
+            ClientSecret: $(idam_client_secret)
+
+          environments:
+            - name: Preview
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/
+
+  - stage: Deploy_Test_Environments
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    dependsOn:
+      - Plan_Test_Environments
+    jobs:
+      - template: pipeline/terraform-deployment.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          pool: $(vmPool)
+          buildAgentvNet: $(build_agent_vnet_dev)
+          idam:
+            TenantId: $(idam_tenant_id)
+            ClientId: $(idam_client_id)
+            ClientSecret: $(idam_client_secret)
+
+          environments:
+            - name: Dev
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+            - name: AAT
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+            - name: Sandbox
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+            - name: Test1
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+            - name: Test2
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+
+  - stage: Deploy_Demo_Environments
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    dependsOn:
+      - Plan_Test_Environments
+      - Deploy_Test_Environments
+    jobs:
+      - template: pipeline/terraform-deployment.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          pool: $(vmPool)
+          buildAgentvNet: $(build_agent_vnet_dev)
+          idam:
+            TenantId: $(idam_tenant_id)
+            ClientId: $(idam_client_id)
+            ClientSecret: $(idam_client_secret)
+
+          environments:
+            - name: Demo
+              storageAccount: $(infra_storage_account_dev)
+              armServiceConnection: $(infra_arm_service_connection_dev)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+
+  - stage: Deploy_Prod_Environments
+    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    dependsOn:
+      - Plan_Prod_Environments
+      - Deploy_Test_Environments
+    jobs:
+      - template: pipeline/terraform-deployment.yml
+        parameters:
+          workingDirectory: $(system.defaultWorkingDirectory)/terraform
+          pool: vh-vsts-agent-pilot
+          buildAgentvNet: $(build_agent_vnet_prod)
+          idam:
+            TenantId: $(idam_tenant_id)
+            ClientId: $(idam_client_id)
+            ClientSecret: $(idam_client_secret)
+
+          environments:
+            - name: PreProd
+              storageAccount: $(infra_storage_account_pilot)
+              armServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master
+            - name: Prod
+              storageAccount: $(infra_storage_account_pilot)
+              armServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              deploymentBranch: refs/heads/master

@@ -1,0 +1,39 @@
+parameters:
+  workingDirectory: $(system.defaultWorkingDirectory)
+  storageAccount: ""
+  armServiceConnection: ""
+  dnsServiceConnection: ""
+  idamTenantId: ""
+  idamClientId: ""
+  idamClientSecret: ""
+  environment: ""
+
+steps:
+  - template: terraform-loginprep.yml
+    parameters:
+      workingDirectory: ${{ parameters.workingDirectory }}
+      storageAccount: ${{ parameters.storageAccount }}
+      armServiceConnection: ${{ parameters.armServiceConnection }}
+      dnsServiceConnection: ${{ parameters.dnsServiceConnection }}
+      idamTenantId: ${{ parameters.idamTenantId }}
+      idamClientId: ${{ parameters.idamClientId }}
+      idamClientSecret: ${{ parameters.idamClientSecret }}
+      environment: ${{ parameters.environment }}
+
+  - task: DownloadPipelineArtifact@2
+    displayName: Download Terraform Plan
+    inputs:
+      artifactName: tfplan-${{ parameters.environment }}
+      targetPath: ${{ parameters.workingDirectory }}
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.armServiceConnection }}
+      scriptType: pscore
+      scriptLocation: inlineScript
+      failOnStandardError: true
+      workingDirectory: ${{ parameters.workingDirectory }}
+      inlineScript: |
+        terraform apply -auto-approve plan.tfplan
+    displayName: Terraform apply
+    condition: succeeded()
