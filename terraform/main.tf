@@ -159,10 +159,20 @@ module InfraSecrets {
       url            = local.app_definitions[def].url
     }
   }
+  secrets = {
+    signalr_connection_str = module.SignalR.signalr_connection_str
+  }
   delegated_networks = {
     for subnet in var.build_agent_vnet :
     "AccessFromBuildAgent${index(var.build_agent_vnet, subnet)}" => subnet
   }
+}
+
+module "SignalR" {
+  source = "./modules/SignalR"
+
+  resource_prefix     = local.std_prefix
+  resource_group_name = azurerm_resource_group.vh-core-infra.name
 }
 
 module HearingsDNS {

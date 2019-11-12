@@ -168,3 +168,11 @@ resource "azurerm_key_vault_secret" "app_name" {
   value        = each.value.url
   key_vault_id = azurerm_key_vault.vh-core-infra-ht.id
 }
+
+resource "azurerm_key_vault_secret" "secrets" {
+  for_each = var.secrets
+
+  name         = each.key
+  value        = each.value
+  key_vault_id = azurerm_key_vault.vh-core-infra-ht.id
+}
