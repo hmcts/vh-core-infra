@@ -5,7 +5,7 @@ data "azurerm_resource_group" "vh-core-infra" {
 resource "azurerm_signalr_service" "vh" {
   name                = var.resource_prefix
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
-  location            = data.azurerm_resource_group.vh-core-infra.location
+  location            = "uksouth"
 
   sku {
     name     = local.sku.name
