@@ -47,7 +47,8 @@ resource "azurerm_subnet" "backend" {
   service_endpoints = [
     "Microsoft.Web",
     "Microsoft.Sql",
-    "Microsoft.KeyVault"
+    "Microsoft.KeyVault",
+    "Microsoft.Storage"
   ]
 }
 
