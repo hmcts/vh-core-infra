@@ -13,9 +13,10 @@ resource "azurerm_user_assigned_identity" "sqluser" {
   name = "${var.resource_prefix}-sqluser"
 }
 
-resource "random_password" "password" {
+resource "random_password" "sqlpass" {
   length  = 32
   special = true
+  override_special = "_%@"
 }
 
 resource "azurerm_sql_server" "vh-core-infra" {
@@ -24,7 +25,7 @@ resource "azurerm_sql_server" "vh-core-infra" {
   location                     = data.azurerm_resource_group.vh-core-infra.location
   version                      = "12.0"
   administrator_login          = "hvhearingsapiadmin"
-  administrator_login_password = random_password.password.result
+  administrator_login_password = random_password.sqlpass.result
 
   tags = {
     displayName = "Virtual Courtroom SQL Server"
@@ -42,13 +43,13 @@ resource "azurerm_sql_active_directory_administrator" "sqluser" {
 
 resource "azurerm_key_vault_secret" "VhBookingsDatabaseConnectionString" {
   name         = "VhBookingsDatabaseConnectionString"
-  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhbookings;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.password.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhbookings;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.sqlpass.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   key_vault_id = azurerm_key_vault.vh-core-infra.id
 }
 
 resource "azurerm_key_vault_secret" "VhVideoDatabaseConnectionString" {
   name         = "VhVideoDatabaseConnectionString"
-  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.password.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.sqlpass.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   key_vault_id = azurerm_key_vault.vh-core-infra.id
 }
 
@@ -281,7 +282,7 @@ output "service_bus_connstr" {
 }
 
 output "db_admin_password" {
-  value = random_password.password.result
+  value = random_password.sqlpass.result
 }
 
 output "db_server_name" {
