@@ -32,6 +32,70 @@ resource "azurerm_sql_server" "vh-core-infra" {
   }
 }
 
+resource "azurerm_template_deployment" "sqlbackup" {
+  for_each = if terraform.workspace == "Prod" ? var.databases : {}
+
+  name                = "db-backup-${each.key}"
+  resource_group_name = data.azurerm_resource_group.vh-core-infra.name
+
+  template_body = <<DEPLOY
+  {
+    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
+    "contentVersion": "1.0.0.0",
+    "parameters": {
+      "databaseServerName": {
+        "type": "string"
+      },
+      "database": {
+        "type": "array"
+      }
+    },
+    "resources": [
+      {
+        "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
+        "name": "[concat(parameters('databaseServerName'), "/", parameters('database')[copyIndex()], '/Default')]",
+        "tags": { "displayName": "Database Backup" },
+        "apiVersion": "2017-03-01-preview",
+        "location": "UK West",
+        "scale": null,
+        "properties": {
+          "retentionDays": 35
+        },
+        "copy": {
+          "name": "db-short",
+          "count": "[length(parameters('database'))]"
+        }
+      },
+      {
+        "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
+        "name": "[concat(parameters('databaseServerName'), "/", parameters('database')[copyIndex()], '/Default')]",
+        "tags": { "displayName": "Database Backup" },
+        "apiVersion": "2017-03-01-preview",
+        "location": "UK West",
+        "scale": null,
+        "properties": {
+          "weeklyRetention": "P8W",
+          "monthlyRetention": "P12M",
+          "yearlyRetention": "P5Y",
+          "weekOfYear": "1"
+        },
+        "copy": {
+          "name": "db-long",
+          "count": "[length(parameters('database'))]"
+        }
+      }
+    ]
+  }
+DEPLOY
+
+  parameters = {
+    databaseServerName = azurerm_sql_server.vh-core-infra.name
+    database           = keys(var.databases)
+  }
+
+  deployment_mode = "Incremental"
+}
+
 resource "azurerm_sql_active_directory_administrator" "sqluser" {
   server_name         = azurerm_sql_server.vh-core-infra.name
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
