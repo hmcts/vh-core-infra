@@ -14,8 +14,8 @@ resource "azurerm_user_assigned_identity" "sqluser" {
 }
 
 resource "random_password" "sqlpass" {
-  length  = 32
-  special = true
+  length           = 32
+  special          = true
   override_special = "_%@"
 }
 
@@ -33,64 +33,16 @@ resource "azurerm_sql_server" "vh-core-infra" {
 }
 
 resource "azurerm_template_deployment" "sqlbackup" {
-  for_each = if terraform.workspace == "Prod" ? var.databases : {}
+  for_each = terraform.workspace == "Prod" ? var.databases : {}
 
   name                = "db-backup-${each.key}"
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
 
-  template_body = <<DEPLOY
-  {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "databaseServerName": {
-        "type": "string"
-      },
-      "database": {
-        "type": "array"
-      }
-    },
-    "resources": [
-      {
-        "type": "Microsoft.Sql/servers/databases/backupShortTermRetentionPolicies",
-        "name": "[concat(parameters('databaseServerName'), "/", parameters('database')[copyIndex()], '/Default')]",
-        "tags": { "displayName": "Database Backup" },
-        "apiVersion": "2017-03-01-preview",
-        "location": "UK West",
-        "scale": null,
-        "properties": {
-          "retentionDays": 35
-        },
-        "copy": {
-          "name": "db-short",
-          "count": "[length(parameters('database'))]"
-        }
-      },
-      {
-        "type": "Microsoft.Sql/servers/databases/backupLongTermRetentionPolicies",
-        "name": "[concat(parameters('databaseServerName'), "/", parameters('database')[copyIndex()], '/Default')]",
-        "tags": { "displayName": "Database Backup" },
-        "apiVersion": "2017-03-01-preview",
-        "location": "UK West",
-        "scale": null,
-        "properties": {
-          "weeklyRetention": "P8W",
-          "monthlyRetention": "P12M",
-          "yearlyRetention": "P5Y",
-          "weekOfYear": "1"
-        },
-        "copy": {
-          "name": "db-long",
-          "count": "[length(parameters('database'))]"
-        }
-      }
-    ]
-  }
-DEPLOY
+  template_body = file("${path.module}/sql_rentention.json")
 
   parameters = {
     databaseServerName = azurerm_sql_server.vh-core-infra.name
-    database           = keys(var.databases)
+    database           = join(",", keys(var.databases))
   }
 
   deployment_mode = "Incremental"
@@ -326,9 +278,9 @@ resource "azurerm_key_vault" "vh-core-infra" {
   }
 
   network_acls {
-    default_action = "Deny"
-    bypass         = "None"
-    ip_rules = []
+    default_action             = "Deny"
+    bypass                     = "None"
+    ip_rules                   = []
     virtual_network_subnet_ids = values(var.delegated_networks)
   }
 }

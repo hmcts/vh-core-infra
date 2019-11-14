@@ -15,11 +15,11 @@ variable "workspace_to_environment_map" {
 }
 
 locals {
-  environment = lookup(var.workspace_to_environment_map, terraform.workspace, "preview")
-  suffix      = "-${local.environment}"
+  environment   = lookup(var.workspace_to_environment_map, terraform.workspace, "preview")
+  suffix        = "-${local.environment}"
   common_prefix = "core-infra"
   std_prefix    = "vh-${local.common_prefix}"
-  
+
   web_apps = [
     {
       name        = "vh-admin-web${local.suffix}",
