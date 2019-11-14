@@ -33,7 +33,7 @@ resource "azurerm_sql_server" "vh-core-infra" {
 }
 
 resource "azurerm_template_deployment" "sqlbackup" {
-  for_each = terraform.workspace == "Prod" ? var.databases : {}
+  count = terraform.workspace == "Prod" ? 1 : 0
 
   name                = "db-backup-${each.key}"
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
