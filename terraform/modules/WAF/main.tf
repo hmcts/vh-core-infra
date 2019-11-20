@@ -29,7 +29,7 @@ resource "azurerm_virtual_network" "WAF" {
 }
 
 resource "azurerm_subnet" "backend" {
-  name                 = "${local.std_prefix}-back${local.suffix}"
+  name                 = "${local.std_prefix}-dmz-back${local.suffix}"
   resource_group_name  = data.azurerm_resource_group.vh-core-infra.name
   virtual_network_name = azurerm_virtual_network.WAF.name
   address_prefix       = "${cidrsubnet(local.waf_address_space[1], 2, 0)}"
@@ -57,7 +57,7 @@ resource "azurerm_subnet" "backend" {
 }
 
 resource "azurerm_subnet" "frontend" {
-  name                 = "${local.std_prefix}-front${local.suffix}"
+  name                 = "${local.std_prefix}-dmz-front${local.suffix}"
   resource_group_name  = data.azurerm_resource_group.vh-core-infra.name
   virtual_network_name = azurerm_virtual_network.WAF.name
   address_prefix       = "${cidrsubnet(local.waf_address_space[1], 2, 1)}"
