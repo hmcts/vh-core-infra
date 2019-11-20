@@ -43,6 +43,13 @@ resource "azurerm_function_app" "app" {
       allowed_origins     = []
       support_credentials = false
     }
+    virtual_network_name = "ignore"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      site_config.0.virtual_network_name,
+    ]
   }
 }
 
@@ -55,9 +62,9 @@ resource "azurerm_template_deployment" "vnetintegration" {
   template_body = file("${path.module}/vnetintegration.json")
 
   parameters = {
-    siteName          = azurerm_function_app.app["${each.key}"].name
+    siteName          = azurerm_function_app.app[each.key].name
     subnet_resourceid = each.value.vnet_integ_subnet_id
-    null = uuid()
+    null = azurerm_function_app.app[each.key].site_config.0.virtual_network_name
   }
 
   deployment_mode = "Incremental"

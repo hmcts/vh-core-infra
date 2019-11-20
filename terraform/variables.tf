@@ -93,7 +93,7 @@ locals {
     admin-web = {
       name            = "vh-admin-web${local.suffix}"
       websockets      = false
-      ip_restriction  = []
+      ip_restriction  = var.build_agent_vnet
       subnet          = "backend"
       audience_subnet = "frontend"
       url             = "https://vh-admin-web${local.suffix}.hearings.reform.hmcts.net"
@@ -101,7 +101,7 @@ locals {
     service-web = {
       name            = "vh-service-web${local.suffix}"
       websockets      = false
-      ip_restriction  = []
+      ip_restriction  = var.build_agent_vnet
       subnet          = "backend"
       audience_subnet = "frontend"
       url             = "https://vh-service-web${local.suffix}.hearings.reform.hmcts.net"
@@ -109,7 +109,7 @@ locals {
     video-web = {
       name            = "vh-video-web${local.suffix}"
       websockets      = true
-      ip_restriction  = []
+      ip_restriction  = var.build_agent_vnet
       subnet          = "backend"
       audience_subnet = "frontend"
       url             = "https://vh-video-web${local.suffix}.hearings.reform.hmcts.net"

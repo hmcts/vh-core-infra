@@ -5,10 +5,27 @@ locals {
 resource "azuread_application" "vh" {
   for_each = var.apps
 
-  name                       = each.value.name
-  homepage                   = each.value.url
-  identifier_uris            = [each.value.url]
-  reply_urls                 = terraform.workspace == "Dev" ? concat(local.localhostreply, [each.value.url, "${each.value.url}/login", "${each.value.url}/home"]) : [each.value.url, "${each.value.url}/login", "${each.value.url}/home"]
+  name            = each.value.name
+  homepage        = each.value.url
+  identifier_uris = [each.value.url]
+  reply_urls = terraform.workspace == "Dev" ? concat(
+    local.localhostreply,
+    [
+      each.value.url,
+      "${each.value.url}/login",
+      "${each.value.url}/home",
+      "https://${each.value.name}-staging.azurewebsites.net",
+      "https://${each.value.name}-staging.azurewebsites.net/login",
+      "https://${each.value.name}-staging.azurewebsites.net/home"
+    ]
+    ) : [
+    each.value.url,
+    "${each.value.url}/login",
+    "${each.value.url}/home",
+    "https://${each.value.name}-staging.azurewebsites.net",
+    "https://${each.value.name}-staging.azurewebsites.net/login",
+    "https://${each.value.name}-staging.azurewebsites.net/home"
+  ]
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = lookup(local.oauth2_allow_implicit_flow, each.key, false)
   type                       = "webapp/api"

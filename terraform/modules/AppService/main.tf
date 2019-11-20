@@ -157,10 +157,90 @@ resource "azurerm_app_service" "app" {
       allowed_origins     = []
       support_credentials = false
     }
+
+    virtual_network_name = "ignore"
   }
 
   auth_settings {
     enabled = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      site_config.0.virtual_network_name,
+    ]
+  }
+}
+
+resource "azurerm_app_service_slot" "staging" {
+  for_each = var.apps
+
+  name                = "staging"
+  location            = azurerm_resource_group.web[each.key].location
+  resource_group_name = azurerm_resource_group.web[each.key].name
+  app_service_plan_id = azurerm_app_service_plan.appplan.id
+  app_service_name    = each.value.name
+
+  https_only = true
+
+  app_settings = lookup(local.app_settings, each.key, "")
+
+  dynamic "connection_string" {
+    for_each = local.connection_string[each.key]
+
+    content {
+      name  = connection_string.key
+      type  = connection_string.value.type
+      value = connection_string.value.value
+    }
+  }
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = values(var.managed_accounts)
+  }
+
+  site_config {
+    dotnet_framework_version  = "v4.0"
+    always_on                 = true
+    websockets_enabled        = each.value.websockets
+    use_32_bit_worker_process = false
+
+    default_documents = []
+
+    dynamic "ip_restriction" {
+      for_each = each.value.ip_restriction
+
+      content {
+        virtual_network_subnet_id = ip_restriction.value
+      }
+    }
+
+    dynamic "ip_restriction" {
+      for_each = local.monitoring_ips
+
+      content {
+        ip_address  = cidrhost(ip_restriction.value, 0)
+        subnet_mask = cidrnetmask(ip_restriction.value)
+      }
+    }
+
+    cors {
+      allowed_origins     = []
+      support_credentials = false
+    }
+
+    virtual_network_name = "ignore"
+  }
+
+  auth_settings {
+    enabled = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      site_config.0.virtual_network_name,
+    ]
   }
 }
 
@@ -173,13 +253,30 @@ resource "azurerm_template_deployment" "vnetintegration" {
   template_body = file("${path.module}/vnetintegration.json")
 
   parameters = {
-    siteName          = azurerm_app_service.app["${each.key}"].name
+    siteName          = azurerm_app_service.app[each.key].name
     subnet_resourceid = each.value.vnet_integ_subnet_id
-    null              = uuid()
+    null              = azurerm_app_service.app[each.key].site_config.0.virtual_network_name
   }
 
   deployment_mode = "Incremental"
 }
+
+# resource "azurerm_template_deployment" "vnetintegration-staging" {
+#   for_each = var.apps
+
+#   name                = each.key
+#   resource_group_name = azurerm_resource_group.web[each.key].name
+
+#   template_body = file("${path.module}/vnetintegration.json")
+
+#   parameters = {
+#     siteName          = "${azurerm_app_service_slot.staging[each.key].name}"
+#     subnet_resourceid = each.value.vnet_integ_subnet_id
+#     null              = azurerm_app_service_slot.staging[each.key].site_config.0.virtual_network_name
+#   }
+
+#   deployment_mode = "Incremental"
+# }
 
 output "appservice_id" {
   value = azurerm_app_service_plan.appplan.id
