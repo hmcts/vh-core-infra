@@ -35,6 +35,21 @@ locals {
       name        = "vh-video-web${local.suffix}",
       fqdn        = ["vh-video-web${local.suffix}.azurewebsites.net"],
       public_fqdn = "vh-video-web${local.suffix}.hearings.reform.hmcts.net"
+    },
+    {
+      name        = "vh-admin-web${local.suffix}-staging",
+      fqdn        = ["vh-admin-web${local.suffix}-staging.azurewebsites.net"],
+      public_fqdn = "vh-admin-web${local.suffix}-staging.hearings.reform.hmcts.net"
+    },
+    {
+      name        = "vh-service-web${local.suffix}-staging",
+      fqdn        = ["vh-service-web${local.suffix}-staging.azurewebsites.net"],
+      public_fqdn = "vh-service-web${local.suffix}-staging.hearings.reform.hmcts.net"
+    },
+    {
+      name        = "vh-video-web${local.suffix}-staging",
+      fqdn        = ["vh-video-web${local.suffix}-staging.azurewebsites.net"],
+      public_fqdn = "vh-video-web${local.suffix}-staging.hearings.reform.hmcts.net"
     }
   ]
 
