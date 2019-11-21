@@ -293,7 +293,7 @@ resource "azurerm_application_gateway" "waf" {
       unhealthy_threshold                       = 3
 
       match {
-        status_code = [200, 403]
+        status_code = [200]
         body        = ""
       }
     }
