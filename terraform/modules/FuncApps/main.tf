@@ -49,9 +49,7 @@ resource "azurerm_function_app" "app" {
   lifecycle {
     ignore_changes = [
       site_config.0.virtual_network_name,
-      app_settings["AzureWebJobsDashboard"],
-      app_settings["AzureWebJobsStorage"],
-      app_settings["FUNCTIONS_EXTENSION_VERSION"]
+      app_settings
     ]
   }
 }

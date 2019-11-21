@@ -145,7 +145,7 @@ resource "azurerm_app_service" "app" {
     }
 
     dynamic "ip_restriction" {
-      for_each = local.monitoring_ips
+      for_each = terraform.workspace == 'Dev' ? concat(['0.0.0.0/0'], local.monitoring_ips) : local.monitoring_ips
 
       content {
         ip_address  = cidrhost(ip_restriction.value, 0)
@@ -168,6 +168,9 @@ resource "azurerm_app_service" "app" {
   lifecycle {
     ignore_changes = [
       site_config.0.virtual_network_name,
+      site_config.0.scm_type,
+      app_settings,
+      connection_string
     ]
   }
 }
@@ -240,6 +243,9 @@ resource "azurerm_app_service_slot" "staging" {
   lifecycle {
     ignore_changes = [
       site_config.0.virtual_network_name,
+      site_config.0.scm_type,
+      app_settings,
+      connection_string
     ]
   }
 }

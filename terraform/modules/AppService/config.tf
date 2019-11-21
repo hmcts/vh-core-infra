@@ -171,6 +171,7 @@ locals {
       "VhServices:VideoApiResourceId"          = var.app_url["video-api"]
       "VhServices:VideoApiUrl"                 = var.app_url["video-api"]
       WEBSITE_NODE_DEFAULT_VERSION             = "6.9.1"
+      "ConnectionStrings:SignalR"              = var.signalr_connection_str
     }
   }
 
