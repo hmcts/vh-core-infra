@@ -283,6 +283,12 @@ resource "azurerm_key_vault" "vh-core-infra" {
     ip_rules                   = []
     virtual_network_subnet_ids = values(var.delegated_networks)
   }
+
+  lifecycle {
+    ignore_changes = [
+      sku_name
+    ]
+  }
 }
 
 output "sqluser" {

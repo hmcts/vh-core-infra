@@ -261,22 +261,23 @@ resource "azurerm_template_deployment" "vnetintegration" {
   deployment_mode = "Incremental"
 }
 
-# resource "azurerm_template_deployment" "vnetintegration-staging" {
-#   for_each = var.apps
+resource "azurerm_template_deployment" "vnetintegration-staging" {
+  for_each = var.apps
 
-#   name                = each.key
-#   resource_group_name = azurerm_resource_group.web[each.key].name
+  name                = each.key
+  resource_group_name = azurerm_resource_group.web[each.key].name
 
-#   template_body = file("${path.module}/vnetintegration.json")
+  template_body = file("${path.module}/vnetintegration-slot.json")
 
-#   parameters = {
-#     siteName          = "${azurerm_app_service_slot.staging[each.key].name}"
-#     subnet_resourceid = each.value.vnet_integ_subnet_id
-#     null              = azurerm_app_service_slot.staging[each.key].site_config.0.virtual_network_name
-#   }
+  parameters = {
+    siteName          = azurerm_app_service.app[each.key].name
+    slot              = azurerm_app_service_slot.staging[each.key].name
+    subnet_resourceid = each.value.vnet_integ_subnet_id
+    null              = azurerm_app_service_slot.staging[each.key].site_config.0.virtual_network_name
+  }
 
-#   deployment_mode = "Incremental"
-# }
+  deployment_mode = "Incremental"
+}
 
 output "appservice_id" {
   value = azurerm_app_service_plan.appplan.id

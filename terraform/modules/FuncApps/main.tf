@@ -49,6 +49,54 @@ resource "azurerm_function_app" "app" {
   lifecycle {
     ignore_changes = [
       site_config.0.virtual_network_name,
+      app_settings["AzureWebJobsDashboard"],
+      app_settings["AzureWebJobsStorage"],
+      app_settings["FUNCTIONS_EXTENSION_VERSION"]
+    ]
+  }
+}
+
+resource "azurerm_app_service_slot" "staging" {
+  for_each = var.apps
+
+  name                = "staging"
+  location            = azurerm_resource_group.app[each.key].location
+  resource_group_name = azurerm_resource_group.app[each.key].name
+  app_service_plan_id = var.app_service_plan_id
+  app_service_name    = each.value.name
+
+  # dynamic "identity" {
+  #   for_each = var.managed_accounts
+
+  #   content {
+  #     type         = "UserAssigned"
+  #     identity_ids = each.value
+  #   }
+  # }
+
+  app_settings = lookup(local.app_settings, each.key, "")
+
+  client_affinity_enabled = false
+  enabled                 = true
+  https_only              = true
+
+  site_config {
+    always_on                 = true
+    use_32_bit_worker_process = true
+    websockets_enabled        = false
+    cors {
+      allowed_origins     = []
+      support_credentials = false
+    }
+    virtual_network_name = "ignore"
+  }
+
+  lifecycle {
+    ignore_changes = [
+      site_config.0.virtual_network_name,
+      app_settings["AzureWebJobsDashboard"],
+      app_settings["AzureWebJobsStorage"],
+      app_settings["FUNCTIONS_EXTENSION_VERSION"]
     ]
   }
 }
@@ -64,7 +112,25 @@ resource "azurerm_template_deployment" "vnetintegration" {
   parameters = {
     siteName          = azurerm_function_app.app[each.key].name
     subnet_resourceid = each.value.vnet_integ_subnet_id
-    null = azurerm_function_app.app[each.key].site_config.0.virtual_network_name
+    null              = azurerm_function_app.app[each.key].site_config.0.virtual_network_name
+  }
+
+  deployment_mode = "Incremental"
+}
+
+resource "azurerm_template_deployment" "vnetintegration-staging" {
+  for_each = var.apps
+
+  name                = each.key
+  resource_group_name = azurerm_resource_group.app[each.key].name
+
+  template_body = file("${path.module}/vnetintegration-slot.json")
+
+  parameters = {
+    siteName          = azurerm_function_app.app[each.key].name
+    slot              = azurerm_app_service_slot.staging[each.key].name
+    subnet_resourceid = each.value.vnet_integ_subnet_id
+    null              = azurerm_app_service_slot.staging[each.key].site_config.0.virtual_network_name
   }
 
   deployment_mode = "Incremental"

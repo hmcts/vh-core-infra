@@ -135,6 +135,12 @@ resource "azurerm_key_vault" "vh-core-infra-ht" {
     ]
     virtual_network_subnet_ids = values(var.delegated_networks)
   }
+
+  lifecycle {
+    ignore_changes = [
+      sku_name
+    ]
+  }
 }
 
 resource "azurerm_key_vault_secret" "app_id" {
