@@ -157,9 +157,10 @@ locals {
 
   funcapp_definitions = {
     booking-queue-subscriber = {
-      name   = "vh-booking-queue-subscriber${local.suffix}"
-      subnet = "backend"
-      url    = "https://vh-booking-queue-subscriber${local.suffix}.azurewebsites.net"
+      name            = "vh-booking-queue-subscriber${local.suffix}"
+      subnet          = "backend"
+      audience_subnet = "backend"
+      url             = "https://vh-booking-queue-subscriber${local.suffix}.azurewebsites.net"
     }
   }
 
@@ -167,15 +168,17 @@ locals {
     {
       for def in keys(local.app_definitions) :
       def => {
-        name = local.app_definitions[def].name
-        url  = local.app_definitions[def].url
+        name     = local.app_definitions[def].name
+        url      = local.app_definitions[def].url
+        audience = local.app_definitions[def].audience_subnet
       }
     },
     {
       for def in keys(local.funcapp_definitions) :
       def => {
-        name = local.funcapp_definitions[def].name
-        url  = local.funcapp_definitions[def].url
+        name     = local.funcapp_definitions[def].name
+        url      = local.funcapp_definitions[def].url
+        audience = local.funcapp_definitions[def].audience_subnet
       }
     }
   )

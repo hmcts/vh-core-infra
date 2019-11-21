@@ -14,17 +14,17 @@ resource "azuread_application" "vh" {
       each.value.url,
       "${each.value.url}/login",
       "${each.value.url}/home",
-      "https://${each.value.name}-staging.azurewebsites.net",
-      "https://${each.value.name}-staging.azurewebsites.net/login",
-      "https://${each.value.name}-staging.azurewebsites.net/home"
+      "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}",
+      "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}/login",
+      "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}/home"
     ]
     ) : [
     each.value.url,
     "${each.value.url}/login",
     "${each.value.url}/home",
-    "https://${each.value.name}-staging.azurewebsites.net",
-    "https://${each.value.name}-staging.azurewebsites.net/login",
-    "https://${each.value.name}-staging.azurewebsites.net/home"
+    "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}",
+    "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}/login",
+    "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}/home"
   ]
   available_to_other_tenants = false
   oauth2_allow_implicit_flow = lookup(local.oauth2_allow_implicit_flow, each.key, false)
