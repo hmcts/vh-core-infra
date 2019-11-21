@@ -27,6 +27,10 @@ variable "storage_connection_string" {
   type = "string"
 }
 
+variable "signalr_connection_str" {
+  type = "string"
+}
+
 variable "idam_client_id" {
   type = "map"
 }

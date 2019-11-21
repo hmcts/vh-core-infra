@@ -46,6 +46,7 @@ module AppService {
   resource_prefix     = "${local.std_prefix}${local.suffix}"
 
   storage_connection_string        = azurerm_storage_account.vh-core-infra.primary_connection_string
+  signalr_connection_str           = module.SignalR.signalr_connection_str
   app_insights_instrumentation_key = module.Monitoring.instrumentation_key
   managed_accounts = {
     sqluser = module.VHDataServices.sqluser

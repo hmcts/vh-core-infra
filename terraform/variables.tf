@@ -15,11 +15,11 @@ variable "workspace_to_environment_map" {
 }
 
 locals {
-  environment = lookup(var.workspace_to_environment_map, terraform.workspace, "preview")
-  suffix      = "-${local.environment}"
+  environment   = lookup(var.workspace_to_environment_map, terraform.workspace, "preview")
+  suffix        = "-${local.environment}"
   common_prefix = "core-infra"
   std_prefix    = "vh-${local.common_prefix}"
-  
+
   web_apps = [
     {
       name        = "vh-admin-web${local.suffix}",
@@ -35,6 +35,21 @@ locals {
       name        = "vh-video-web${local.suffix}",
       fqdn        = ["vh-video-web${local.suffix}.azurewebsites.net"],
       public_fqdn = "vh-video-web${local.suffix}.hearings.reform.hmcts.net"
+    },
+    {
+      name        = "vh-admin-web${local.suffix}-staging",
+      fqdn        = ["vh-admin-web${local.suffix}-staging.azurewebsites.net"],
+      public_fqdn = "vh-admin-web${local.suffix}-staging.hearings.reform.hmcts.net"
+    },
+    {
+      name        = "vh-service-web${local.suffix}-staging",
+      fqdn        = ["vh-service-web${local.suffix}-staging.azurewebsites.net"],
+      public_fqdn = "vh-service-web${local.suffix}-staging.hearings.reform.hmcts.net"
+    },
+    {
+      name        = "vh-video-web${local.suffix}-staging",
+      fqdn        = ["vh-video-web${local.suffix}-staging.azurewebsites.net"],
+      public_fqdn = "vh-video-web${local.suffix}-staging.hearings.reform.hmcts.net"
     }
   ]
 
@@ -93,7 +108,7 @@ locals {
     admin-web = {
       name            = "vh-admin-web${local.suffix}"
       websockets      = false
-      ip_restriction  = []
+      ip_restriction  = var.build_agent_vnet
       subnet          = "backend"
       audience_subnet = "frontend"
       url             = "https://vh-admin-web${local.suffix}.hearings.reform.hmcts.net"
@@ -101,7 +116,7 @@ locals {
     service-web = {
       name            = "vh-service-web${local.suffix}"
       websockets      = false
-      ip_restriction  = []
+      ip_restriction  = var.build_agent_vnet
       subnet          = "backend"
       audience_subnet = "frontend"
       url             = "https://vh-service-web${local.suffix}.hearings.reform.hmcts.net"
@@ -109,7 +124,7 @@ locals {
     video-web = {
       name            = "vh-video-web${local.suffix}"
       websockets      = true
-      ip_restriction  = []
+      ip_restriction  = var.build_agent_vnet
       subnet          = "backend"
       audience_subnet = "frontend"
       url             = "https://vh-video-web${local.suffix}.hearings.reform.hmcts.net"
@@ -142,9 +157,10 @@ locals {
 
   funcapp_definitions = {
     booking-queue-subscriber = {
-      name   = "vh-booking-queue-subscriber${local.suffix}"
-      subnet = "backend"
-      url    = "https://vh-booking-queue-subscriber${local.suffix}.azurewebsites.net"
+      name            = "vh-booking-queue-subscriber${local.suffix}"
+      subnet          = "backend"
+      audience_subnet = "backend"
+      url             = "https://vh-booking-queue-subscriber${local.suffix}.azurewebsites.net"
     }
   }
 
@@ -152,15 +168,17 @@ locals {
     {
       for def in keys(local.app_definitions) :
       def => {
-        name = local.app_definitions[def].name
-        url  = local.app_definitions[def].url
+        name     = local.app_definitions[def].name
+        url      = local.app_definitions[def].url
+        audience = local.app_definitions[def].audience_subnet
       }
     },
     {
       for def in keys(local.funcapp_definitions) :
       def => {
-        name = local.funcapp_definitions[def].name
-        url  = local.funcapp_definitions[def].url
+        name     = local.funcapp_definitions[def].name
+        url      = local.funcapp_definitions[def].url
+        audience = local.funcapp_definitions[def].audience_subnet
       }
     }
   )

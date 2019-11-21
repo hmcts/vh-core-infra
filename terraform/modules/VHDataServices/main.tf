@@ -14,8 +14,8 @@ resource "azurerm_user_assigned_identity" "sqluser" {
 }
 
 resource "random_password" "sqlpass" {
-  length  = 32
-  special = true
+  length           = 32
+  special          = true
   override_special = "_%@"
 }
 
@@ -30,6 +30,22 @@ resource "azurerm_sql_server" "vh-core-infra" {
   tags = {
     displayName = "Virtual Courtroom SQL Server"
   }
+}
+
+resource "azurerm_template_deployment" "sqlbackup" {
+  count = terraform.workspace == "Prod" ? 1 : 0
+
+  name                = "db-backup"
+  resource_group_name = data.azurerm_resource_group.vh-core-infra.name
+
+  template_body = file("${path.module}/sql_rentention.json")
+
+  parameters = {
+    databaseServerName = azurerm_sql_server.vh-core-infra.name
+    database           = join(",", keys(var.databases))
+  }
+
+  deployment_mode = "Incremental"
 }
 
 resource "azurerm_sql_active_directory_administrator" "sqluser" {
@@ -262,10 +278,16 @@ resource "azurerm_key_vault" "vh-core-infra" {
   }
 
   network_acls {
-    default_action = "Deny"
-    bypass         = "None"
-    ip_rules = []
+    default_action             = "Deny"
+    bypass                     = "None"
+    ip_rules                   = []
     virtual_network_subnet_ids = values(var.delegated_networks)
+  }
+
+  lifecycle {
+    ignore_changes = [
+      sku_name
+    ]
   }
 }
 

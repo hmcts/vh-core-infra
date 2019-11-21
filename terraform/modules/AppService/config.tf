@@ -143,7 +143,7 @@ locals {
       "CustomToken:ThirdPartySecret"           = ""
       MSDEPLOY_RENAME_LOCKED_FILES             = "1"
       "ServiceBusQueue:ConnectionString"       = var.service_bus_connstr
-      "Services:CallbackUri"                   = "${var.app_url["video-api"]}/callback"
+      "Services:CallbackUri"                   = "${var.app_url["video-web"]}/callback"
       "Services:KinlyApiUrl"                   = lookup(local.Kinly_Api_Url, local.common_tags.environment, "")
       "Services:KinlySelfTestApiUrl"           = lookup(local.kinly_selftest_url, local.common_tags.environment, "")
       "Services:PexipSelfTestNode"             = lookup(local.kinly_selftest_uri, local.common_tags.environment, "")
@@ -159,7 +159,7 @@ locals {
       "AzureAd:ClientSecret"                   = var.idam_client_secret["video-web"]
       "AzureAd:TenantId"                       = var.idam_tenant_id
       "AzureAd:PostLogoutRedirectUri"          = var.app_url["video-web"]
-      "AzureAd:RedirectUri"                    = "${var.app_url["video-web"]}/login"
+      "AzureAd:RedirectUri"                    = "${var.app_url["video-web"]}/home"
       "AzureAd:VhVideoWebResourceId"           = var.app_url["video-web"]
       "CustomToken:Secret"                     = ""
       "CustomToken:ThirdPartySecret"           = ""
@@ -171,6 +171,7 @@ locals {
       "VhServices:VideoApiResourceId"          = var.app_url["video-api"]
       "VhServices:VideoApiUrl"                 = var.app_url["video-api"]
       WEBSITE_NODE_DEFAULT_VERSION             = "6.9.1"
+      "ConnectionStrings:SignalR"              = var.signalr_connection_str
     }
   }
 

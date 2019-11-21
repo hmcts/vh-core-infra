@@ -126,4 +126,15 @@ locals {
     "video-api" = {
     }
   }
+
+  oauth2_allow_implicit_flow = {
+    "booking-queue-subscriber" = false
+    "video-queue-subscriber"   = false
+    "admin-web"                = true
+    "service-web"              = true
+    "video-web"                = true
+    "bookings-api"             = false
+    "user-api"                 = false
+    "video-api"                = false
+  }
 }

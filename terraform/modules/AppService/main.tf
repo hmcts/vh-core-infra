@@ -145,6 +145,81 @@ resource "azurerm_app_service" "app" {
     }
 
     dynamic "ip_restriction" {
+      for_each = terraform.workspace == "Dev" ? concat(["0.0.0.0/0"], local.monitoring_ips) : local.monitoring_ips
+
+      content {
+        ip_address  = cidrhost(ip_restriction.value, 0)
+        subnet_mask = cidrnetmask(ip_restriction.value)
+      }
+    }
+
+    cors {
+      allowed_origins     = []
+      support_credentials = false
+    }
+
+    virtual_network_name = "ignore"
+  }
+
+  auth_settings {
+    enabled = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      site_config.0.virtual_network_name,
+      site_config.0.scm_type,
+      app_settings,
+      connection_string
+    ]
+  }
+}
+
+resource "azurerm_app_service_slot" "staging" {
+  for_each = var.apps
+
+  name                = "staging"
+  location            = azurerm_resource_group.web[each.key].location
+  resource_group_name = azurerm_resource_group.web[each.key].name
+  app_service_plan_id = azurerm_app_service_plan.appplan.id
+  app_service_name    = each.value.name
+
+  https_only = true
+
+  app_settings = lookup(local.app_settings, each.key, "")
+
+  dynamic "connection_string" {
+    for_each = local.connection_string[each.key]
+
+    content {
+      name  = connection_string.key
+      type  = connection_string.value.type
+      value = connection_string.value.value
+    }
+  }
+
+  identity {
+    type         = "UserAssigned"
+    identity_ids = values(var.managed_accounts)
+  }
+
+  site_config {
+    dotnet_framework_version  = "v4.0"
+    always_on                 = true
+    websockets_enabled        = each.value.websockets
+    use_32_bit_worker_process = false
+
+    default_documents = []
+
+    dynamic "ip_restriction" {
+      for_each = each.value.ip_restriction
+
+      content {
+        virtual_network_subnet_id = ip_restriction.value
+      }
+    }
+
+    dynamic "ip_restriction" {
       for_each = local.monitoring_ips
 
       content {
@@ -157,10 +232,21 @@ resource "azurerm_app_service" "app" {
       allowed_origins     = []
       support_credentials = false
     }
+
+    virtual_network_name = "ignore"
   }
 
   auth_settings {
     enabled = false
+  }
+
+  lifecycle {
+    ignore_changes = [
+      site_config.0.virtual_network_name,
+      site_config.0.scm_type,
+      app_settings,
+      connection_string
+    ]
   }
 }
 
@@ -170,43 +256,43 @@ resource "azurerm_template_deployment" "vnetintegration" {
   name                = each.key
   resource_group_name = azurerm_resource_group.web[each.key].name
 
-  template_body = <<DEPLOY
-  {
-    "$schema": "https://schema.management.azure.com/schemas/2015-01-01/deploymentTemplate.json#",
-    "contentVersion": "1.0.0.0",
-    "parameters": {
-      "siteName": {
-        "type": "string"
-      },
-      "subnet_resourceid": {
-        "type": "string"
-      },
-      "null": {
-        "type": "string"
-      }
-    },
-    "resources": [
-      {
-        "type": "Microsoft.Web/sites/config",
-        "apiVersion": "2016-08-01",
-        "name": "[concat(parameters('siteName'), '/virtualNetwork')]",
-        "location": "UK West",
-        "properties": {
-          "subnetResourceId": "[parameters('subnet_resourceid')]",
-          "swiftSupported": true
-        }
-      }
-    ]
-  }
-DEPLOY
+  template_body = file("${path.module}/vnetintegration.json")
 
   parameters = {
-    siteName          = azurerm_app_service.app["${each.key}"].name
+    siteName          = azurerm_app_service.app[each.key].name
     subnet_resourceid = each.value.vnet_integ_subnet_id
     null              = uuid()
   }
 
   deployment_mode = "Incremental"
+
+  depends_on = [
+    azurerm_app_service.app,
+    azurerm_app_service_slot.staging
+  ]
+}
+
+resource "azurerm_template_deployment" "vnetintegration-staging" {
+  for_each = var.apps
+
+  name                = each.key
+  resource_group_name = azurerm_resource_group.web[each.key].name
+
+  template_body = file("${path.module}/vnetintegration-slot.json")
+
+  parameters = {
+    siteName          = azurerm_app_service.app[each.key].name
+    slot              = azurerm_app_service_slot.staging[each.key].name
+    subnet_resourceid = each.value.vnet_integ_subnet_id
+    null              = uuid()
+  }
+
+  deployment_mode = "Incremental"
+
+  depends_on = [
+    azurerm_app_service_slot.staging,
+    azurerm_app_service.app
+  ]
 }
 
 output "appservice_id" {

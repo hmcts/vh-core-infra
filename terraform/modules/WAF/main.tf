@@ -3,7 +3,7 @@ locals {
   std_prefix        = "vh-${local.common_prefix}"
   environment       = lookup(var.workspace_to_environment_map, terraform.workspace, "preview")
   suffix            = "-${local.environment}"
-  waf_address_space = ["10.254.0.0/25"]
+  waf_address_space = ["10.254.0.0/25", "10.254.1.0/25"]
 }
 
 data "azurerm_resource_group" "vh-core-infra" {
@@ -11,8 +11,8 @@ data "azurerm_resource_group" "vh-core-infra" {
 }
 
 # data "azurerm_network_ddos_protection_plan" "ddos" {
-#   name                = "${local.common_prefix}-ddos"
-#   resource_group_name = "${local.common_prefix}-ddos"
+#   name                = "core-infra-ddos"
+#   resource_group_name = "core-infra-ddos"
 # }
 
 resource "azurerm_virtual_network" "WAF" {
@@ -29,10 +29,10 @@ resource "azurerm_virtual_network" "WAF" {
 }
 
 resource "azurerm_subnet" "backend" {
-  name                 = "${local.std_prefix}-waf-back${local.suffix}"
+  name                 = "${local.std_prefix}-dmz-back${local.suffix}"
   resource_group_name  = data.azurerm_resource_group.vh-core-infra.name
   virtual_network_name = azurerm_virtual_network.WAF.name
-  address_prefix       = "${cidrsubnet(local.waf_address_space[0], 3, 0)}"
+  address_prefix       = "${cidrsubnet(local.waf_address_space[1], 2, 0)}"
 
   delegation {
     name = "App-Service-Delegation"
@@ -50,17 +50,25 @@ resource "azurerm_subnet" "backend" {
     "Microsoft.KeyVault",
     "Microsoft.Storage"
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "azurerm_subnet" "frontend" {
-  name                 = "${local.std_prefix}-waf-front${local.suffix}"
+  name                 = "${local.std_prefix}-dmz-front${local.suffix}"
   resource_group_name  = data.azurerm_resource_group.vh-core-infra.name
   virtual_network_name = azurerm_virtual_network.WAF.name
-  address_prefix       = "${cidrsubnet(local.waf_address_space[0], 3, 1)}"
+  address_prefix       = "${cidrsubnet(local.waf_address_space[1], 2, 1)}"
 
   service_endpoints = [
     "Microsoft.Web"
   ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 resource "azurerm_public_ip" "waf_ip" {
@@ -285,7 +293,7 @@ resource "azurerm_application_gateway" "waf" {
       unhealthy_threshold                       = 3
 
       match {
-        status_code = [200, 403]
+        status_code = [200]
         body        = ""
       }
     }
