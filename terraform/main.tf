@@ -49,8 +49,8 @@ module AppService {
   signalr_connection_str           = module.SignalR.signalr_connection_str
   app_insights_instrumentation_key = module.Monitoring.instrumentation_key
   managed_accounts = {
-    kvuser  = module.VHDataServices.kvuser
     sqluser = module.VHDataServices.sqluser
+    kvuser  = module.VHDataServices.kvuser
   }
   idam_client_id      = zipmap(keys(module.AppRegistrations.app_registrations), values(module.AppRegistrations.app_registrations)[*].application_id)
   idam_client_secret  = zipmap(keys(module.AppRegistrations.app_passwords), values(module.AppRegistrations.app_passwords)[*].value)

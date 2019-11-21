@@ -110,10 +110,15 @@ resource "azurerm_template_deployment" "vnetintegration" {
   parameters = {
     siteName          = azurerm_function_app.app[each.key].name
     subnet_resourceid = each.value.vnet_integ_subnet_id
-    null              = azurerm_function_app.app[each.key].site_config.0.virtual_network_name
+    null              = uuid()
   }
 
   deployment_mode = "Incremental"
+
+  depends_on = [
+    azurerm_function_app.app,
+    azurerm_template_deployment.funcapp-staging
+  ]
 }
 
 resource "azurerm_template_deployment" "funcapp-staging" {
@@ -146,12 +151,13 @@ resource "azurerm_template_deployment" "vnetintegration-staging" {
     siteName          = azurerm_function_app.app[each.key].name
     slot              = "staging"
     subnet_resourceid = each.value.vnet_integ_subnet_id
-    null              = azurerm_template_deployment.funcapp-staging[each.key].id
+    null              = uuid()
   }
 
   deployment_mode = "Incremental"
 
   depends_on = [
-    azurerm_template_deployment.funcapp-staging
+    azurerm_template_deployment.funcapp-staging,
+    azurerm_function_app.app
   ]
 }

@@ -1,5 +1,10 @@
 locals {
   localhostreply = ["https://localhost", "https://localhost/login", "https://localhost/home"]
+  prodreply = {
+    "admin-web"   = ["https://admin.hearings.reform.hmcts.net", "https://admin.hearings.reform.hmcts.net/login", "https://admin.hearings.reform.hmcts.net/home"],
+    "service-web" = ["https://service.hearings.reform.hmcts.net", "https://service.hearings.reform.hmcts.net/login", "https://service.hearings.reform.hmcts.net/home"],
+    "video-web"   = ["https://video.hearings.reform.hmcts.net", "https://video.hearings.reform.hmcts.net/login", "https://video.hearings.reform.hmcts.net/home"]
+  }
 }
 
 resource "azuread_application" "vh" {
@@ -18,7 +23,16 @@ resource "azuread_application" "vh" {
       "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}/login",
       "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}/home"
     ]
-    ) : [
+    ) : terraform.workspace == "Prod" ? concat(
+    lookup(local.prodreply, each.key, []),
+    [
+      each.value.url,
+      "${each.value.url}/login",
+      "${each.value.url}/home",
+      "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}",
+      "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}/login",
+      "https://${each.value.name}-staging.${each.value.audience == "backend" ? "azurewebsites.net" : "hearings.reform.hmcts.net"}/home"
+    ]) : [
     each.value.url,
     "${each.value.url}/login",
     "${each.value.url}/home",

@@ -3,7 +3,7 @@ locals {
   std_prefix        = "vh-${local.common_prefix}"
   environment       = lookup(var.workspace_to_environment_map, terraform.workspace, "preview")
   suffix            = "-${local.environment}"
-  waf_address_space = ["10.254.0.0/25","10.254.1.0/25"]
+  waf_address_space = ["10.254.0.0/25", "10.254.1.0/25"]
 }
 
 data "azurerm_resource_group" "vh-core-infra" {
