@@ -10,10 +10,10 @@ data "azurerm_resource_group" "vh-core-infra" {
   name = var.resource_group_name
 }
 
-data "azurerm_network_ddos_protection_plan" "ddos" {
-  name                = "core-infra-ddos"
-  resource_group_name = "core-infra-ddos"
-}
+# data "azurerm_network_ddos_protection_plan" "ddos" {
+#   name                = "core-infra-ddos"
+#   resource_group_name = "core-infra-ddos"
+# }
 
 resource "azurerm_virtual_network" "WAF" {
   name                = "${local.std_prefix}${local.suffix}"
