@@ -85,7 +85,7 @@
       "location": "UK West",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites/slots', parameters('siteName'), parameters('slot'))]"
-      ]
+      ],
       "properties": {
         "subnetResourceId": "[parameters('subnet_resourceid')]",
         "swiftSupported": true
