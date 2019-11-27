@@ -203,3 +203,11 @@ module HearingsDNS {
     }
   }
 }
+
+module AMS {
+  source = "./modules/AMS"
+
+  resource_prefix     = "${local.std_prefix}${local.suffix}"
+  resource_group_name = azurerm_resource_group.vh-core-infra.name
+  storage_account_id  = azurerm_storage_account.vh-core-infra.id
+}
