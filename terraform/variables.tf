@@ -161,6 +161,12 @@ locals {
       subnet          = "backend"
       audience_subnet = "backend"
       url             = "https://vh-booking-queue-subscriber${local.suffix}.azurewebsites.net"
+    },
+    scheduler-jobs = {
+      name            = "vh-scheduler-jobs${local.suffix}"
+      subnet          = "backend"
+      audience_subnet = "backend"
+      url             = "https://vh-scheduler-jobs${local.suffix}.azurewebsites.net"
     }
   }
 
