@@ -28,6 +28,14 @@ locals {
       WEBSITE_ENABLE_SYNC_UPDATE_SITE          = true
       WEBSITE_RUN_FROM_PACKAGE                 = "1"
     }
+    scheduler-jobs = {
+      "ApplicationInsights:InstrumentationKey" = var.app_insights_instrumentation_key
+      AzureWebJobsDashboard                    = var.storage_connection_string
+      AzureWebJobsStorage                      = var.storage_connection_string
+      FUNCTIONS_EXTENSION_VERSION              = "~2"
+      WEBSITE_ENABLE_SYNC_UPDATE_SITE          = true
+      WEBSITE_RUN_FROM_PACKAGE                 = "1"
+    }
     # video-queue-subscriber = {
     #   "ApplicationInsights:InstrumentationKey" = var.app_insights_instrumentation_key
     #   "AzureAd:Authority"                      = "https://login.microsoftonline.com/"

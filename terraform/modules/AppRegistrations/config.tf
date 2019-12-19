@@ -15,6 +15,21 @@ locals {
         }
       }
     }
+    "scheduler-jobs" = {
+      "Azure AD Graph" = {
+        id = "00000002-0000-0000-c000-000000000000"
+        access = {
+          UserRead = {
+            id   = "311a71cc-e848-46a1-bdf8-97ff7156d8e6"
+            type = "Scope"
+          }
+          DirectoryReadWriteAll = {
+            id   = "78c8a3c8-a07e-4b9e-af1b-b5ccab50a175"
+            type = "Role"
+          }
+        }
+      }
+    }
     "video-queue-subscriber" = {
       "Azure AD Graph" = {
         id = "00000002-0000-0000-c000-000000000000"
