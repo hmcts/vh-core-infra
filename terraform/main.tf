@@ -162,6 +162,8 @@ module InfraSecrets {
   }
   secrets = {
     signalr_connection_str = module.SignalR.signalr_connection_str
+    appconfig_connection_str = module.AppConfiguration.appconfig_connection_str
+    appconfig_connection_str_write = module.AppConfiguration.appconfig_connection_str_write
   }
   delegated_networks = {
     for subnet in var.build_agent_vnet :
@@ -171,6 +173,13 @@ module InfraSecrets {
 
 module "SignalR" {
   source = "./modules/SignalR"
+
+  resource_prefix     = "${local.std_prefix}${local.suffix}"
+  resource_group_name = azurerm_resource_group.vh-core-infra.name
+}
+
+module "AppConfiguration" {
+  source = "./modules/AppConfiguration"
 
   resource_prefix     = "${local.std_prefix}${local.suffix}"
   resource_group_name = azurerm_resource_group.vh-core-infra.name
