@@ -26,7 +26,7 @@
       "type": "Microsoft.Web/sites/config",
       "apiVersion": "2016-08-01",
       "name": "[concat(parameters('siteName'), '/virtualNetwork')]",
-      "location": "UK West",
+      "location": "[parameters('location')]",
       "properties": {
         "subnetResourceId": "[parameters('subnet_resourceid')]",
         "swiftSupported": true
@@ -82,7 +82,7 @@
       "type": "Microsoft.Web/sites/slots/config",
       "apiVersion": "2016-08-01",
       "name": "[concat(parameters('siteName'),'/', parameters('slot'),'/virtualNetwork')]",
-      "location": "UK West",
+      "location": "[parameters('location')]",
       "dependsOn": [
         "[resourceId('Microsoft.Web/sites/slots', parameters('siteName'), parameters('slot'))]"
       ],
