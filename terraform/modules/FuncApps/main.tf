@@ -99,22 +99,9 @@ resource "azurerm_function_app" "app" {
 #   }
 # }
 
-resource "azurerm_template_deployment" "vnetintegration" {
+resource "azurerm_app_service_virtual_network_swift_connection" "vnetintegration" {
   for_each = var.apps
 
-  name                = each.key
-  resource_group_name = azurerm_resource_group.app[each.key].name
-
-  template_body = file("${path.module}/vnetintegration.json")
-
-  parameters = {
-    siteName          = azurerm_function_app.app[each.key].name
-    slot     = "staging"
-    location = azurerm_resource_group.app[each.key].location
-    farm_id  = var.app_service_plan_id
-    subnet_resourceid = each.value.vnet_integ_subnet_id
-    null              = uuid()
-  }
-
-  deployment_mode = "Incremental"
+  app_service_id = azurerm_function_app.app[each.key].id
+  subnet_id      = each.value.vnet_integ_subnet_id
 }
