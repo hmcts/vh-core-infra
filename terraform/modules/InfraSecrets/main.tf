@@ -57,6 +57,27 @@ resource "azurerm_key_vault" "vh-core-infra-ht" {
     ]
   }
 
+  dynamic "access_policy" {
+    for_each = var.secret_readers
+
+    content {
+      tenant_id = access_policy.value.tenant_id
+      object_id = access_policy.value.id
+
+      certificate_permissions = [
+        "get",
+      ]
+
+      key_permissions = [
+        "get",
+      ]
+
+      secret_permissions = [
+        "get"
+      ]
+    }
+  }
+
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
     object_id = data.azurerm_client_config.current.object_id

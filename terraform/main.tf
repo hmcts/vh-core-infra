@@ -169,6 +169,9 @@ module InfraSecrets {
     for subnet in var.build_agent_vnet :
     "AccessFromBuildAgent${index(var.build_agent_vnet, subnet)}" => subnet
   }
+  secret_readers = {
+    kv_user = module.VHDataServices.kvuser
+  }
 }
 
 module "SignalR" {
