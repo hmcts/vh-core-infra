@@ -62,7 +62,7 @@ resource "azurerm_key_vault" "vh-core-infra-ht" {
 
     content {
       tenant_id = data.azurerm_client_config.current.tenant_id
-      object_id = access_policy.value.principal_id
+      object_id = access_policy.value
 
       certificate_permissions = [
         "get",
