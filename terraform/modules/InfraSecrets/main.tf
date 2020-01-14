@@ -61,8 +61,8 @@ resource "azurerm_key_vault" "vh-core-infra-ht" {
     for_each = var.secret_readers
 
     content {
-      tenant_id = access_policy.value.tenant_id
-      object_id = access_policy.value.id
+      tenant_id = tenant_id = data.azurerm_client_config.current.tenant_id
+      object_id = access_policy.value.principal_id
 
       certificate_permissions = [
         "get",
