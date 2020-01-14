@@ -17,3 +17,7 @@ variable "secrets" {
 variable "delegated_networks" {
   type = map(string)
 }
+
+variable "secret_readers" {
+  type = map(string)
+}

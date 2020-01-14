@@ -292,11 +292,11 @@ resource "azurerm_key_vault" "vh-core-infra" {
 }
 
 output "sqluser" {
-  value = azurerm_user_assigned_identity.sqluser.id
+  value = azurerm_user_assigned_identity.sqluser
 }
 
 output "kvuser" {
-  value = azurerm_user_assigned_identity.kvuser.id
+  value = azurerm_user_assigned_identity.kvuser
 }
 
 output "service_bus_connstr" {
