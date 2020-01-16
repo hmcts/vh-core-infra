@@ -153,11 +153,11 @@ module InfraSecrets {
   resource_prefix     = local.std_prefix
 
   apps = {
-    for def in keys(local.app_definitions) :
+    for def in keys(local.app_registrations) :
     def => {
       application_id = module.AppRegistrations.app_registrations[def].application_id
       secret         = module.AppRegistrations.app_passwords[def].value
-      url            = local.app_definitions[def].url
+      url            = local.app_registrations[def].url
     }
   }
   secrets = {
