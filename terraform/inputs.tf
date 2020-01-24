@@ -42,3 +42,8 @@ variable "dns_subscription_id" {
   type    = "string"
   default = ""
 }
+
+variable "dev_group" {
+  type = string
+  description = "specifies group to which permissions will be assigned when deploying the dev environment"
+}

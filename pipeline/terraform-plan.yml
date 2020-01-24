@@ -8,6 +8,7 @@ parameters:
   idamClientSecret: ""
   buildAgentvNet: ""
   environment: ""
+  dev_group: ""
 
 steps:
   - script: |
@@ -28,6 +29,7 @@ steps:
       idamClientId: ${{ parameters.idamClientId }}
       idamClientSecret: ${{ parameters.idamClientSecret }}
       buildAgentvNet: ${{ parameters.buildAgentvNet }}
+      dev_group: ${{ parameters.dev_group }}
       environment: ${{ parameters.environment }}
 
   - task: AzureCLI@2

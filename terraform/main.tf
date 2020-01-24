@@ -64,6 +64,10 @@ module AppService {
 module AppRegistrations {
   source = "./modules/AppRegistrations"
 
+  providers = {
+    azurerm = "azuread.idam"
+  }
+
   apps = local.app_registrations
 }
 
@@ -112,13 +116,9 @@ module VHDataServices {
     {
       AccessFromBackendServices = module.WebAppSecurity.backend_subnet_id
   })
+  public_env = local.environment == "dev" ? 1 : 0
 
   databases = {
-    hearing = {
-      collation         = "SQL_Latin1_General_CP1_CI_AS"
-      edition           = "Standard"
-      performance_level = "S0"
-    }
     vhbookings = {
       collation         = "SQL_Latin1_General_CP1_CI_AS"
       edition           = "Standard"
@@ -146,6 +146,12 @@ module VHDataServices {
   resource_prefix     = "${local.std_prefix}${local.suffix}"
 }
 
+data azuread_group devs {
+  providers = azuread.infra
+
+  name = var.dev_group
+}
+
 module InfraSecrets {
   source = "./modules/InfraSecrets"
 
@@ -161,17 +167,26 @@ module InfraSecrets {
     }
   }
   secrets = {
-    signalr_connection_str = module.SignalR.signalr_connection_str
-    appconfig_connection_str = module.AppConfiguration.appconfig_connection_str
+    signalr_connection_str         = module.SignalR.signalr_connection_str
+    appconfig_connection_str       = module.AppConfiguration.appconfig_connection_str
     appconfig_connection_str_write = module.AppConfiguration.appconfig_connection_str_write
+    kv_mi_client_id = module.VHDataServices.kvuser.client_id
+    sql_mi_client_id = module.VHDataServices.sqluser.client_id
   }
-  delegated_networks = {
+  delegated_networks = merge({
     for subnet in var.build_agent_vnet :
     "AccessFromBuildAgent${index(var.build_agent_vnet, subnet)}" => subnet
-  }
-  secret_readers = {
+    },
+    {
+      AccessFromBackendServices = module.WebAppSecurity.backend_subnet_id
+  })
+  secret_readers = local.environment == "dev" ? {
+    kv_user = module.VHDataServices.kvuser.principal_id
+    devs    = data.azuread_group.devs.id
+    } : {
     kv_user = module.VHDataServices.kvuser.principal_id
   }
+  public_env = local.environment == "dev" ? 1 : 0
 }
 
 module "SignalR" {

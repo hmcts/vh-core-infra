@@ -6,6 +6,7 @@ parameters:
   idamTenantId: ""
   idamClientId: ""
   idamClientSecret: ""
+  dev_group: ""
   environment: ""
 
 steps:

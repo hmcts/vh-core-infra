@@ -152,8 +152,7 @@ resource "azurerm_key_vault" "vh-core-infra-ht" {
   network_acls {
     default_action = "Deny"
     bypass         = "None"
-    ip_rules = [
-    ]
+    ip_rules = var.public_env == 1 ? ["0.0.0.0/0"] : []
     virtual_network_subnet_ids = values(var.delegated_networks)
   }
 
