@@ -65,7 +65,7 @@ module AppRegistrations {
   source = "./modules/AppRegistrations"
 
   providers = {
-    azurerm = "azuread.idam"
+    azuread = "azuread.idam"
   }
 
   apps = local.app_registrations
