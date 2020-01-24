@@ -147,7 +147,7 @@ module VHDataServices {
 }
 
 data azuread_group devs {
-  providers = azuread.infra
+  provider = azuread.infra
 
   name = var.dev_group
 }
