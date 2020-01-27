@@ -119,6 +119,11 @@ module VHDataServices {
   public_env = local.environment == "dev" ? 1 : 0
 
   databases = {
+    hearing = {
+      collation         = "SQL_Latin1_General_CP1_CI_AS"
+      edition           = "Standard"
+      performance_level = "S0"
+    }
     vhbookings = {
       collation         = "SQL_Latin1_General_CP1_CI_AS"
       edition           = "Standard"
