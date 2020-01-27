@@ -33,7 +33,7 @@ resource "azurerm_function_app" "app" {
   client_affinity_enabled = false
   enabled                 = true
   https_only              = true
-  version                 = "~2"
+  version                 = lookup(local.version, each.key, "~3")
 
   site_config {
     always_on                 = true
