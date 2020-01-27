@@ -10,6 +10,11 @@ locals {
     "criticality"        = "Medium"
   }
 
+  version = {
+    booking-queue-subscriber = "~2"
+    scheduler-jobs = "~3"
+  }
+
   app_settings = {
     booking-queue-subscriber = {
       "ApplicationInsights:InstrumentationKey" = var.app_insights_instrumentation_key

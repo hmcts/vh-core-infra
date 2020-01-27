@@ -23,7 +23,7 @@ variable "environment_to_sku_map" {
     }
     Demo = {
       tier = "PremiumV2"
-      size = "P3v2"
+      size = "P1v2"
     }
     Dev = {
       tier = "Standard"
@@ -47,11 +47,11 @@ variable "environment_to_sku_map" {
     }
     PreProd = {
       tier = "PremiumV2"
-      size = "P3v2"
+      size = "P1v2"
     }
     Prod = {
       tier = "PremiumV2"
-      size = "P3v2"
+      size = "P1v2"
     }
   }
 }
