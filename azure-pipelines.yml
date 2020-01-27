@@ -54,6 +54,7 @@ stages:
           armServiceConnection: $(infra_arm_service_connection_dev)
           dnsServiceConnection: $(infra_arm_service_connection_pilot)
           buildAgentvNet: $(build_agent_vnet_dev)
+          dev_group: $(dev_group)
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
@@ -101,12 +102,13 @@ stages:
           armServiceConnection: $(infra_arm_service_connection_dev)
           dnsServiceConnection: $(infra_arm_service_connection_pilot)
           buildAgentvNet: $(build_agent_vnet_dev)
+          dev_group: $(dev_group)
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
 
-  - stage: Plan_Prod_Environments
+  - stage: Plan_Prod_Environments 
     condition: succeeded()
     dependsOn:
       - Deploy_Preview_Environments
@@ -142,6 +144,7 @@ stages:
           armServiceConnection: $(infra_arm_service_connection_pilot)
           dnsServiceConnection: $(infra_arm_service_connection_pilot)
           buildAgentvNet: $(build_agent_vnet_prod)
+          dev_group: $(dev_group)
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)

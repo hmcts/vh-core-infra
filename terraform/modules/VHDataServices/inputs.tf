@@ -1,19 +1,24 @@
 variable "resource_group_name" {
-  type = "string"
+  type = string
 }
 
 variable "resource_prefix" {
-  type = "string"
+  type = string
 }
 
 variable "delegated_networks" {
-  type = "map"
+  type = map(any)
+}
+
+variable "public_env" {
+  type = number
+  default = 0
 }
 
 variable "databases" {
-  type = "map"
+  type = map(any)
 }
 
 variable "queues" {
-  type = "map"
+  type = map(any)
 }

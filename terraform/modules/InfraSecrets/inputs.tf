@@ -18,6 +18,11 @@ variable "delegated_networks" {
   type = map(string)
 }
 
+variable "public_env" {
+  type = number
+  default = 0
+}
+
 variable "secret_readers" {
   type = map(string)
 }

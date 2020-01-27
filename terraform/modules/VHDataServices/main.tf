@@ -78,6 +78,16 @@ resource "azurerm_sql_virtual_network_rule" "sqlvnetrule" {
   subnet_id           = var.delegated_networks[keys(var.delegated_networks)[count.index]]
 }
 
+resource "azurerm_sql_firewall_rule" "sqlfwrule" {
+  count = var.public_env
+
+  name                = "Access To Public"
+  resource_group_name = data.azurerm_resource_group.vh-core-infra.name
+  server_name         = azurerm_sql_server.vh-core-infra.name
+  start_ip_address    = "0.0.0.0"
+  end_ip_address      = "0.0.0.0"
+}
+
 resource "azurerm_sql_database" "vh-core-infra" {
   for_each = var.databases
 
@@ -280,7 +290,7 @@ resource "azurerm_key_vault" "vh-core-infra" {
   network_acls {
     default_action             = "Deny"
     bypass                     = "None"
-    ip_rules                   = []
+    ip_rules                   = var.public_env == 1 ? ["0.0.0.0/0"] : []
     virtual_network_subnet_ids = values(var.delegated_networks)
   }
 
