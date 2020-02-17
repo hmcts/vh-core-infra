@@ -36,19 +36,19 @@ variable "dns_subscription_id" {
   type    = "string"
 }
 
-variable "ask_tenant_id" {
+variable "aks_tenant_id" {
   type    = "string"
 }
 
-variable "ask_client_id" {
+variable "aks_client_id" {
   type    = "string"
 }
 
-variable "ask_client_secret" {
+variable "aks_client_secret" {
   type    = "string"
 }
 
-variable "ask_subscription_id" {
+variable "aks_subscription_id" {
   type    = "string"
 }
 
