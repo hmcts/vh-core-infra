@@ -17,7 +17,6 @@ resource "azurerm_storage_account" "vh-core-infra" {
   enable_file_encryption            = true
   enable_https_traffic_only         = true
   account_encryption_source         = "Microsoft.Storage"
-  enable_advanced_threat_protection = true
 }
 
 data "azurerm_subnet" "aks_public" {
@@ -73,7 +72,7 @@ module AppRegistrations {
   source = "./modules/AppRegistrations"
 
   providers = {
-    azuread = "azuread.idam"
+    azuread = azuread.idam
   }
 
   apps = local.app_registrations
@@ -242,7 +241,7 @@ module HearingsDNS {
   source = "./modules/DnsZone"
 
   providers = {
-    azurerm = "azurerm.dns"
+    azurerm = azurerm.dns
   }
 
   resource_group_name = "vh-hearings-reform-hmcts-net-dns-zone"

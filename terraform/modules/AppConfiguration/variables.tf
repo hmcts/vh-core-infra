@@ -1,5 +1,5 @@
 variable "workspace_to_environment_map" {
-  type = "map"
+  type = map
   default = {
     AAT     = "aat"
     Demo    = "demo"
@@ -15,7 +15,7 @@ variable "workspace_to_environment_map" {
 }
 
 variable "environment_to_sku_map" {
-  type = "map"
+  type = map
   default = {
     AAT     = "free"
     Demo    = "free"

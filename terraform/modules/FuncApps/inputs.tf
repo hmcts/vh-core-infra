@@ -1,47 +1,47 @@
 variable "apps" {
-  type = "map"
+  type = map
 }
 
 variable "managed_accounts" {
-  type = "map"
+  type = map
 }
 
 variable "resource_group_name" {
-  type = "string"
+  type = string
 }
 
 variable "resource_prefix" {
-  type = "string"
+  type = string
 }
 
 variable "app_service_plan_id" {
-  type = "string"
+  type = string
 }
 
 variable "storage_connection_string" {
-  type = "string"
+  type = string
 }
 
 variable "app_insights_instrumentation_key" {
-  type = "string"
+  type = string
 }
 
 variable "idam_client_id" {
-  type = "map"
+  type = map
 }
 
 variable "idam_client_secret" {
-  type = "map"
+  type = map
 }
 
 variable "idam_tenant_id" {
-  type = "string"
+  type = string
 }
 
 variable "app_url" {
-  type = "map"
+  type = map
 }
 
 variable "service_bus_connstr" {
-  type = "string"
+  type = string
 }

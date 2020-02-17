@@ -1,11 +1,11 @@
 variable "resource_group_name" {
-  type = "string"
+  type = string
 }
 
 variable "resource_prefix" {
-  type = "string"
+  type = string
 }
 
 variable "config_readers" {
-  type = "map"
+  type = map
 }
