@@ -28,6 +28,7 @@ jobs:
               environment: ${{ deployment.name }}
               armServiceConnection: ${{ deployment.armServiceConnection }}
               dnsServiceConnection: ${{ deployment.dnsServiceConnection }}
+              aksServiceConnection: ${{ deployment.aksServiceConnection }}
               idamTenantId: ${{ parameters.idam.TenantId }}
               idamClientId: ${{ parameters.idam.ClientId }}
               idamClientSecret: ${{ parameters.idam.ClientSecret }}

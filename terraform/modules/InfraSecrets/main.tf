@@ -17,46 +17,6 @@ resource "azurerm_key_vault" "vh-core-infra-ht" {
 
   sku_name = "standard"
 
-  # vsts automation
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = "1fb13944-cfd1-44e2-96a4-9ee10a1932db"
-
-    certificate_permissions = [
-      "get",
-    ]
-
-    key_permissions = [
-      "get",
-    ]
-
-    secret_permissions = [
-      "get",
-      "list",
-      "set"
-    ]
-  }
-
-  # vsts automation
-  access_policy {
-    tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = "655eb910-cf45-403b-b2ff-d8ee40a5cd69"
-
-    certificate_permissions = [
-      "get",
-    ]
-
-    key_permissions = [
-      "get",
-    ]
-
-    secret_permissions = [
-      "get",
-      "list",
-      "set"
-    ]
-  }
-
   dynamic "access_policy" {
     for_each = var.secret_readers
 

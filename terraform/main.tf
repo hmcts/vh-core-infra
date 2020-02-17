@@ -20,6 +20,14 @@ resource "azurerm_storage_account" "vh-core-infra" {
   enable_advanced_threat_protection = true
 }
 
+data "azurerm_subnet" "aks_public" {
+  provider = azurerm.aks
+
+  name                 = var.aks_public_subnet
+  virtual_network_name = var.aks_vnet
+  resource_group_name  = var.aks_vnet_rg
+}
+
 module WebAppSecurity {
   source = "./modules/WAF"
 
@@ -27,7 +35,7 @@ module WebAppSecurity {
   redirects           = local.environment == "prod" ? local.prod_cnames : []
   resource_group_name = azurerm_resource_group.vh-core-infra.name
   keyvault_id         = module.VHDataServices.keyvault_id
-  storage_account_id  = azurerm_storage_account.vh-core-infra.id
+  la_account_id       = module.Monitoring.la_workspace_id
 }
 
 module AppService {
@@ -57,7 +65,7 @@ module AppService {
   idam_tenant_id      = var.idam_tenant_id
   app_url             = zipmap(keys(local.app_definitions), values(local.app_definitions)[*].url)
   service_bus_connstr = module.VHDataServices.service_bus_connstr
-  db_server_name      = module.VHDataServices.db_server_name
+  db_server_name      = module.VHDataServices.db_fqdn
   db_admin_password   = module.VHDataServices.db_admin_password
 }
 
@@ -115,6 +123,7 @@ module VHDataServices {
     },
     {
       AccessFromBackendServices = module.WebAppSecurity.backend_subnet_id
+      AccessFromAKS             = data.azurerm_subnet.aks_public.id
   })
   public_env = local.environment == "dev" ? 1 : 0
 
@@ -172,11 +181,19 @@ module InfraSecrets {
     }
   }
   secrets = {
-    signalr_connection_str         = module.SignalR.signalr_connection_str
-    appconfig_connection_str       = module.AppConfiguration.appconfig_connection_str
-    appconfig_connection_str_write = module.AppConfiguration.appconfig_connection_str_write
-    kv_mi_client_id = module.VHDataServices.kvuser.client_id
-    sql_mi_client_id = module.VHDataServices.sqluser.client_id
+    signalr_connection_str                = module.SignalR.signalr_connection_str
+    appconfig_connection_str              = module.AppConfiguration.appconfig_connection_str
+    appconfig_connection_str_write        = module.AppConfiguration.appconfig_connection_str_write
+    kv_mi_client_id                       = module.VHDataServices.kvuser.client_id
+    sql_mi_client_id                      = module.VHDataServices.sqluser.client_id
+    tenantid                              = var.idam_tenant_id
+    authority                             = "https://login.microsoftonline.com/${var.idam_tenant_id}"
+    vh-core-infra-AppInsightsKey          = module.Monitoring.instrumentation_key
+    vh-core-infra-AppInsightsKey          = module.Monitoring.instrumentation_key
+    VhBookingsDatabaseConnectionString    = "Server=tcp:${module.VHDataServices.db_fqdn}.database.windows.net,1433;Initial Catalog=vhbookings;Persist Security Info=False;User ID=hvhearingsapiadmin;Password=${module.VHDataServices.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    VhVideoDatabaseConnectionString       = "Server=tcp:${module.VHDataServices.db_fqdn}.database.windows.net,1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=hvhearingsapiadmin;Password=${module.VHDataServices.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+    AzureServiceBusConnectionStringListen = module.VHDataServices.service_bus_connstr_listen
+    AzureServiceBusConnectionStringSend   = module.VHDataServices.service_bus_connstr_send
   }
   delegated_networks = merge({
     for subnet in var.build_agent_vnet :
@@ -184,13 +201,23 @@ module InfraSecrets {
     },
     {
       AccessFromBackendServices = module.WebAppSecurity.backend_subnet_id
+      AccessFromAKS             = data.azurerm_subnet.aks_public.id
   })
-  secret_readers = local.environment == "dev" ? {
+  secret_readers = merge(local.environment == "dev" ? {
     kv_user = module.VHDataServices.kvuser.principal_id
     devs    = data.azuread_group.devs.id
     } : {
     kv_user = module.VHDataServices.kvuser.principal_id
-  }
+    },
+    contains(["Prod", "Preprod"], terraform.workspace) ? {
+      tf_automation = "c72ccfd1-822c-430e-94f4-31e6779d3171"
+      aks_kvcred    = "5d75fbe8-d598-4e6a-b3e0-93a09b504ab9"
+      } : {
+      tf_automation   = "d7504361-1c3b-4e0c-a1df-ba07cbf59ba9"
+      aks_kvcred_stg  = "338f0f74-6551-410d-a59a-3aad46cf6bb7"
+      aks_kvcred_sbox = "de3ccf4f-dd9f-455d-98fa-d32f31561a7d"
+    }
+  )
   public_env = local.environment == "dev" ? 1 : 0
 }
 
@@ -206,6 +233,9 @@ module "AppConfiguration" {
 
   resource_prefix     = "${local.std_prefix}${local.suffix}"
   resource_group_name = azurerm_resource_group.vh-core-infra.name
+  config_readers = {
+    kvuser = module.VHDataServices.kvuser.principal_id
+  }
 }
 
 module HearingsDNS {

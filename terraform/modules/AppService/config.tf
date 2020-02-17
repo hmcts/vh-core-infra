@@ -180,7 +180,7 @@ locals {
     bookings-api = {
       "VhBookings" = {
         type  = "SQLAzure"
-        value = "Server=tcp:${var.db_server_name}.database.windows.net,1433;Initial Catalog=vhbookings;Persist Security Info=False;User ID=hvhearingsapiadmin;Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+        value = "Server=tcp:${var.db_server_name},1433;Initial Catalog=vhbookings;Persist Security Info=False;User ID=hvhearingsapiadmin;Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
       }
     }
     service-web = {}
@@ -188,7 +188,7 @@ locals {
     video-api = {
       "VhVideoApi" = {
         type  = "SQLAzure"
-        value = "Server=tcp:${var.db_server_name}.database.windows.net,1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=hvhearingsapiadmin;Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+        value = "Server=tcp:${var.db_server_name},1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=hvhearingsapiadmin;Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
       }
     }
     video-web = {}

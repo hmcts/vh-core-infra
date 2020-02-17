@@ -19,7 +19,7 @@
       "tags": {
         "displayName": "Database Backup"
       },
-      "apiVersion": "2017-03-01-preview",
+      "apiVersion": "2019-06-01-preview",
       "location": "UK West",
       "scale": null,
       "properties": {

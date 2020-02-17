@@ -14,6 +14,6 @@ variable "keyvault_id" {
   type = "string"
 }
 
-variable "storage_account_id" {
+variable "la_workspace_id" {
   type = "string"
 }

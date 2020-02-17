@@ -42,7 +42,7 @@ resource "azurerm_template_deployment" "sqlbackup" {
 
   parameters = {
     databaseServerName = azurerm_sql_server.vh-core-infra.name
-    database           = join(",", keys(var.databases))
+    databases           = join(",", keys(var.databases))
   }
 
   deployment_mode = "Incremental"
@@ -85,7 +85,7 @@ resource "azurerm_sql_firewall_rule" "sqlfwrule" {
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
   server_name         = azurerm_sql_server.vh-core-infra.name
   start_ip_address    = "0.0.0.0"
-  end_ip_address      = "0.0.0.0"
+  end_ip_address      = "255.255.255.255"
 }
 
 resource "azurerm_sql_database" "vh-core-infra" {
@@ -106,6 +106,26 @@ resource "azurerm_servicebus_namespace" "vh-core-infra" {
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
   location            = data.azurerm_resource_group.vh-core-infra.location
   sku                 = "Standard"
+}
+
+resource "azurerm_servicebus_namespace_authorization_rule" "vh-core-infra-listen" {
+  name                = "ListenOnly"
+  namespace_name      = azurerm_servicebus_namespace.vh-core-infra.name
+  resource_group_name = data.azurerm_resource_group.vh-core-infra.name
+
+  listen = true
+  send   = false
+  manage = false
+}
+
+resource "azurerm_servicebus_namespace_authorization_rule" "vh-core-infra-send" {
+  name                = "SendOnly"
+  namespace_name      = azurerm_servicebus_namespace.vh-core-infra.name
+  resource_group_name = data.azurerm_resource_group.vh-core-infra.name
+
+  listen = false
+  send   = true
+  manage = false
 }
 
 resource "azurerm_servicebus_queue" "vh-core-infra" {
@@ -179,7 +199,7 @@ resource "azurerm_key_vault" "vh-core-infra" {
   # vsts automation
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = "1fb13944-cfd1-44e2-96a4-9ee10a1932db"
+    object_id = "c72ccfd1-822c-430e-94f4-31e6779d3171"
 
     certificate_permissions = [
       "get",
@@ -199,7 +219,7 @@ resource "azurerm_key_vault" "vh-core-infra" {
   # vsts automation
   access_policy {
     tenant_id = data.azurerm_client_config.current.tenant_id
-    object_id = "655eb910-cf45-403b-b2ff-d8ee40a5cd69"
+    object_id = "d7504361-1c3b-4e0c-a1df-ba07cbf59ba9"
 
     certificate_permissions = [
       "get",
@@ -313,12 +333,24 @@ output "service_bus_connstr" {
   value = azurerm_servicebus_namespace.vh-core-infra.default_primary_connection_string
 }
 
+output "service_bus_connstr_listen" {
+  value = azurerm_servicebus_namespace_authorization_rule.vh-core-infra-listen.primary_connection_string
+}
+
+output "service_bus_connstr_send" {
+  value = azurerm_servicebus_namespace_authorization_rule.vh-core-infra-send.primary_connection_string
+}
+
 output "db_admin_password" {
   value = random_password.sqlpass.result
 }
 
 output "db_server_name" {
   value = azurerm_sql_server.vh-core-infra.name
+}
+
+output "db_fqdn" {
+  value = azurerm_sql_server.vh-core-infra.fully_qualified_domain_name
 }
 
 output "keyvault_id" {

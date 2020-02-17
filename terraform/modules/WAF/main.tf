@@ -300,10 +300,48 @@ resource "azurerm_application_gateway" "waf" {
   }
 }
 
+resource "azurerm_web_application_firewall_policy" "exclusions" {
+  name                = "vh-exclusions"
+  resource_group_name = data.azurerm_resource_group.vh-core-infra.name
+  location            = data.azurerm_resource_group.vh-core-infra.location
+
+  policy_settings {
+    enabled = true
+    mode    = "Prevention"
+  }
+
+  dynamic "custom_rules" {
+    for_each = local.custom_rules
+    iterator = "rule"
+
+    content {
+      name      = rule.value.name
+      priority  = rule.key
+      rule_type = "MatchRule"
+
+      dynamic "match_conditions" {
+        for_each = rule.value.conditions
+        iterator = "condition"
+
+        match_variables {
+          variable_name = condition.value.variable
+        }
+
+        operator           = condition.value.operator
+        negation_condition = condition.value.negative_condition
+        match_values       = condition.value.values
+      }
+
+      action = rule.value.action
+    }
+  }
+}
+
 resource "azurerm_monitor_diagnostic_setting" "WAF" {
-  name               = "FirewallLogs"
-  target_resource_id = azurerm_application_gateway.waf.id
-  storage_account_id = var.storage_account_id
+  name                           = "FirewallLogs"
+  target_resource_id             = azurerm_application_gateway.waf.id
+  log_analytics_destination_type = "Dedicated"
+  log_analytics_workspace_id     = var.la_workspace_id
 
   log {
     category = "ApplicationGatewayAccessLog"
@@ -320,7 +358,7 @@ resource "azurerm_monitor_diagnostic_setting" "WAF" {
     enabled  = true
 
     retention_policy {
-      days    = 5
+      days    = 0
       enabled = true
     }
   }
@@ -330,7 +368,7 @@ resource "azurerm_monitor_diagnostic_setting" "WAF" {
     enabled  = true
 
     retention_policy {
-      days    = 5
+      days    = 0
       enabled = true
     }
   }
@@ -340,7 +378,7 @@ resource "azurerm_monitor_diagnostic_setting" "WAF" {
 
     retention_policy {
       enabled = true
-      days    = 5
+      days    = 0
     }
   }
 }
