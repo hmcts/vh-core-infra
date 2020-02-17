@@ -57,6 +57,10 @@ stages:
           buildAgentvNet: $(build_agent_vnet_dev)
           dev_group: $(dev_group)
 
+          aks_public_subnet: shared-services_public_sbox
+          aks_vnet: shared-services_sbox_network
+          aks_vnet_rg: shared-services_sbox_network_resource_group
+
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
@@ -106,11 +110,15 @@ stages:
           buildAgentvNet: $(build_agent_vnet_dev)
           dev_group: $(dev_group)
 
+          aks_public_subnet: shared-services_public_stg
+          aks_vnet: shared-services_stg_network
+          aks_vnet_rg: shared-services_stg_network_resource_group
+
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
 
-  - stage: Plan_Prod_Environments 
+  - stage: Plan_Prod_Environments
     condition: succeeded()
     dependsOn:
       - Deploy_Preview_Environments
@@ -148,6 +156,10 @@ stages:
           aksServiceConnection: DTS-SHAREDSERVICES-PROD
           buildAgentvNet: $(build_agent_vnet_prod)
           dev_group: $(dev_group)
+
+          aks_public_subnet: shared-services_public_prod
+          aks_vnet: shared-services_prod_network
+          aks_vnet_rg: shared-services_prod_network_resource_group
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)

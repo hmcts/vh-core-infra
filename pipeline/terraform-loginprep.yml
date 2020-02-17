@@ -10,6 +10,9 @@ parameters:
   buildAgentvNet: ""
   dev_group: ""
   environment: ""
+  aks_public_subnet: ""
+  aks_vnet: ""
+  aks_vnet_rg: ""
 
 steps:
   - task: AzureCLI@2
@@ -74,6 +77,9 @@ steps:
         aks_client_secret = $env:aks_Client_Secret
         aks_subscription_id = $env:aks_Subscription_Id
         dev_group = $env:dev_group
+        aks_public_subnet = $env:aks_public_subnet
+        aks_vnet = $env:aks_vnet
+        aks_vnet_rg = $env:aks_vnet_rg
       } | ConvertTo-Json | Set-Content params.auto.tfvars.json -force
     workingDirectory: ${{ parameters.workingDirectory }}
     displayName: "Create Param File"
@@ -84,6 +90,9 @@ steps:
       idam_Client_Secret: ${{ parameters.idamClientSecret }}
       buildAgentvNet: ${{ parameters.buildAgentvNet }}
       dev_group: ${{ parameters.dev_group }}
+      aks_public_subnet: ${{ parameters.aks_public_subnet }}
+      aks_vnet: ${{ parameters.aks_vnet }}
+      aks_vnet_rg: ${{ parameters.aks_vnet_rg }}
 
   - task: AzureCLI@2
     inputs:

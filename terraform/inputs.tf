@@ -52,6 +52,18 @@ variable "aks_subscription_id" {
   type    = "string"
 }
 
+variable "aks_public_subnet" {
+  type    = "string"
+}
+
+variable "aks_vnet" {
+  type    = "string"
+}
+
+variable "aks_vnet_rg" {
+  type    = "string"
+}
+
 variable "dev_group" {
   type = string
   description = "specifies group to which permissions will be assigned when deploying the dev environment"
