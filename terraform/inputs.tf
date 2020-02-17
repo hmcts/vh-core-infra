@@ -36,6 +36,22 @@ variable "dns_subscription_id" {
   type    = "string"
 }
 
+variable "ask_tenant_id" {
+  type    = "string"
+}
+
+variable "ask_client_id" {
+  type    = "string"
+}
+
+variable "ask_client_secret" {
+  type    = "string"
+}
+
+variable "ask_subscription_id" {
+  type    = "string"
+}
+
 variable "dev_group" {
   type = string
   description = "specifies group to which permissions will be assigned when deploying the dev environment"
