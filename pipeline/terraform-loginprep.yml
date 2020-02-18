@@ -3,12 +3,16 @@ parameters:
   storageAccount: ""
   armServiceConnection: ""
   dnsServiceConnection: ""
+  aksServiceConnection: ""
   idamTenantId: ""
   idamClientId: ""
   idamClientSecret: ""
   buildAgentvNet: ""
   dev_group: ""
   environment: ""
+  aks_public_subnet: ""
+  aks_vnet: ""
+  aks_vnet_rg: ""
 
 steps:
   - task: AzureCLI@2
@@ -26,6 +30,21 @@ steps:
         echo "##vso[task.setvariable variable=ARM_TENANT_ID]$(az account show --query 'tenantId' --output tsv)"
         echo "##vso[task.setvariable variable=ARM_ACCESS_KEY]$(az storage account keys list -n ${{ parameters.storageAccount }} --query [0].value --output tsv)"
     displayName: Terraform Prepare Login
+    condition: succeeded()
+
+  - task: AzureCLI@2
+    inputs:
+      azureSubscription: ${{ parameters.aksServiceConnection }}
+      scriptType: pscore
+      scriptLocation: inlineScript
+      AddSpnToEnvironment: true
+      failOnStandardError: true
+      inlineScript: |
+        echo "##vso[task.setvariable variable=aks_Client_Id]$env:servicePrincipalId"
+        echo "##vso[task.setvariable variable=aks_Client_Secret]$env:servicePrincipalKey"
+        echo "##vso[task.setvariable variable=aks_Subscription_Id]$(az account show -s ${{ parameters.aksServiceConnection }} --query 'id' --output tsv)"
+        echo "##vso[task.setvariable variable=aks_Tenant_Id]$(az account show --query 'tenantId' --output tsv)"
+    displayName: Terraform Prepare Login (AKS)
     condition: succeeded()
 
   - task: AzureCLI@2
@@ -53,7 +72,14 @@ steps:
         dns_client_id = $env:dns_Client_Id
         dns_client_secret = $env:dns_Client_Secret
         dns_subscription_id = $env:dns_Subscription_Id
+        aks_tenant_id = $env:aks_Tenant_Id
+        aks_client_id = $env:aks_Client_Id
+        aks_client_secret = $env:aks_Client_Secret
+        aks_subscription_id = $env:aks_Subscription_Id
         dev_group = $env:dev_group
+        aks_public_subnet = $env:aks_public_subnet
+        aks_vnet = $env:aks_vnet
+        aks_vnet_rg = $env:aks_vnet_rg
       } | ConvertTo-Json | Set-Content params.auto.tfvars.json -force
     workingDirectory: ${{ parameters.workingDirectory }}
     displayName: "Create Param File"
@@ -64,6 +90,9 @@ steps:
       idam_Client_Secret: ${{ parameters.idamClientSecret }}
       buildAgentvNet: ${{ parameters.buildAgentvNet }}
       dev_group: ${{ parameters.dev_group }}
+      aks_public_subnet: ${{ parameters.aks_public_subnet }}
+      aks_vnet: ${{ parameters.aks_vnet }}
+      aks_vnet_rg: ${{ parameters.aks_vnet_rg }}
 
   - task: AzureCLI@2
     inputs:

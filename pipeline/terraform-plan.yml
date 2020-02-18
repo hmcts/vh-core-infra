@@ -3,12 +3,16 @@ parameters:
   storageAccount: ""
   armServiceConnection: ""
   dnsServiceConnection: ""
+  aksServiceConnection: ""
   idamTenantId: ""
   idamClientId: ""
   idamClientSecret: ""
   buildAgentvNet: ""
   environment: ""
   dev_group: ""
+  aks_public_subnet: ""
+  aks_vnet: ""
+  aks_vnet_rg: ""
 
 steps:
   - script: |
@@ -25,11 +29,15 @@ steps:
       storageAccount: ${{ parameters.storageAccount }}
       armServiceConnection: ${{ parameters.armServiceConnection }}
       dnsServiceConnection: ${{ parameters.dnsServiceConnection }}
+      aksServiceConnection: ${{ parameters.aksServiceConnection }}
       idamTenantId: ${{ parameters.idamTenantId }}
       idamClientId: ${{ parameters.idamClientId }}
       idamClientSecret: ${{ parameters.idamClientSecret }}
       buildAgentvNet: ${{ parameters.buildAgentvNet }}
       dev_group: ${{ parameters.dev_group }}
+      aks_public_subnet: ${{ parameters.aks_public_subnet }}
+      aks_vnet: ${{ parameters.aks_vnet }}
+      aks_vnet_rg: ${{ parameters.aks_vnet_rg }}
       environment: ${{ parameters.environment }}
 
   - task: AzureCLI@2

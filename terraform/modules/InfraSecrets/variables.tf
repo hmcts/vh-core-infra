@@ -1,5 +1,5 @@
 variable "workspace_to_environment_map" {
-  type = "map"
+  type = map(string)
   default = {
     AAT     = "aat"
     Demo    = "demo"

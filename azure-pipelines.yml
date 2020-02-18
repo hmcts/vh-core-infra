@@ -53,8 +53,13 @@ stages:
 
           armServiceConnection: $(infra_arm_service_connection_dev)
           dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          aksServiceConnection: DTS-SHAREDSERVICES-SBOX
           buildAgentvNet: $(build_agent_vnet_dev)
           dev_group: $(dev_group)
+
+          aks_public_subnet: shared-services_public_sbox
+          aks_vnet: shared-services_sbox_network
+          aks_vnet_rg: shared-services_sbox_network_resource_group
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
@@ -101,14 +106,19 @@ stages:
 
           armServiceConnection: $(infra_arm_service_connection_dev)
           dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          aksServiceConnection: DTS-SHAREDSERVICES-STG
           buildAgentvNet: $(build_agent_vnet_dev)
           dev_group: $(dev_group)
+
+          aks_public_subnet: shared-services_public_stg
+          aks_vnet: shared-services_stg_network
+          aks_vnet_rg: shared-services_stg_network_resource_group
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
           idamClientSecret: $(idam_client_secret)
 
-  - stage: Plan_Prod_Environments 
+  - stage: Plan_Prod_Environments
     condition: succeeded()
     dependsOn:
       - Deploy_Preview_Environments
@@ -143,8 +153,13 @@ stages:
 
           armServiceConnection: $(infra_arm_service_connection_pilot)
           dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          aksServiceConnection: DTS-SHAREDSERVICES-PROD
           buildAgentvNet: $(build_agent_vnet_prod)
           dev_group: $(dev_group)
+
+          aks_public_subnet: shared-services_public_prod
+          aks_vnet: shared-services_prod_network
+          aks_vnet_rg: shared-services_prod_network_resource_group
 
           idamTenantId: $(idam_tenant_id)
           idamClientId: $(idam_client_id)
@@ -170,6 +185,7 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-SBOX
               deploymentBranch: refs/
 
   - stage: Deploy_Test_Environments
@@ -192,26 +208,31 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-STG
               deploymentBranch: refs/heads/master
             - name: AAT
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-STG
               deploymentBranch: refs/heads/master
             - name: Sandbox
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-STG
               deploymentBranch: refs/heads/master
             - name: Test1
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-STG
               deploymentBranch: refs/heads/master
             - name: Test2
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-STG
               deploymentBranch: refs/heads/master
 
   - stage: Deploy_Demo_Environments
@@ -235,6 +256,7 @@ stages:
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-STG
               deploymentBranch: refs/heads/master
 
   - stage: Deploy_PreProd_Environments
@@ -258,10 +280,11 @@ stages:
               storageAccount: $(infra_storage_account_pilot)
               armServiceConnection: $(infra_arm_service_connection_pilot)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-PROD
               deploymentBranch: refs/heads/master
 
   - stage: Deploy_Prod_Environments
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+    condition: and(succeeded(), startsWith(variables['Build.SourceBranch'], 'refs/heads/release/'))
     dependsOn:
       - Plan_Prod_Environments
       - Deploy_PreProd_Environments
@@ -281,4 +304,5 @@ stages:
               storageAccount: $(infra_storage_account_pilot)
               armServiceConnection: $(infra_arm_service_connection_pilot)
               dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              aksServiceConnection: DTS-SHAREDSERVICES-PROD
               deploymentBranch: refs/heads/master

@@ -32,7 +32,7 @@ resource "azurerm_subnet" "backend" {
   name                 = "${local.std_prefix}-dmz-back${local.suffix}"
   resource_group_name  = data.azurerm_resource_group.vh-core-infra.name
   virtual_network_name = azurerm_virtual_network.WAF.name
-  address_prefix       = "${cidrsubnet(local.waf_address_space[1], 2, 0)}"
+  address_prefix       = cidrsubnet(local.waf_address_space[1], 2, 0)
 
   delegation {
     name = "App-Service-Delegation"
@@ -60,7 +60,7 @@ resource "azurerm_subnet" "frontend" {
   name                 = "${local.std_prefix}-dmz-front${local.suffix}"
   resource_group_name  = data.azurerm_resource_group.vh-core-infra.name
   virtual_network_name = azurerm_virtual_network.WAF.name
-  address_prefix       = "${cidrsubnet(local.waf_address_space[1], 2, 1)}"
+  address_prefix       = cidrsubnet(local.waf_address_space[1], 2, 1)
 
   service_endpoints = [
     "Microsoft.Web"
@@ -148,7 +148,7 @@ resource "azurerm_application_gateway" "waf" {
   }
 
   frontend_port {
-    name = "${local.frontend_port_name}"
+    name = local.frontend_port_name
     port = 443
   }
 
@@ -300,10 +300,84 @@ resource "azurerm_application_gateway" "waf" {
   }
 }
 
+resource "azurerm_web_application_firewall_policy" "exclusions" {
+  name                = "vh-exclusions"
+  resource_group_name = data.azurerm_resource_group.vh-core-infra.name
+  location            = data.azurerm_resource_group.vh-core-infra.location
+
+  policy_settings {
+    enabled = true
+    mode    = "Prevention"
+  }
+
+  # dynamic "custom_rules" {
+  #   for_each = local.custom_rules
+  #   iterator = "rule"
+
+  #   content {
+  #     name      = rule.value.name
+  #     priority  = rule.key
+  #     rule_type = "MatchRule"
+
+  #     dynamic "match_conditions" {
+  #       for_each = rule.value.conditions
+  #       iterator = "condition"
+
+  #       match_variables {
+  #         variable_name = condition.value.variable
+  #       }
+
+  #       operator           = condition.value.operator
+  #       negation_condition = condition.value.negative_condition
+  #       match_values       = condition.value.values
+  #     }
+
+  #     action = rule.value.action
+  #   }
+  # }
+
+  custom_rules {
+    name      = "AllowCallback"
+    priority  = 1
+    rule_type = "MatchRule"
+
+    match_conditions {
+      match_variables {
+        variable_name = "RequestUri"
+      }
+
+      operator           = "BeginsWith"
+      negation_condition = false
+      match_values             = ["/callback"]
+    }
+
+    action = "Allow"
+  }
+
+  custom_rules {
+    name      = "AllowEventhub"
+    priority  = 2
+    rule_type = "MatchRule"
+
+    match_conditions {
+      match_variables {
+        variable_name = "RequestUri"
+      }
+
+      operator           = "BeginsWith"
+      negation_condition = false
+      match_values             = ["/eventhub"]
+    }
+
+    action = "Allow"
+  }
+}
+
 resource "azurerm_monitor_diagnostic_setting" "WAF" {
-  name               = "FirewallLogs"
-  target_resource_id = azurerm_application_gateway.waf.id
-  storage_account_id = var.storage_account_id
+  name                           = "FirewallLogs"
+  target_resource_id             = azurerm_application_gateway.waf.id
+  log_analytics_destination_type = "Dedicated"
+  log_analytics_workspace_id     = var.la_workspace_id
 
   log {
     category = "ApplicationGatewayAccessLog"
@@ -320,7 +394,7 @@ resource "azurerm_monitor_diagnostic_setting" "WAF" {
     enabled  = true
 
     retention_policy {
-      days    = 5
+      days    = 0
       enabled = true
     }
   }
@@ -330,7 +404,7 @@ resource "azurerm_monitor_diagnostic_setting" "WAF" {
     enabled  = true
 
     retention_policy {
-      days    = 5
+      days    = 0
       enabled = true
     }
   }
@@ -340,7 +414,7 @@ resource "azurerm_monitor_diagnostic_setting" "WAF" {
 
     retention_policy {
       enabled = true
-      days    = 5
+      days    = 0
     }
   }
 }

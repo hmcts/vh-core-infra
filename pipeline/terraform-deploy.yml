@@ -3,6 +3,7 @@ parameters:
   storageAccount: ""
   armServiceConnection: ""
   dnsServiceConnection: ""
+  aksServiceConnection: ""
   idamTenantId: ""
   idamClientId: ""
   idamClientSecret: ""
@@ -16,6 +17,7 @@ steps:
       storageAccount: ${{ parameters.storageAccount }}
       armServiceConnection: ${{ parameters.armServiceConnection }}
       dnsServiceConnection: ${{ parameters.dnsServiceConnection }}
+      aksServiceConnection: ${{ parameters.aksServiceConnection }}
       idamTenantId: ${{ parameters.idamTenantId }}
       idamClientId: ${{ parameters.idamClientId }}
       idamClientSecret: ${{ parameters.idamClientSecret }}
