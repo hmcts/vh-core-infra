@@ -7,7 +7,7 @@ variable "resource_prefix" {
 }
 
 variable "apps" {
-  type = map(any)
+  type = map(string)
 }
 
 variable "secrets" {

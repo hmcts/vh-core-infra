@@ -16,9 +16,9 @@ variable "public_env" {
 }
 
 variable "databases" {
-  type = map(any)
+  type = map(object({collation=string, edition=string, performance_level=string}))
 }
 
 variable "queues" {
-  type = map(any)
+  type = map(object({collation=string, edition=string, performance_level=string}))
 }

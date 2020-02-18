@@ -1,9 +1,9 @@
 variable "cnames" {
-  type = map
+  type = map(object({name=string, type=string, value=string}))
 }
 
 variable "a" {
-  type = map
+  type = map(object({name=string, type=string, value=string}))
 }
 
 variable "zone_name" {

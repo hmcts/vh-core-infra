@@ -1,9 +1,9 @@
 variable "apps" {
-  type = map
+  type = map(object({name=string, websockets=bool, ip_restriction=list(string), vnet_integ_subnet_id=string}))
 }
 
 variable "managed_accounts" {
-  type = map
+  type = map(string)
 }
 
 variable "resource_group_name" {
@@ -15,7 +15,7 @@ variable "resource_prefix" {
 }
 
 variable "scaling_notification_email" {
-  type    = list
+  type    = list(string)
   default = []
 }
 
@@ -32,11 +32,11 @@ variable "signalr_connection_str" {
 }
 
 variable "idam_client_id" {
-  type = map
+  type = map(string)
 }
 
 variable "idam_client_secret" {
-  type = map
+  type = map(string)
 }
 
 variable "idam_tenant_id" {
@@ -44,7 +44,7 @@ variable "idam_tenant_id" {
 }
 
 variable "app_url" {
-  type = map
+  type = map(string)
 }
 
 variable "service_bus_connstr" {

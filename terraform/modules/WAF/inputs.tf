@@ -1,9 +1,9 @@
 variable "backend_apps" {
-  type = list
+  type = list(object({name=string, fqdn=list(string), public_fqdn=string}))
 }
 
 variable "redirects" {
-  type = list
+  type = list(object({name=string, destination=string, app=string, fqdn=string}))
 }
 
 variable "resource_group_name" {

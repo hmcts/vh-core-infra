@@ -19,6 +19,11 @@ resource "azurerm_storage_account" "vh-core-infra" {
   account_encryption_source         = "Microsoft.Storage"
 }
 
+resource "azurerm_advanced_threat_protection" "vh-core-infra" {
+  target_resource_id = azurerm_storage_account.vh-core-infra.id
+  enabled            = true
+}
+
 data "azurerm_subnet" "aks_public" {
   provider = azurerm.aks
 

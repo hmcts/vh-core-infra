@@ -7,5 +7,5 @@ variable "resource_prefix" {
 }
 
 variable "config_readers" {
-  type = map
+  type = map(string)
 }

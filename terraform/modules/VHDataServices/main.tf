@@ -42,7 +42,7 @@ resource "azurerm_template_deployment" "sqlbackup" {
 
   parameters = {
     databaseServerName = azurerm_sql_server.vh-core-infra.name
-    databases           = join(",", keys(var.databases))
+    databases          = join(",", keys(var.databases))
   }
 
   deployment_mode = "Incremental"
@@ -57,15 +57,11 @@ resource "azurerm_sql_active_directory_administrator" "sqluser" {
   object_id = azurerm_user_assigned_identity.sqluser.principal_id
 }
 
-resource "azurerm_key_vault_secret" "VhBookingsDatabaseConnectionString" {
-  name         = "VhBookingsDatabaseConnectionString"
-  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhbookings;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.sqlpass.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
-  key_vault_id = azurerm_key_vault.vh-core-infra.id
-}
+resource "azurerm_key_vault_secret" "DatabaseConnectionString" {
+  for_each = var.databases
 
-resource "azurerm_key_vault_secret" "VhVideoDatabaseConnectionString" {
-  name         = "VhVideoDatabaseConnectionString"
-  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.sqlpass.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+  name         = "${each.key}DatabaseConnectionString"
+  value        = "Server=tcp:${azurerm_sql_server.vh-core-infra.name}.database.windows.net,1433;Initial Catalog=${each.key};Persist Security Info=False;User ID=${azurerm_sql_server.vh-core-infra.administrator_login};Password=${random_password.sqlpass.result};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
   key_vault_id = azurerm_key_vault.vh-core-infra.id
 }
 
