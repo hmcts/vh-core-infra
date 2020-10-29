@@ -13,7 +13,7 @@ pr:
 variables:
   - group: vh-idam
   - group: vh-infra-dev
-  - group: vh-infra-pilot
+  - group: vh-infra-prod
   - group: vh-build-infra-prod
   - group: vh-build-infra-dev
   - name: vmPool
