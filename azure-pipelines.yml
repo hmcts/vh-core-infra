@@ -17,7 +17,7 @@ variables:
   - group: vh-build-infra-prod
   - group: vh-build-infra-dev
   - name: vmPool
-    value: vh-vsts-agent-dev
+    value: Azure-VSTS-VS2017
 
 resources:
   containers:
@@ -121,7 +121,7 @@ stages:
         - group: vh-infra-prod
         - group: vh-build-infra-prod
         - name: vmPool
-          value: vh-vsts-agent-pilot
+          value: $(vmPool)
 
       strategy:
         maxParallel: 3
@@ -246,7 +246,7 @@ stages:
       - template: pipeline/terraform-deployment.yml
         parameters:
           workingDirectory: $(system.defaultWorkingDirectory)/terraform
-          pool: vh-vsts-agent-pilot
+          pool: $(vmPool)
           buildAgentvNet: $(build_agent_vnet_prod)
           idam:
             TenantId: $(idam_tenant_id)
