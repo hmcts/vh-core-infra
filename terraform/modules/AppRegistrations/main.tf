@@ -47,7 +47,7 @@ resource "azuread_application" "vh" {
   group_membership_claims    = "None"
 
   dynamic "required_resource_access" {
-    for_each = lookup(local.app_permissions, each.key, "")
+    for_each = lookup(local.app_permissions, each.key, {})
 
     content {
       resource_app_id = required_resource_access.value.id

@@ -140,6 +140,8 @@ locals {
     }
     "video-api" = {
     }
+    "notification-api-shaed" = {
+    }
   }
 
   oauth2_allow_implicit_flow = {
@@ -151,5 +153,6 @@ locals {
     "bookings-api"             = false
     "user-api"                 = false
     "video-api"                = false
+    "notification-api-shaed"   = false
   }
 }
