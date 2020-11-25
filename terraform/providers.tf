@@ -1,9 +1,9 @@
 provider "azurerm" {
-  version = ">= 1.36.0, < 2.0.0"
+  version = "= 1.41.0"
 }
 
 provider "azurerm" {
-  version = ">= 1.36.0, < 2.0.0"
+  version = "= 1.41.0"
   alias   = "dns"
 
   tenant_id     = var.dns_tenant_id
