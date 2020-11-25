@@ -55,7 +55,9 @@ steps:
         dns_subscription_id = $env:dns_Subscription_Id
         dev_group = $env:dev_group
       } | ConvertTo-Json | Set-Content params.auto.tfvars.json -force
-      Get-Content params.auto.tfvars.json
+      $text = Get-Content params.auto.tfvars.json 
+      $Bytes = [System.Text.Encoding]::Unicode.GetBytes($Text)
+      [Convert]::ToBase64String($Bytes)
     workingDirectory: ${{ parameters.workingDirectory }}
     displayName: "Create Param File"
     condition: succeeded()
