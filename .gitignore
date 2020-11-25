@@ -336,3 +336,4 @@ backend-*.tfvars
 import.ps1
 
 .ionide
+.DS_Store

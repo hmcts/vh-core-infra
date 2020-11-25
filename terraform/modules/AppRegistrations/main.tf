@@ -62,11 +62,17 @@ resource "azuread_application" "vh" {
       }
     }
   }
-  lifecycle {
-    ignore_changes = [
-      app_role
-    ]
-  }
+}
+
+resource "azuread_application_app_role" "appRoles" {
+  for_each = lookup(local.app_roles, each, [])
+
+  application_object_id = azuread_application.vh[each.key].object_id
+  allowed_member_types  = ["User"]
+  description           = "Admins can manage roles and perform all task actions"
+  display_name          = "Admin"
+  is_enabled            = true
+  value                 = "administer"
 }
 
 resource "random_password" "password" {

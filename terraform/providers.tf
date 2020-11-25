@@ -14,7 +14,7 @@ provider "azurerm" {
 }
 
 provider "azuread" {
-  version = "~> 0.6"
+  version = "~> 1.0.0"
 
   alias = "idam"
 
@@ -22,11 +22,10 @@ provider "azuread" {
   client_id     = var.idam_client_id
   client_secret = var.idam_client_secret
 
-  subscription_id = "not needed"
 }
 
 provider "azuread" {
-  version = "~> 0.6"
+  version = "~> 1.0.0"
 
   alias = "infra"
 }
