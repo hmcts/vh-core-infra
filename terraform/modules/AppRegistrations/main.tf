@@ -62,6 +62,11 @@ resource "azuread_application" "vh" {
       }
     }
   }
+  lifecycle {
+    ignore_changes = [
+      app_role
+    ]
+  }
 }
 
 resource "random_password" "password" {
