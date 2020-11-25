@@ -27,7 +27,7 @@ locals {
       "VhServices:VideoApiUrl"                 = var.app_url["video-api"]
       AzureWebJobsDashboard                    = var.storage_connection_string
       AzureWebJobsStorage                      = var.storage_connection_string
-      FUNCTIONS_EXTENSION_VERSION              = "~2"
+      FUNCTIONS_EXTENSION_VERSION              = "~3"
       queueName                                = "booking"
       ServiceBusConnection                     = var.service_bus_connstr
       WEBSITE_ENABLE_SYNC_UPDATE_SITE          = true
@@ -37,7 +37,7 @@ locals {
       "ApplicationInsights:InstrumentationKey" = var.app_insights_instrumentation_key
       AzureWebJobsDashboard                    = var.storage_connection_string
       AzureWebJobsStorage                      = var.storage_connection_string
-      FUNCTIONS_EXTENSION_VERSION              = "~2"
+      FUNCTIONS_EXTENSION_VERSION              = "~3"
       WEBSITE_ENABLE_SYNC_UPDATE_SITE          = true
       WEBSITE_RUN_FROM_PACKAGE                 = "1"
     }
@@ -51,7 +51,7 @@ locals {
     #   "VhServices:BookingsApiUrl"              = var.app_url["bookings-api"]
     #   AzureWebJobsDashboard                    = var.storage_connection_string
     #   AzureWebJobsStorage                      = var.storage_connection_string
-    #   FUNCTIONS_EXTENSION_VERSION              = "~2"
+    #   FUNCTIONS_EXTENSION_VERSION              = "~3"
     #   queueName                                = "video"
     #   ServiceBusConnection                     = var.service_bus_connstr
     #   WEBSITE_ENABLE_SYNC_UPDATE_SITE          = true
