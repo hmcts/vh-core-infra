@@ -111,7 +111,7 @@ resource "azurerm_app_service" "app" {
 
   https_only = true
 
-  app_settings = lookup(local.app_settings, each.key, "")
+  app_settings = lookup(local.app_settings, each.key, {})
 
   dynamic "connection_string" {
     for_each = local.connection_string[each.key]
@@ -186,7 +186,7 @@ resource "azurerm_app_service_slot" "staging" {
 
   https_only = true
 
-  app_settings = lookup(local.app_settings, each.key, "")
+  app_settings = lookup(local.app_settings, each.key, {})
 
   dynamic "connection_string" {
     for_each = local.connection_string[each.key]
