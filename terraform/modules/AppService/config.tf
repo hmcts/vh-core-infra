@@ -173,6 +173,8 @@ locals {
       WEBSITE_NODE_DEFAULT_VERSION             = "6.9.1"
       "ConnectionStrings:SignalR"              = var.signalr_connection_str
     }
+    notification-api-shaed = {
+    }
   }
 
   connection_string = {
@@ -189,6 +191,12 @@ locals {
       "VhVideoApi" = {
         type  = "SQLAzure"
         value = "Server=tcp:${var.db_server_name}.database.windows.net,1433;Initial Catalog=vhvideo;Persist Security Info=False;User ID=hvhearingsapiadmin;Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
+      }
+    }
+    notification-api-shaed = {
+      "VhNotificationsApi" = {
+        type  = "SQLAzure"
+        value = "Server=tcp:${var.db_server_name}.database.windows.net,1433;Initial Catalog=vhnotifyshaed;Persist Security Info=False;User ID=hvhearingsapiadmin;Password=${var.db_admin_password};MultipleActiveResultSets=False;Encrypt=True;TrustServerCertificate=False;Connection Timeout=30;"
       }
     }
     video-web = {}
