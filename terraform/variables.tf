@@ -152,6 +152,14 @@ locals {
       subnet          = "backend"
       audience_subnet = "backend"
       url             = "https://vh-video-api${local.suffix}.azurewebsites.net"
+    },
+    video-api = {
+      name            = "vh-notification-api-shaed${local.suffix}"
+      websockets      = false
+      ip_restriction  = var.build_agent_vnet
+      subnet          = "backend"
+      audience_subnet = "backend"
+      url             = "https://vh-video-api-shaed${local.suffix}.azurewebsites.net"
     }
   }
 

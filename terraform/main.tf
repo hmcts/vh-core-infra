@@ -134,6 +134,11 @@ module VHDataServices {
       edition           = "Standard"
       performance_level = "S0"
     }
+    vhnotifcationshaed = {
+      collation         = "SQL_Latin1_General_CP1_CI_AS"
+      edition           = "Standard"
+      performance_level = "S0"
+    }
   }
   queues = {
     booking = {
