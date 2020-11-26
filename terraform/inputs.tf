@@ -1,5 +1,5 @@
 variable "location" {
-  type    = "string"
+  type    = string
   default = "ukwest"
 }
 
@@ -9,37 +9,37 @@ variable "build_agent_vnet" {
 }
 
 variable "idam_tenant_id" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "idam_client_id" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "idam_client_secret" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "dns_tenant_id" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "dns_client_id" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "dns_client_secret" {
-  type    = "string"
+  type    = string
   default = ""
 }
 
 variable "dns_subscription_id" {
-  type    = "string"
+  type    = string
   default = ""
 }
 

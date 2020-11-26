@@ -1,5 +1,5 @@
 variable "workspace_to_environment_map" {
-  type = "map"
+  type = map(any)
   default = {
     AAT     = "aat"
     Demo    = "demo"
@@ -153,13 +153,13 @@ locals {
       audience_subnet = "backend"
       url             = "https://vh-video-api${local.suffix}.azurewebsites.net"
     }
-    notification-api-shaed = {
-      name            = "vh-notification-api-shaed${local.suffix}"
+    notification-api = {
+      name            = "vh-notification-api${local.suffix}"
       websockets      = false
       ip_restriction  = var.build_agent_vnet
       subnet          = "backend"
       audience_subnet = "backend"
-      url             = "https://vh-notifcation-api-shaed${local.suffix}.azurewebsites.net"
+      url             = "https://vh-notification-api${local.suffix}.azurewebsites.net"
     }
   }
 

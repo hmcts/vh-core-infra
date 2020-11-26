@@ -65,7 +65,7 @@ module AppRegistrations {
   source = "./modules/AppRegistrations"
 
   providers = {
-    azuread = "azuread.idam"
+    azuread = azuread.idam
   }
 
   apps = local.app_registrations
@@ -134,7 +134,7 @@ module VHDataServices {
       edition           = "Standard"
       performance_level = "S0"
     }
-    vhnotifcationshaed = {
+    vhnotifcation = {
       collation         = "SQL_Latin1_General_CP1_CI_AS"
       edition           = "Standard"
       performance_level = "S0"
@@ -217,7 +217,7 @@ module HearingsDNS {
   source = "./modules/DnsZone"
 
   providers = {
-    azurerm = "azurerm.dns"
+    azurerm = azurerm.dns
   }
 
   resource_group_name = "vh-hearings-reform-hmcts-net-dns-zone"
@@ -247,4 +247,8 @@ module AMS {
   resource_prefix     = "${local.std_prefix}${local.suffix}"
   resource_group_name = azurerm_resource_group.vh-core-infra.name
   storage_account_id  = azurerm_storage_account.vh-core-infra.id
+}
+
+output "app_registrations" {
+  value = module.AppRegistrations
 }

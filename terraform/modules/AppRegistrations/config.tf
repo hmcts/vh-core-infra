@@ -140,7 +140,7 @@ locals {
     }
     "video-api" = {
     }
-    "notification-api-shaed" = {
+    "notification-api" = {
     }
   }
 
@@ -148,7 +148,7 @@ locals {
     bookings-api = []
     video-api = []
     user-api = []
-    notification-api-shaed = []
+    notification-api = []
     admin-web = [
       {
         allowed_member_types = ["User"]
@@ -210,11 +210,25 @@ locals {
       }
     ]
     service-web = []
-    notification-api-shaed = []
+    notification-api = []
     scheduler-jobs = []
     booking-queue-subscriber = []
   }
 
+  app_roles-list = flatten([
+
+    for app, roles in local.app_roles : [
+      for role in roles : {
+        "${app}-${role.value}" = merge(role, {appname = app})
+        }
+        ]
+  ])
+
+  app_roles-map = {
+    for item in local.app_roles-list :
+      keys(item)[0] => values(item)[0]
+  }
+  
   oauth2_allow_implicit_flow = {
     "booking-queue-subscriber" = false
     "video-queue-subscriber"   = false
@@ -224,6 +238,6 @@ locals {
     "bookings-api"             = false
     "user-api"                 = false
     "video-api"                = false
-    "notification-api-shaed"   = false
+    "notification-api"         = false
   }
 }

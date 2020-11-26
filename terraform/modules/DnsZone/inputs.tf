@@ -1,15 +1,15 @@
 variable "cnames" {
-  type = "map"
+  type = map(any)
 }
 
 variable "a" {
-  type = "map"
+  type = map(any)
 }
 
 variable "zone_name" {
-  type = "string"
+  type = string
 }
 
 variable "resource_group_name" {
-  type = "string"
+  type = string
 }

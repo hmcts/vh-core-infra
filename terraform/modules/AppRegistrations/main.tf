@@ -62,42 +62,18 @@ resource "azuread_application" "vh" {
       }
     }
   }
-  dynamic "app_role" {
-    for_each = local.app_roles[each.key]
-
-    content {
-      allowed_member_types  = app_role.value.allowed_member_types
-      description           = app_role.value.description
-      display_name          = app_role.value.display_name
-      is_enabled            = app_role.value.is_enabled
-      value                 = app_role.value.value
-    }
-  }
 }
 
-# resource "azuread_application_app_role" "appRoles" {
-#   for_each = {
-#     # for app, roles in local.app_roles: {
-#     #     for role in roles : {
-#     #       "${app}-${role.value}" = {appname=app}
-#     #     }
-#     # } 
+resource "azuread_application_app_role" "vh" {
+  for_each = local.app_roles-map
 
-#     for app, roles in local.app_roles : 
-#       for role in roles : {
-#         appName   = app
-#         role = role
-#       }
-    
-#   }
-
-#   application_object_id = azuread_application.vh[each.value.appname].object_id
-#   allowed_member_types  = each.value.allowed_member_types
-#   description           = each.value.description
-#   display_name          = each.value.display_name
-#   is_enabled            = each.value.is_enabled
-#   value                 = each.value.value
-# }
+  application_object_id = azuread_application.vh[each.value.appname].object_id
+  allowed_member_types  = each.value.allowed_member_types
+  description           = each.value.description
+  display_name          = each.value.display_name
+  is_enabled            = each.value.is_enabled
+  value                 = each.value.value
+}
 
 resource "random_password" "password" {
   for_each = var.apps

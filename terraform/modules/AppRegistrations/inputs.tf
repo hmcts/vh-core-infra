@@ -1,3 +1,3 @@
 variable "apps" {
-  type = "map"
+  type = map(any)
 }
