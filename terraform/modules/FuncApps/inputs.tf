@@ -1,9 +1,9 @@
 variable "apps" {
-  type = map(any)
+  type = map(object({name=string, vnet_integ_subnet_id=string}))
 }
 
 variable "managed_accounts" {
-  type = map(any)
+  type = map(string)
 }
 
 variable "resource_group_name" {
@@ -27,11 +27,11 @@ variable "app_insights_instrumentation_key" {
 }
 
 variable "idam_client_id" {
-  type = map(any)
+  type = map(string)
 }
 
 variable "idam_client_secret" {
-  type = map(any)
+  type = map(string)
 }
 
 variable "idam_tenant_id" {
@@ -39,7 +39,7 @@ variable "idam_tenant_id" {
 }
 
 variable "app_url" {
-  type = map(any)
+  type = map(string)
 }
 
 variable "service_bus_connstr" {

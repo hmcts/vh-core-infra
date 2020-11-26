@@ -19,13 +19,9 @@ resource "azurerm_function_app" "app" {
   app_service_plan_id       = var.app_service_plan_id
   storage_connection_string = var.storage_connection_string
 
-  # dynamic "identity" {
-  #   for_each = var.managed_accounts
-
-  #   content {
-  #     type         = "UserAssigned"
-  #     identity_ids = each.value
-  #   }
+  # identity {
+  #   type         = "UserAssigned"
+  #   identity_ids = values(var.managed_accounts)
   # }
 
   app_settings = lookup(local.app_settings, each.key, "")

@@ -11,7 +11,7 @@ locals {
   }
 
   version = {
-    booking-queue-subscriber = "~2"
+    booking-queue-subscriber = "~3"
     scheduler-jobs = "~3"
   }
 
@@ -51,7 +51,7 @@ locals {
     #   "VhServices:BookingsApiUrl"              = var.app_url["bookings-api"]
     #   AzureWebJobsDashboard                    = var.storage_connection_string
     #   AzureWebJobsStorage                      = var.storage_connection_string
-    #   FUNCTIONS_EXTENSION_VERSION              = "~3"
+    #   FUNCTIONS_EXTENSION_VERSION              = "~2"
     #   queueName                                = "video"
     #   ServiceBusConnection                     = var.service_bus_connstr
     #   WEBSITE_ENABLE_SYNC_UPDATE_SITE          = true

@@ -4,7 +4,7 @@ data "azurerm_resource_group" "vh-core-infra" {
 
 resource "azurerm_application_insights" "vh-core-infra" {
   name     = var.resource_prefix
-  location = "westeurope"
+  location = "uksouth"
   # location            = data.azurerm_resource_group.vh-core-infra.location
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
   application_type    = "web"
@@ -33,6 +33,17 @@ resource "azurerm_application_insights_web_test" "test" {
 XML
 }
 
+resource "azurerm_log_analytics_workspace" "loganalytics" {
+  name                = var.resource_prefix
+  location            = azurerm_application_insights.vh-core-infra.location
+  resource_group_name = data.azurerm_resource_group.vh-core-infra.name
+  sku                 = "Free"
+}
+
 output "instrumentation_key" {
   value = azurerm_application_insights.vh-core-infra.instrumentation_key
+}
+
+output "la_workspace_id" {
+  value = azurerm_log_analytics_workspace.loganalytics.workspace_id
 }

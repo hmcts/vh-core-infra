@@ -1,3 +1,3 @@
 variable "apps" {
-  type = map(any)
+  type = map(object({name=string, url=string, audience=string}))
 }

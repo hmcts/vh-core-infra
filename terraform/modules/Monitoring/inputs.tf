@@ -1,5 +1,5 @@
 variable "apps" {
-  type = map(any)
+  type = map(object({public_fqdn=string}))
 }
 
 variable "resource_group_name" {

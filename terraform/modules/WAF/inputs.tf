@@ -1,9 +1,9 @@
 variable "backend_apps" {
-  type = list(any)
+  type = list(object({name=string, fqdn=list(string), public_fqdn=string}))
 }
 
 variable "redirects" {
-  type = list(any)
+  type = list(object({name=string, destination=string, app=string, fqdn=string}))
 }
 
 variable "resource_group_name" {
@@ -14,6 +14,6 @@ variable "keyvault_id" {
   type = string
 }
 
-variable "storage_account_id" {
+variable "la_workspace_id" {
   type = string
 }
