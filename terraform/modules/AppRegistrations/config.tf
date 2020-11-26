@@ -210,7 +210,6 @@ locals {
       }
     ]
     service-web = []
-    notification-api = []
     scheduler-jobs = []
     booking-queue-subscriber = []
   }
