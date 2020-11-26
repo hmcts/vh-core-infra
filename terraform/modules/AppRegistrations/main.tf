@@ -89,6 +89,7 @@ resource "azuread_application_password" "vh" {
   application_object_id = azuread_application.vh[each.key].object_id
   value                 = random_password.password[each.key].result
   end_date_relative     = "8760h"
+  start_date            = "2020-11-26T00:00:00Z" # manage expiring of keys in pipeline
 }
 
 output "app_registrations" {
