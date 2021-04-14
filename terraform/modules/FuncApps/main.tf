@@ -105,3 +105,15 @@ resource "azurerm_app_service_virtual_network_swift_connection" "vnetintegration
   app_service_id = azurerm_function_app.app[each.key].id
   subnet_id      = each.value.vnet_integ_subnet_id
 }
+
+resource "azurerm_nat_gateway" "natgateway" {
+  name      = "vh-core-infra-${local.environment}"
+  location  =  azurerm_resource_group.rg.location
+  resource_group_name = azurerm_resource_group.rg.name
+}
+
+resource "azurerm_subnet_nat_gateway_association" "example" {
+  
+  subnet_id      = module.WebAppSecurity.backend_subnet_id
+  nat_gateway_id = azurerm_nat_gateway.natgateway.id
+}
