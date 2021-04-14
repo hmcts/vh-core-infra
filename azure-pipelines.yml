@@ -13,11 +13,11 @@ pr:
 variables:
   - group: vh-idam
   - group: vh-infra-dev
-  - group: vh-infra-pilot
+  - group: vh-infra-prod
   - group: vh-build-infra-prod
   - group: vh-build-infra-dev
   - name: vmPool
-    value: vh-vsts-agent-dev
+    value: Azure-VSTS-VS2017
 
 resources:
   containers:
@@ -52,7 +52,7 @@ stages:
           environment: $(environment)
 
           armServiceConnection: $(infra_arm_service_connection_dev)
-          dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          dnsServiceConnection: $(infra_arm_service_connection_prod)
           buildAgentvNet: $(build_agent_vnet_dev)
           dev_group: $(dev_group)
 
@@ -100,7 +100,7 @@ stages:
           environment: $(environment)
 
           armServiceConnection: $(infra_arm_service_connection_dev)
-          dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          dnsServiceConnection: $(infra_arm_service_connection_prod)
           buildAgentvNet: $(build_agent_vnet_dev)
           dev_group: $(dev_group)
 
@@ -118,10 +118,10 @@ stages:
           name: $(vmPool)
 
       variables:
-        - group: vh-infra-pilot
+        - group: vh-infra-prod
         - group: vh-build-infra-prod
         - name: vmPool
-          value: vh-vsts-agent-pilot
+          value: $(vmPool)
 
       strategy:
         maxParallel: 3
@@ -138,11 +138,11 @@ stages:
       - template: pipeline/terraform-plan.yml
         parameters:
           workingDirectory: $(system.defaultWorkingDirectory)/terraform
-          storageAccount: $(infra_storage_account_pilot)
+          storageAccount: $(infra_storage_account_prod)
           environment: $(environment)
 
-          armServiceConnection: $(infra_arm_service_connection_pilot)
-          dnsServiceConnection: $(infra_arm_service_connection_pilot)
+          armServiceConnection: $(infra_arm_service_connection_prod)
+          dnsServiceConnection: $(infra_arm_service_connection_prod)
           buildAgentvNet: $(build_agent_vnet_prod)
           dev_group: $(dev_group)
 
@@ -169,7 +169,7 @@ stages:
             - name: Preview
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_prod)
               deploymentBranch: refs/
 
   - stage: Deploy_Test_Environments
@@ -191,27 +191,27 @@ stages:
             - name: Dev
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_prod)
               deploymentBranch: refs/heads/master
             - name: AAT
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_prod)
               deploymentBranch: refs/heads/master
             - name: Sandbox
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_prod)
               deploymentBranch: refs/heads/master
             - name: Test1
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_prod)
               deploymentBranch: refs/heads/master
             - name: Test2
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_prod)
               deploymentBranch: refs/heads/master
 
   - stage: Deploy_Demo_Environments
@@ -234,7 +234,7 @@ stages:
             - name: Demo
               storageAccount: $(infra_storage_account_dev)
               armServiceConnection: $(infra_arm_service_connection_dev)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              dnsServiceConnection: $(infra_arm_service_connection_prod)
               deploymentBranch: refs/heads/master
 
   - stage: Deploy_PreProd_Environments
@@ -246,7 +246,7 @@ stages:
       - template: pipeline/terraform-deployment.yml
         parameters:
           workingDirectory: $(system.defaultWorkingDirectory)/terraform
-          pool: vh-vsts-agent-pilot
+          pool: $(vmPool)
           buildAgentvNet: $(build_agent_vnet_prod)
           idam:
             TenantId: $(idam_tenant_id)
@@ -255,30 +255,30 @@ stages:
 
           environments:
             - name: PreProd
-              storageAccount: $(infra_storage_account_pilot)
-              armServiceConnection: $(infra_arm_service_connection_pilot)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
+              storageAccount: $(infra_storage_account_prod)
+              armServiceConnection: $(infra_arm_service_connection_prod)
+              dnsServiceConnection: $(infra_arm_service_connection_prod)
               deploymentBranch: refs/heads/master
 
-  - stage: Deploy_Prod_Environments
-    condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
-    dependsOn:
-      - Plan_Prod_Environments
-      - Deploy_PreProd_Environments
-    jobs:
-      - template: pipeline/terraform-deployment.yml
-        parameters:
-          workingDirectory: $(system.defaultWorkingDirectory)/terraform
-          pool: vh-vsts-agent-pilot
-          buildAgentvNet: $(build_agent_vnet_prod)
-          idam:
-            TenantId: $(idam_tenant_id)
-            ClientId: $(idam_client_id)
-            ClientSecret: $(idam_client_secret)
+  # - stage: Deploy_Prod_Environments
+  #   condition: and(succeeded(), eq(variables['Build.SourceBranch'], 'refs/heads/master'))
+  #   dependsOn:
+  #     - Plan_Prod_Environments
+  #     - Deploy_PreProd_Environments
+  #   jobs:
+  #     - template: pipeline/terraform-deployment.yml
+  #       parameters:
+  #         workingDirectory: $(system.defaultWorkingDirectory)/terraform
+  #         pool: vh-vsts-agent-prod
+  #         buildAgentvNet: $(build_agent_vnet_prod)
+  #         idam:
+  #           TenantId: $(idam_tenant_id)
+  #           ClientId: $(idam_client_id)
+  #           ClientSecret: $(idam_client_secret)
 
-          environments:
-            - name: Prod
-              storageAccount: $(infra_storage_account_pilot)
-              armServiceConnection: $(infra_arm_service_connection_pilot)
-              dnsServiceConnection: $(infra_arm_service_connection_pilot)
-              deploymentBranch: refs/heads/master
+  #         environments:
+  #           - name: Prod
+  #             storageAccount: $(infra_storage_account_prod)
+  #             armServiceConnection: $(infra_arm_service_connection_prod)
+  #             dnsServiceConnection: $(infra_arm_service_connection_prod)
+  #             deploymentBranch: refs/heads/master

@@ -27,14 +27,14 @@ steps:
       artifactName: tfplan-${{ parameters.environment }}
       targetPath: ${{ parameters.workingDirectory }}
 
-  - task: AzureCLI@2
-    inputs:
-      azureSubscription: ${{ parameters.armServiceConnection }}
-      scriptType: pscore
-      scriptLocation: inlineScript
-      failOnStandardError: true
-      workingDirectory: ${{ parameters.workingDirectory }}
-      inlineScript: |
-        terraform apply -auto-approve plan.tfplan
-    displayName: Terraform apply
-    condition: succeeded()
+  # - task: AzureCLI@2
+  #   inputs:
+  #     azureSubscription: ${{ parameters.armServiceConnection }}
+  #     scriptType: pscore
+  #     scriptLocation: inlineScript
+  #     failOnStandardError: true
+  #     workingDirectory: ${{ parameters.workingDirectory }}
+  #     inlineScript: |
+  #       terraform apply -auto-approve plan.tfplan
+  #   displayName: Terraform apply
+  #   condition: succeeded()
