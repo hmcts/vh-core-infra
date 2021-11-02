@@ -1,9 +1,6 @@
-provider "azurerm" {
-  version = ">= 1.36.0"
-}
+provider "azurerm" {}
 
 provider "azurerm" {
-  version = ">= 1.36.0"
   alias   = "dns"
 
   tenant_id     = var.dns_tenant_id
@@ -14,7 +11,6 @@ provider "azurerm" {
 }
 
 provider "azuread" {
-  version = "~> 0.6"
 
   alias = "idam"
 
@@ -26,7 +22,5 @@ provider "azuread" {
 }
 
 provider "azuread" {
-  version = "~> 0.6"
-
   alias = "infra"
 }

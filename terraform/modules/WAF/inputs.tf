@@ -1,19 +1,19 @@
 variable "backend_apps" {
-  type = "list"
+  type = list
 }
 
 variable "redirects" {
-  type = "list"
+  type = list
 }
 
 variable "resource_group_name" {
-  type = "string"
+  type = string
 }
 
 variable "keyvault_id" {
-  type = "string"
+  type = string
 }
 
 variable "storage_account_id" {
-  type = "string"
+  type = string
 }

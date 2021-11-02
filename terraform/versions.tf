@@ -4,10 +4,10 @@ terraform {
     key            = "infra/vh-core-infra.tfstate"
   }
 
-  required_version = ">= 0.12"
+  required_version = ">= 1.0.4"
   required_providers {
-    azurerm = ">= 1.40"
-    azuread = "~> 0.7"
+    azurerm = ">= 2.82"
+    azuread = "~> 2.7"
     null    = ">= 0"
     random  = ">= 2"
   }
