@@ -117,7 +117,7 @@ stages:
           name: $(vmPool)
 
       variables:
-        - group: vh-infra-pilot
+        - group: vh-infra-prod
         - group: vh-build-infra-prod
         - name: vmPool
           value: vh-vsts-agent-pilot
