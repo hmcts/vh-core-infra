@@ -2,21 +2,30 @@ data "azurerm_resource_group" "vh-core-infra" {
   name = var.resource_group_name
 }
 
-resource "azurerm_application_insights" "vh-core-infra" {
-  name     = var.resource_prefix
-  location = "westeurope"
-  # location            = data.azurerm_resource_group.vh-core-infra.location
+module "application_insights" {
+  source = "git@github.com:hmcts/terraform-module-application-insights?ref=main"
+
+  env                 = var.env
+  product             = var.product
+  name                = "${var.product}-${var.component}-appinsights"
+  location            = "westeurope"
   resource_group_name = data.azurerm_resource_group.vh-core-infra.name
-  application_type    = "web"
+
+  common_tags = local.common_tags
+}
+
+moved {
+  from = azurerm_application_insights.vh-core-infra
+  to   = module.application_insights.azurerm_application_insights.this
 }
 
 resource "azurerm_application_insights_web_test" "test" {
   for_each = var.apps
 
   name                    = "${each.key}-webtest"
-  location                = azurerm_application_insights.vh-core-infra.location
+  location                = "westeurope"
   resource_group_name     = data.azurerm_resource_group.vh-core-infra.name
-  application_insights_id = replace(azurerm_application_insights.vh-core-infra.id, "Microsoft.Insights", "microsoft.insights")
+  application_insights_id = replace(module.application_insights.app_id, "Microsoft.Insights", "microsoft.insights")
   kind                    = "ping"
   frequency               = 300
   timeout                 = 10
@@ -34,5 +43,5 @@ XML
 }
 
 output "instrumentation_key" {
-  value = azurerm_application_insights.vh-core-infra.instrumentation_key
+  value = module.application_insights.instrumentation_key
 }
